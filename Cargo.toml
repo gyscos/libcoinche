@@ -2,6 +2,11 @@
 name = "libcoinche"
 version = "0.1.0"
 authors = ["Alexandre Bury <alexandre.bury@gmail.com>"]
+description = "A library to model the Coinche card game."
+readme = "Readme.md"
+keywords = [ "coinche", "game", "cards" ]
+license = "MIT"
+license-file = "LICENSE"
 
 [dependencies]
 rustc-serialize = "0.3.16"
