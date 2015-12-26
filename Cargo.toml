@@ -1,0 +1,8 @@
+[package]
+name = "libcoinche"
+version = "0.1.0"
+authors = ["Alexandre Bury <alexandre.bury@gmail.com>"]
+
+[dependencies]
+rustc-serialize = "0.3.16"
+rand = "0.3.12"
