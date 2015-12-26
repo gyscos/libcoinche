@@ -1,5 +1,8 @@
+//! Player position in the table
+
 use rustc_serialize;
 
+/// One of two teams
 #[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Team(pub usize);
 
@@ -10,11 +13,13 @@ impl rustc_serialize::Encodable for Team {
 }
 
 impl Team {
+    /// Returns the other team
     pub fn opponent(self) -> Team {
         Team(1 - self.0)
     }
 }
 
+/// A position in the table
 #[derive(PartialEq,Clone,Copy,Debug)]
 pub struct PlayerPos(pub usize);
 
@@ -24,6 +29,7 @@ impl rustc_serialize::Encodable for PlayerPos {
     }
 }
 
+/// Iterates on players
 pub struct PlayerIterator {
     current: PlayerPos,
     remaining: usize,
@@ -44,20 +50,27 @@ impl Iterator for PlayerIterator {
     }
 }
 
+/// Player 0
 pub const P0: PlayerPos = PlayerPos(0);
+/// Player 1
 pub const P1: PlayerPos = PlayerPos(1);
+/// Player 2
 pub const P2: PlayerPos = PlayerPos(2);
+/// Player 3
 pub const P3: PlayerPos = PlayerPos(3);
 
 impl PlayerPos {
+    /// Returns the player's team
     pub fn team(self) -> Team {
         Team(self.0 % 2)
     }
 
+    /// Returns `true` if `self` and `other` and in the same team
     pub fn is_partner(self, other: PlayerPos) -> bool {
         self.team() == other.team()
     }
 
+    /// Returns the next player in line
     pub fn next(self) -> PlayerPos {
         if self == P3 {
             P0
@@ -66,14 +79,16 @@ impl PlayerPos {
         }
     }
 
+    /// Returns the player `n` seats further
     pub fn next_n(self, n: usize) -> PlayerPos {
         if n == 0 {
             self
         } else {
-            self.next().next_n(n-1)
+            PlayerPos((self.0 + n) % 4)
         }
     }
 
+    /// Returns the previous player.
     pub fn prev(self) -> PlayerPos {
         if self == P0 {
             P3
@@ -82,6 +97,7 @@ impl PlayerPos {
         }
     }
 
+    /// Returns an iterator that iterates on `n` players, including this one.
     pub fn until_n(self, n: usize) -> PlayerIterator {
         PlayerIterator {
             current:self,
@@ -89,10 +105,12 @@ impl PlayerPos {
         }
     }
 
+    /// Returns the number of turns after `self` to reach `other`.
     pub fn distance_until(self, other: PlayerPos) -> usize {
         (3 + other.0 - self.0) % 4 + 1
     }
 
+    /// Returns an iterator until the given player (`self` included, `other` excluded)
     // Iterate on every player between self included and other excluded.
     pub fn until(self, other: PlayerPos) -> PlayerIterator {
         let d = self.distance_until(other);

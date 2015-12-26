@@ -1,5 +1,8 @@
+//! Manage score and scores
+
 use super::cards;
 
+/// Returns the number of score `card` is worth, with the current trump suit.
 pub fn score(card: cards::Card, trump: cards::Suit) -> i32 {
     let r = card.rank();
     if card.suit() == trump {
@@ -9,6 +12,7 @@ pub fn score(card: cards::Card, trump: cards::Suit) -> i32 {
     }
 }
 
+/// Returns the strength of `card`, with the current trump suit.
 pub fn strength(card: cards::Card, trump: cards::Suit) -> i32 {
     let r = card.rank();
     if card.suit() == trump {
@@ -18,6 +22,10 @@ pub fn strength(card: cards::Card, trump: cards::Suit) -> i32 {
     }
 }
 
+/// Returns the score for the given rank when it is the trump.
+///
+/// # Panics
+/// If `rank` is invalid.
 pub fn trump_score(rank: cards::Rank) -> i32 {
     match rank {
         cards::RANK_J => 20,
@@ -26,6 +34,10 @@ pub fn trump_score(rank: cards::Rank) -> i32 {
     }
 }
 
+/// Returns the score for the given rank when it is not the trump.
+///
+/// # Panics
+/// If `rank` is invalid.
 pub fn usual_score(rank: cards::Rank) -> i32 {
     match rank {
         cards::RANK_7 => 0,
@@ -40,6 +52,10 @@ pub fn usual_score(rank: cards::Rank) -> i32 {
     }
 }
 
+/// Returns the strength for the given rank when it is the trump.
+///
+/// # Panics
+/// If `rank` is invalid.
 pub fn trump_strength(rank: cards::Rank) -> i32 {
     match rank {
         cards::RANK_7 => 0,
@@ -54,6 +70,10 @@ pub fn trump_strength(rank: cards::Rank) -> i32 {
     }
 }
 
+/// Returns the strength for the given rank when it is not the trump.
+///
+/// # Panics
+/// If `rank` is invalid.
 pub fn usual_strength(rank: cards::Rank) -> i32 {
     match rank {
         cards::RANK_7 => 0,

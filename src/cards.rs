@@ -4,13 +4,20 @@ extern crate rand;
 
 use self::rand::{thread_rng,Rng};
 use std::num::Wrapping;
+use std::string::ToString;
 use rustc_serialize;
 
+/// One of the four Suits: Heart, Spade, Diamond, Club
 #[derive(PartialEq,Clone,Copy)]
 pub struct Suit(pub u32);
+
+/// The Heart suit
 pub const HEART: Suit = Suit(1 << 0);
+/// The Spade suit
 pub const SPADE: Suit = Suit(1 << 8);
+/// The Diamond suit
 pub const DIAMOND: Suit = Suit(1 << 16);
+/// The Club suit
 pub const CLUB: Suit = Suit(1 << 24);
 
 
@@ -24,11 +31,19 @@ impl rustc_serialize::Encodable for Suit {
 }
 
 impl Suit {
+    /// Returns the suit corresponding to the number:
+    ///
+    /// * `0`: Heart
+    /// * `1`: Spade
+    /// * `2`: Diamond
+    /// * `3`: Club
+    /// * `>=4`: panics
     pub fn from_n(n: u32) -> Self {
         if n >= 4 { panic!("Bad suit number"); }
         Suit(1 << 8*n)
     }
 
+    /// Returns a UTF-8 character representing the suit.
     pub fn to_string(self) -> String {
         match self {
             HEART => "♥",
@@ -41,24 +56,46 @@ impl Suit {
 }
 
 
+/// Rank of a card in a suit
 #[derive(PartialEq,Clone,Copy)]
 pub struct Rank(pub u32);
+/// 7
 pub const RANK_7: Rank = Rank(1 << 0);
+/// 8
 pub const RANK_8: Rank = Rank(1 << 1);
+/// 9
 pub const RANK_9: Rank = Rank(1 << 2);
+/// Jack
 pub const RANK_J: Rank = Rank(1 << 3);
+/// Queen
 pub const RANK_Q: Rank = Rank(1 << 4);
+/// King
 pub const RANK_K: Rank = Rank(1 << 5);
+/// 10
 pub const RANK_X: Rank = Rank(1 << 6);
+/// Ace
 pub const RANK_A: Rank = Rank(1 << 7);
+/// Bit mask over all ranks
 pub const RANK_MASK: Rank = Rank(255);
-
-pub fn get_rank(n: u32) -> Rank {
-    Rank(1 << n)
-}
 
 impl Rank {
 
+    /// Returns the rank corresponding to the given number:
+    /// * `0`: 7
+    /// * `1`: 8
+    /// * `2`: 9
+    /// * `3`: J
+    /// * `4`: Q
+    /// * `5`: K
+    /// * `6`: X
+    /// * `7`: A
+    /// * `>=8`: panics
+    pub fn from_n(n: u32) -> Self {
+        if n >= 8 { panic!("Invalid rank number: {}", n); }
+        Rank(1 << n)
+    }
+
+    /// Returns a character representing the given rank
     pub fn to_string(self) -> String {
         match self {
             RANK_7 => "7",
@@ -74,6 +111,7 @@ impl Rank {
     }
 }
 
+/// Represents a single card
 #[derive(PartialEq,Clone,Copy)]
 pub struct Card(pub u32);
 
@@ -85,6 +123,7 @@ impl rustc_serialize::Encodable for Card {
 
 
 impl Card {
+    /// Returns the card number (from 0 to 31)
     pub fn id(self) -> u32 {
         let mut i = 0;
         let Card(mut v) = self;
@@ -96,11 +135,13 @@ impl Card {
         i-1
     }
 
+    /// Returns the card corresponding to the given number
     pub fn from_id(id: u32) -> Self {
         if id > 31 { panic!("invalid card id"); }
         Card(1 << id)
     }
 
+    /// Returns the card's rank
     pub fn rank(self) -> Rank {
         let Card(mut v) = self;
         let mut r: u32 = 0;
@@ -117,26 +158,29 @@ impl Card {
         Rank(r)
     }
 
+    /// Returns the card's suit
     pub fn suit(self) -> Suit {
         let Card(v) = self;
         let Rank(r) = self.rank();
         Suit(v / r)
     }
 
+    /// Returns a string representation of the card
     pub fn to_string(self) -> String {
         let r = self.rank();
         let s = self.suit();
         r.to_string() + &s.to_string()
     }
 
+    /// Creates a card from the given suit and rank
+    pub fn new(suit: Suit, rank: Rank) -> Self {
+        let Suit(s) = suit;
+        let Rank(r) = rank;
+
+        Card(s * r)
+    }
 }
 
-pub fn make_card(suit: Suit, rank: Rank) -> Card {
-    let Suit(s) = suit;
-    let Rank(r) = rank;
-
-    Card(s * r)
-}
 
 #[test]
 fn card_test() {
@@ -148,14 +192,15 @@ fn card_test() {
     for s in 0..4 {
         let suit = Suit::from_n(s);
         for r in 0..8 {
-            let rank = get_rank(r);
-            let card = make_card(suit, rank);
+            let rank = Rank::from_n(r);
+            let card = Card::new(suit, rank);
             assert!(card.rank() == rank);
             assert!(card.suit() == suit);
         }
     }
 }
 
+/// Represents an unordered set of cards
 #[derive(PartialEq,Clone,Copy)]
 pub struct Hand(pub u32);
 
@@ -165,36 +210,50 @@ impl rustc_serialize::Encodable for Hand {
     }
 }
 
-pub fn new_hand() -> Hand {
-    Hand(0)
-}
-
 impl Hand {
+    /// Returns an empty hand.
+    pub fn new() -> Self {
+        Hand(0)
+    }
+
+    /// Add `card` to `self`.
+    ///
+    /// No effect if `self` already contains `card`.
     pub fn add(&mut self, card: Card) -> &mut Hand {
         self.0 |= card.0;
         self
     }
 
+    /// Removes `card` from `self`.
+    ///
+    /// No effect if `self` does not contains `card`.
     pub fn remove(&mut self, card: Card) {
         self.0 &= !card.0;
     }
 
+    /// Remove all cards from `self`.
     pub fn clean(&mut self) {
-        *self = new_hand();
+        *self = Hand::new();
     }
 
+    /// Returns `true` if `self` contains `card`.
     pub fn has(self, card: Card) -> bool {
         (self.0 & card.0) != 0
     }
 
+    /// Returns `true` if the hand contains any card of the given suit.
     pub fn has_any(self, suit: Suit) -> bool {
         (self.0 & (RANK_MASK.0 * suit.0)) != 0
     }
 
+    /// Returns `true` if `self` contains no card.
     pub fn is_empty(self) -> bool {
         self.0 == 0
     }
 
+    /// Returns a card from `self`.
+    ///
+    /// Returns an invalid card if `self` is empty.
     pub fn get_card(self) -> Card {
         if self.is_empty() {
             return Card(0);
@@ -213,6 +272,7 @@ impl Hand {
         }
     }
 
+    /// Returns the cards contained in `self` as a `Vec`.
     pub fn list(self) -> Vec<Card> {
         let mut cards = Vec::new();
         let mut h = self;
@@ -226,14 +286,18 @@ impl Hand {
         cards
     }
 
+    /// Returns the number of cards in `self`.
     pub fn size(self) -> usize {
         self.list().len()
     }
+}
 
-    pub fn to_string(self) -> String {
+impl ToString for Hand {
+    /// Returns a string representation of `self`.
+    fn to_string(&self) -> String {
         let mut s = "[".to_string();
 
-        for c in self.list().iter() {
+        for c in (*self).list().iter() {
             s = s + &c.to_string();
             s = s +",";
         }
@@ -244,17 +308,17 @@ impl Hand {
 
 #[test]
 fn hand_test() {
-    let mut hand = new_hand();
+    let mut hand = Hand::new();
 
     let cards: Vec<Card> = vec![
-        make_card(HEART, RANK_7),
-        make_card(HEART, RANK_8),
-        make_card(SPADE, RANK_9),
-        make_card(SPADE, RANK_J),
-        make_card(CLUB, RANK_Q),
-        make_card(CLUB, RANK_K),
-        make_card(DIAMOND, RANK_X),
-        make_card(DIAMOND, RANK_A),
+        Card::new(HEART, RANK_7),
+        Card::new(HEART, RANK_8),
+        Card::new(SPADE, RANK_9),
+        Card::new(SPADE, RANK_J),
+        Card::new(CLUB, RANK_Q),
+        Card::new(CLUB, RANK_K),
+        Card::new(DIAMOND, RANK_X),
+        Card::new(DIAMOND, RANK_A),
     ];
 
     assert!(hand.is_empty());
@@ -274,38 +338,51 @@ fn hand_test() {
     }
 }
 
+/// A deck of cards.
 pub struct Deck{
     cards: Vec<Card>,
 }
 
-// Returns a full, sorted deck of 32 cards.
-pub fn new_deck() -> Deck {
-    let mut d = Deck{cards:Vec::with_capacity(32)};
-
-    for i in 0..32 {
-        d.cards.push(Card::from_id(i));
-    }
-
-    d
-}
 
 impl Deck {
+    /// Returns a full, sorted deck of 32 cards.
+    pub fn new() -> Self {
+        let mut d = Deck{cards:Vec::with_capacity(32)};
+
+        for i in 0..32 {
+            d.cards.push(Card::from_id(i));
+        }
+
+        d
+    }
+
+    /// Shuffle this deck.
     pub fn shuffle(&mut self) {
         thread_rng().shuffle(&mut self.cards[..]);
     }
 
+    /// Draw the top card from the deck.
+    ///
+    /// # Panics
+    /// If `self` is empty.
     pub fn draw(&mut self) -> Card {
         self.cards.pop().expect("deck is empty")
     }
 
+    /// Returns `true` if this deck is empty.
     pub fn is_empty(&self) -> bool {
         self.cards.is_empty()
     }
 
+    /// Returns the number of cards left in this deck.
     pub fn len(&self) -> usize {
         self.cards.len()
     }
 
+    /// Deal `n` cards to each hand.
+    ///
+    /// # Panics
+    /// If `self.len() < 4 * n`
     pub fn deal_each(&mut self, hands: &mut [Hand; 4], n: usize) {
         if self.len() < 4*n {
             panic!("Deck has too few cards!");
@@ -317,8 +394,10 @@ impl Deck {
             }
         }
     }
+}
 
-    pub fn to_string(&self) -> String {
+impl ToString for Deck {
+    fn to_string(&self) -> String {
         let mut s = "[".to_string();
 
         for c in self.cards.iter() {
@@ -332,7 +411,7 @@ impl Deck {
 
 #[test]
 fn test_deck() {
-    let mut deck = new_deck();
+    let mut deck = Deck::new();
     deck.shuffle();
 
     assert!(deck.len() == 32);
@@ -347,5 +426,3 @@ fn test_deck() {
         assert!(*c == 1);
     }
 }
-
-

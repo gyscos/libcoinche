@@ -40,7 +40,7 @@ pub enum GameResult {
 #[derive(PartialEq,Debug)]
 pub enum TrickResult {
     Nothing,
-    TrickOver(pos::PlayerPos,GameResult),
+    TrickOver(pos::PlayerPos, GameResult),
 }
 
 #[derive(PartialEq,Debug)]
@@ -213,42 +213,42 @@ impl GameState {
 
 #[test]
 fn test_play_card() {
-    let mut hands = [cards::new_hand(); 4];
-    hands[0].add(cards::make_card(cards::HEART, cards::RANK_8));
-    hands[0].add(cards::make_card(cards::HEART, cards::RANK_X));
-    hands[0].add(cards::make_card(cards::HEART, cards::RANK_A));
-    hands[0].add(cards::make_card(cards::HEART, cards::RANK_9));
-    hands[0].add(cards::make_card(cards::CLUB, cards::RANK_7));
-    hands[0].add(cards::make_card(cards::CLUB, cards::RANK_8));
-    hands[0].add(cards::make_card(cards::CLUB, cards::RANK_9));
-    hands[0].add(cards::make_card(cards::CLUB, cards::RANK_J));
+    let mut hands = [cards::Hand::new(); 4];
+    hands[0].add(cards::Card::new(cards::HEART, cards::RANK_8));
+    hands[0].add(cards::Card::new(cards::HEART, cards::RANK_X));
+    hands[0].add(cards::Card::new(cards::HEART, cards::RANK_A));
+    hands[0].add(cards::Card::new(cards::HEART, cards::RANK_9));
+    hands[0].add(cards::Card::new(cards::CLUB, cards::RANK_7));
+    hands[0].add(cards::Card::new(cards::CLUB, cards::RANK_8));
+    hands[0].add(cards::Card::new(cards::CLUB, cards::RANK_9));
+    hands[0].add(cards::Card::new(cards::CLUB, cards::RANK_J));
 
-    hands[1].add(cards::make_card(cards::CLUB, cards::RANK_Q));
-    hands[1].add(cards::make_card(cards::CLUB, cards::RANK_K));
-    hands[1].add(cards::make_card(cards::CLUB, cards::RANK_X));
-    hands[1].add(cards::make_card(cards::CLUB, cards::RANK_A));
-    hands[1].add(cards::make_card(cards::SPADE, cards::RANK_7));
-    hands[1].add(cards::make_card(cards::SPADE, cards::RANK_8));
-    hands[1].add(cards::make_card(cards::SPADE, cards::RANK_9));
-    hands[1].add(cards::make_card(cards::SPADE, cards::RANK_J));
+    hands[1].add(cards::Card::new(cards::CLUB, cards::RANK_Q));
+    hands[1].add(cards::Card::new(cards::CLUB, cards::RANK_K));
+    hands[1].add(cards::Card::new(cards::CLUB, cards::RANK_X));
+    hands[1].add(cards::Card::new(cards::CLUB, cards::RANK_A));
+    hands[1].add(cards::Card::new(cards::SPADE, cards::RANK_7));
+    hands[1].add(cards::Card::new(cards::SPADE, cards::RANK_8));
+    hands[1].add(cards::Card::new(cards::SPADE, cards::RANK_9));
+    hands[1].add(cards::Card::new(cards::SPADE, cards::RANK_J));
 
-    hands[2].add(cards::make_card(cards::DIAMOND, cards::RANK_7));
-    hands[2].add(cards::make_card(cards::DIAMOND, cards::RANK_8));
-    hands[2].add(cards::make_card(cards::DIAMOND, cards::RANK_9));
-    hands[2].add(cards::make_card(cards::DIAMOND, cards::RANK_J));
-    hands[2].add(cards::make_card(cards::SPADE, cards::RANK_Q));
-    hands[2].add(cards::make_card(cards::SPADE, cards::RANK_K));
-    hands[2].add(cards::make_card(cards::HEART, cards::RANK_Q));
-    hands[2].add(cards::make_card(cards::HEART, cards::RANK_K));
+    hands[2].add(cards::Card::new(cards::DIAMOND, cards::RANK_7));
+    hands[2].add(cards::Card::new(cards::DIAMOND, cards::RANK_8));
+    hands[2].add(cards::Card::new(cards::DIAMOND, cards::RANK_9));
+    hands[2].add(cards::Card::new(cards::DIAMOND, cards::RANK_J));
+    hands[2].add(cards::Card::new(cards::SPADE, cards::RANK_Q));
+    hands[2].add(cards::Card::new(cards::SPADE, cards::RANK_K));
+    hands[2].add(cards::Card::new(cards::HEART, cards::RANK_Q));
+    hands[2].add(cards::Card::new(cards::HEART, cards::RANK_K));
 
-    hands[3].add(cards::make_card(cards::DIAMOND, cards::RANK_Q));
-    hands[3].add(cards::make_card(cards::DIAMOND, cards::RANK_K));
-    hands[3].add(cards::make_card(cards::DIAMOND, cards::RANK_X));
-    hands[3].add(cards::make_card(cards::DIAMOND, cards::RANK_A));
-    hands[3].add(cards::make_card(cards::SPADE, cards::RANK_X));
-    hands[3].add(cards::make_card(cards::SPADE, cards::RANK_A));
-    hands[3].add(cards::make_card(cards::HEART, cards::RANK_7));
-    hands[3].add(cards::make_card(cards::HEART, cards::RANK_J));
+    hands[3].add(cards::Card::new(cards::DIAMOND, cards::RANK_Q));
+    hands[3].add(cards::Card::new(cards::DIAMOND, cards::RANK_K));
+    hands[3].add(cards::Card::new(cards::DIAMOND, cards::RANK_X));
+    hands[3].add(cards::Card::new(cards::DIAMOND, cards::RANK_A));
+    hands[3].add(cards::Card::new(cards::SPADE, cards::RANK_X));
+    hands[3].add(cards::Card::new(cards::SPADE, cards::RANK_A));
+    hands[3].add(cards::Card::new(cards::HEART, cards::RANK_7));
+    hands[3].add(cards::Card::new(cards::HEART, cards::RANK_J));
 
     let contract = bid::Contract {
         trump: cards::HEART,
@@ -261,42 +261,42 @@ fn test_play_card() {
 
     // Wrong turn
     assert_eq!(
-        game.play_card(pos::P1, cards::make_card(cards::CLUB, cards::RANK_X)).err(),
+        game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_X)).err(),
         Some(PlayError::TurnError));
     assert_eq!(
-        game.play_card(pos::P0, cards::make_card(cards::CLUB, cards::RANK_7)).ok(),
+        game.play_card(pos::P0, cards::Card::new(cards::CLUB, cards::RANK_7)).ok(),
         Some(TrickResult::Nothing));
     // Card missing
     assert_eq!(
-        game.play_card(pos::P1, cards::make_card(cards::HEART, cards::RANK_7)).err(),
+        game.play_card(pos::P1, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
         Some(PlayError::CardMissing));
     // Wrong color
     assert_eq!(
-        game.play_card(pos::P1, cards::make_card(cards::SPADE, cards::RANK_7)).err(),
+        game.play_card(pos::P1, cards::Card::new(cards::SPADE, cards::RANK_7)).err(),
         Some(PlayError::IncorrectSuit));
     assert_eq!(
-        game.play_card(pos::P1, cards::make_card(cards::CLUB, cards::RANK_Q)).ok(),
+        game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_Q)).ok(),
         Some(TrickResult::Nothing));
     // Invalid piss
     assert_eq!(
-        game.play_card(pos::P2, cards::make_card(cards::DIAMOND, cards::RANK_7)).err(),
+        game.play_card(pos::P2, cards::Card::new(cards::DIAMOND, cards::RANK_7)).err(),
         Some(PlayError::InvalidPiss));
     assert_eq!(
-        game.play_card(pos::P2, cards::make_card(cards::HEART, cards::RANK_Q)).ok(),
+        game.play_card(pos::P2, cards::Card::new(cards::HEART, cards::RANK_Q)).ok(),
         Some(TrickResult::Nothing));
     // UnderTrump
     assert_eq!(
-        game.play_card(pos::P3, cards::make_card(cards::HEART, cards::RANK_7)).err(),
+        game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
         Some(PlayError::NonRaisedTrump));
     assert_eq!(
-        game.play_card(pos::P3, cards::make_card(cards::HEART, cards::RANK_J)).ok(),
-        Some(TrickResult::TrickOver(pos::P3)));
+        game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_J)).ok(),
+        Some(TrickResult::TrickOver(pos::P3, game.get_game_result())));
 }
 
 fn has_higher(hand: cards::Hand, trump: cards::Suit, strength: i32) -> bool {
     for ri in 0..8 {
-        let rank = cards::get_rank(ri);
-        if points::trump_strength(rank) > strength && hand.has(cards::make_card(trump, rank)) {
+        let rank = cards::Rank::from_n(ri);
+        if points::trump_strength(rank) > strength && hand.has(cards::Card::new(trump, rank)) {
             return true
         }
     }
@@ -307,51 +307,51 @@ fn has_higher(hand: cards::Hand, trump: cards::Suit, strength: i32) -> bool {
 #[test]
 fn test_has_higher_1() {
     // Simple case: X is always higher than Q.
-    let mut hand = cards::new_hand();
+    let mut hand = cards::Hand::new();
 
-    hand.add(cards::make_card(cards::HEART, cards::RANK_8));
-    hand.add(cards::make_card(cards::SPADE, cards::RANK_X));
+    hand.add(cards::Card::new(cards::HEART, cards::RANK_8));
+    hand.add(cards::Card::new(cards::SPADE, cards::RANK_X));
     assert!(has_higher(hand, cards::SPADE, points::trump_strength(cards::RANK_Q)));
 }
 
 #[test]
 fn test_has_higher_2() {
     // Test that we don't mix colors
-    let mut hand = cards::new_hand();
+    let mut hand = cards::Hand::new();
 
-    hand.add(cards::make_card(cards::HEART, cards::RANK_8));
-    hand.add(cards::make_card(cards::SPADE, cards::RANK_X));
+    hand.add(cards::Card::new(cards::HEART, cards::RANK_8));
+    hand.add(cards::Card::new(cards::SPADE, cards::RANK_X));
     assert!(!has_higher(hand, cards::HEART, points::trump_strength(cards::RANK_Q)));
 }
 
 #[test]
 fn test_has_higher_3() {
     // In the trump order, X is lower than 9
-    let mut hand = cards::new_hand();
+    let mut hand = cards::Hand::new();
 
-    hand.add(cards::make_card(cards::HEART, cards::RANK_J));
-    hand.add(cards::make_card(cards::SPADE, cards::RANK_X));
+    hand.add(cards::Card::new(cards::HEART, cards::RANK_J));
+    hand.add(cards::Card::new(cards::SPADE, cards::RANK_X));
     assert!(!has_higher(hand, cards::SPADE, points::trump_strength(cards::RANK_9)));
 }
 
 #[test]
 fn test_has_higher_4() {
     // In the trump order, J is higher than A
-    let mut hand = cards::new_hand();
+    let mut hand = cards::Hand::new();
 
-    hand.add(cards::make_card(cards::HEART, cards::RANK_8));
-    hand.add(cards::make_card(cards::SPADE, cards::RANK_J));
+    hand.add(cards::Card::new(cards::HEART, cards::RANK_8));
+    hand.add(cards::Card::new(cards::SPADE, cards::RANK_J));
     assert!(has_higher(hand, cards::SPADE, points::trump_strength(cards::RANK_A)));
 }
 
 #[test]
 fn test_has_higher_5() {
     // Test when we have no trump at all
-    let mut hand = cards::new_hand();
+    let mut hand = cards::Hand::new();
 
-    hand.add(cards::make_card(cards::HEART, cards::RANK_J));
-    hand.add(cards::make_card(cards::DIAMOND, cards::RANK_J));
-    hand.add(cards::make_card(cards::SPADE, cards::RANK_J));
+    hand.add(cards::Card::new(cards::HEART, cards::RANK_J));
+    hand.add(cards::Card::new(cards::DIAMOND, cards::RANK_J));
+    hand.add(cards::Card::new(cards::SPADE, cards::RANK_J));
     assert!(!has_higher(hand, cards::CLUB, points::trump_strength(cards::RANK_7)));
 }
 
