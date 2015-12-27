@@ -86,6 +86,7 @@ pub const RANK_MASK: Rank = Rank(255);
 impl Rank {
 
     /// Returns the rank corresponding to the given number:
+    ///
     /// * `0`: 7
     /// * `1`: 8
     /// * `2`: 9
