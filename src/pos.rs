@@ -111,32 +111,37 @@ impl PlayerPos {
     }
 
     /// Returns an iterator until the given player (`self` included, `other` excluded)
-    // Iterate on every player between self included and other excluded.
     pub fn until(self, other: PlayerPos) -> PlayerIterator {
         let d = self.distance_until(other);
         self.until_n(d)
     }
 }
 
-#[test]
-fn test_pos() {
-    let mut count = [0; 4];
-    for i in 0..4 {
-        for pos in PlayerPos(i).until(PlayerPos(0)) {
-            count[pos.0] += 1;
-        }
-        for pos in PlayerPos(0).until(PlayerPos(i)) {
-            count[pos.0] += 1;
-        }
-    }
+#[cfg(test)]
+mod tests {
 
-    for c in count.iter() {
-        assert!(*c == 5);
-    }
+    use super::*;
 
-    for i in 0..4 {
-        assert!(PlayerPos(i).next() == PlayerPos((i+1)%4));
-        assert!(PlayerPos(i) == PlayerPos((i+1)%4).prev());
-        assert!(PlayerPos(i).next().prev() == PlayerPos(i));
+    #[test]
+    fn test_pos() {
+        let mut count = [0; 4];
+        for i in 0..4 {
+            for pos in PlayerPos(i).until(PlayerPos(0)) {
+                count[pos.0] += 1;
+            }
+            for pos in PlayerPos(0).until(PlayerPos(i)) {
+                count[pos.0] += 1;
+            }
+        }
+
+        for c in count.iter() {
+            assert!(*c == 5);
+        }
+
+        for i in 0..4 {
+            assert!(PlayerPos(i).next() == PlayerPos((i+1)%4));
+            assert!(PlayerPos(i) == PlayerPos((i+1)%4).prev());
+            assert!(PlayerPos(i).next().prev() == PlayerPos(i));
+        }
     }
 }

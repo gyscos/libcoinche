@@ -160,19 +160,6 @@ pub struct Auction {
     players: [cards::Hand; 4],
 }
 
-impl Auction {
-    /// Starts a new auction, starting with the player `first`.
-    pub fn new(first: pos::PlayerPos) -> Self {
-        Auction {
-            history: Vec::new(),
-            pass_count: 0,
-            state: AuctionState::Bidding,
-            first: first,
-            players: super::deal_hands(),
-        }
-    }
-}
-
 /// Possible error occuring during an Auction.
 #[derive(PartialEq,Debug)]
 pub enum BidError {
@@ -204,6 +191,16 @@ impl fmt::Display for BidError {
 }
 
 impl Auction {
+    /// Starts a new auction, starting with the player `first`.
+    pub fn new(first: pos::PlayerPos) -> Self {
+        Auction {
+            history: Vec::new(),
+            pass_count: 0,
+            state: AuctionState::Bidding,
+            first: first,
+            players: super::deal_hands(),
+        }
+    }
 
     /// Returns the current state of the auctions.
     pub fn get_state(&self) -> AuctionState {
@@ -339,56 +336,62 @@ impl Auction {
         } else if self.history.is_empty() {
             Err(BidError::NoContract)
         } else {
-            Ok(game::new_game(self.first, self.players, self.history.pop().expect("contract history empty")))
+            Ok(game::GameState::new(self.first, self.players, self.history.pop().expect("contract history empty")))
         }
     }
 }
 
-#[test]
-fn test_auction() {
-    let mut auction = Auction::new(pos::PlayerPos(0));
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ::{cards,pos};
 
-    assert!(auction.state == AuctionState::Bidding);
+    #[test]
+    fn test_auction() {
+        let mut auction = Auction::new(pos::PlayerPos(0));
 
-    // First three people pass.
-    assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
-    assert_eq!(auction.pass(pos::P1), Ok(AuctionState::Bidding));
-    assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
+        assert!(auction.state == AuctionState::Bidding);
 
-    assert_eq!(auction.pass(pos::P1), Err(BidError::TurnError));
-    assert_eq!(auction.coinche(pos::P2), Err(BidError::TurnError));
+        // First three people pass.
+        assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
+        assert_eq!(auction.pass(pos::P1), Ok(AuctionState::Bidding));
+        assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
 
-    // Someone bids.
-    assert_eq!(auction.bid(
-        pos::P3,
-        cards::HEART,
-        Target::Contract80
-    ), Ok(AuctionState::Bidding));
-    assert_eq!(auction.bid(
-        pos::P0,
-        cards::CLUB,
-        Target::Contract80,
-    ).err(), Some(BidError::NonRaisedTarget));
-    assert_eq!(auction.bid(
-        pos::P1,
-        cards::CLUB,
-        Target::Contract100,
-    ).err(), Some(BidError::TurnError));
-    assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
-    // Partner surbids
-    assert_eq!(auction.bid(
-        pos::P1,
-        cards::HEART,
-        Target::Contract100,
-    ), Ok(AuctionState::Bidding));
-    assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
-    assert_eq!(auction.pass(pos::P3), Ok(AuctionState::Bidding));
-    assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Over));
+        assert_eq!(auction.pass(pos::P1), Err(BidError::TurnError));
+        assert_eq!(auction.coinche(pos::P2), Err(BidError::TurnError));
 
-    assert!(auction.state == AuctionState::Over);
+        // Someone bids.
+        assert_eq!(auction.bid(
+            pos::P3,
+            cards::HEART,
+            Target::Contract80
+        ), Ok(AuctionState::Bidding));
+        assert_eq!(auction.bid(
+            pos::P0,
+            cards::CLUB,
+            Target::Contract80,
+        ).err(), Some(BidError::NonRaisedTarget));
+        assert_eq!(auction.bid(
+            pos::P1,
+            cards::CLUB,
+            Target::Contract100,
+        ).err(), Some(BidError::TurnError));
+        assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
+        // Partner surbids
+        assert_eq!(auction.bid(
+            pos::P1,
+            cards::HEART,
+            Target::Contract100,
+        ), Ok(AuctionState::Bidding));
+        assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
+        assert_eq!(auction.pass(pos::P3), Ok(AuctionState::Bidding));
+        assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Over));
 
-    match auction.complete() {
-        Err(_) => assert!(false),
-        _=> {},
+        assert!(auction.state == AuctionState::Over);
+
+        match auction.complete() {
+            Err(_) => assert!(false),
+            _=> {},
+        }
     }
 }

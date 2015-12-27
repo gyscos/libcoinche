@@ -11,6 +11,8 @@ use rustc_serialize;
 #[derive(PartialEq,Clone,Copy)]
 pub struct Suit(u32);
 
+// TODO: Make these associated const when it's stable
+
 /// The Heart suit
 pub const HEART: Suit = Suit(1 << 0);
 /// The Spade suit
@@ -115,6 +117,8 @@ impl Rank {
 #[derive(PartialEq,Clone,Copy)]
 pub struct Card(u32);
 
+// TODO: Add card constants? (8 of heart, Queen of spades, ...?)
+
 impl rustc_serialize::Encodable for Card {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
         self.0.encode(s)
@@ -186,24 +190,6 @@ impl Card {
     }
 }
 
-
-#[test]
-fn card_test() {
-    for i in 0..32 {
-        let card = Card::from_id(i);
-        assert!(i == card.id());
-    }
-
-    for s in 0..4 {
-        let suit = Suit::from_n(s);
-        for r in 0..8 {
-            let rank = Rank::from_n(r);
-            let card = Card::new(suit, rank);
-            assert!(card.rank() == rank);
-            assert!(card.suit() == suit);
-        }
-    }
-}
 
 /// Represents an unordered set of cards
 #[derive(PartialEq,Clone,Copy)]
@@ -311,38 +297,6 @@ impl ToString for Hand {
     }
 }
 
-#[test]
-fn hand_test() {
-    let mut hand = Hand::new();
-
-    let cards: Vec<Card> = vec![
-        Card::new(HEART, RANK_7),
-        Card::new(HEART, RANK_8),
-        Card::new(SPADE, RANK_9),
-        Card::new(SPADE, RANK_J),
-        Card::new(CLUB, RANK_Q),
-        Card::new(CLUB, RANK_K),
-        Card::new(DIAMOND, RANK_X),
-        Card::new(DIAMOND, RANK_A),
-    ];
-
-    assert!(hand.is_empty());
-
-    for card in cards.iter() {
-        assert!(!hand.has(*card));
-        hand.add(*card);
-        assert!(hand.has(*card));
-    }
-
-    assert!(hand.size() == cards.len());
-
-    for card in cards.iter() {
-        assert!(hand.has(*card));
-        hand.remove(*card);
-        assert!(!hand.has(*card));
-    }
-}
-
 /// A deck of cards.
 pub struct Deck{
     cards: Vec<Card>,
@@ -414,20 +368,75 @@ impl ToString for Deck {
     }
 }
 
-#[test]
-fn test_deck() {
-    let mut deck = Deck::new();
-    deck.shuffle();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    assert!(deck.len() == 32);
+    #[test]
+    fn test_cards() {
+        for i in 0..32 {
+            let card = Card::from_id(i);
+            assert!(i == card.id());
+        }
 
-    let mut count = [0; 32];
-    while !deck.is_empty() {
-        let card = deck.draw();
-        count[card.id() as usize] += 1;
+        for s in 0..4 {
+            let suit = Suit::from_n(s);
+            for r in 0..8 {
+                let rank = Rank::from_n(r);
+                let card = Card::new(suit, rank);
+                assert!(card.rank() == rank);
+                assert!(card.suit() == suit);
+            }
+        }
     }
 
-    for c in count.iter() {
-        assert!(*c == 1);
+    #[test]
+    fn test_hand() {
+        let mut hand = Hand::new();
+
+        let cards: Vec<Card> = vec![
+            Card::new(HEART, RANK_7),
+            Card::new(HEART, RANK_8),
+            Card::new(SPADE, RANK_9),
+            Card::new(SPADE, RANK_J),
+            Card::new(CLUB, RANK_Q),
+            Card::new(CLUB, RANK_K),
+            Card::new(DIAMOND, RANK_X),
+            Card::new(DIAMOND, RANK_A),
+        ];
+
+        assert!(hand.is_empty());
+
+        for card in cards.iter() {
+            assert!(!hand.has(*card));
+            hand.add(*card);
+            assert!(hand.has(*card));
+        }
+
+        assert!(hand.size() == cards.len());
+
+        for card in cards.iter() {
+            assert!(hand.has(*card));
+            hand.remove(*card);
+            assert!(!hand.has(*card));
+        }
+    }
+
+    #[test]
+    fn test_deck() {
+        let mut deck = Deck::new();
+        deck.shuffle();
+
+        assert!(deck.len() == 32);
+
+        let mut count = [0; 32];
+        while !deck.is_empty() {
+            let card = deck.draw();
+            count[card.id() as usize] += 1;
+        }
+
+        for c in count.iter() {
+            assert!(*c == 1);
+        }
     }
 }
