@@ -8,12 +8,12 @@ libcoinche
 
 Rust library to model a game of [coinche](https://en.wikipedia.org/wiki/Coinche).
 
-`libcoinche` is also on [crates.io](https://crates.io/crates/libcoinche/).
+# [Documentation](http://gyscos.github.io/libcoinche/libcoinche/index.html)
 
 To use, add `libcoinche` to your Cargo dependencies:
 ```
 [dependencies]
-libcoinche = "0.1.3"
+libcoinche = "0.1.4"
 ```
 
 Check [coinched](https://github.com/Gyscos/coinched) for an example of usage.
