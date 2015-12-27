@@ -16,7 +16,7 @@ pub struct GameState {
 
     contract: bid::Contract,
 
-    scores: [i32; 2],
+    points: [i32; 2],
     tricks: Vec<trick::Trick>,
 }
 
@@ -28,9 +28,12 @@ pub enum GameResult {
 
     /// The game is over
     GameOver {
+        /// Worth of won tricks
         points: [i32;2],
+        /// Winning team
         winners: pos::Team,
-        final_scores: [i32;2]
+        /// Score for this game
+        scores: [i32;2]
     },
 }
 
@@ -81,7 +84,7 @@ impl GameState {
             current: first,
             contract: contract,
             tricks: vec![trick::Trick::new(first)],
-            scores: [0; 2],
+            points: [0; 2],
         }
     }
 
@@ -108,10 +111,10 @@ impl GameState {
         let result = if trick_over {
             let winner = self.current_trick().winner;
             let score = self.current_trick().score(trump);
-            self.scores[winner.team().0] += score;
+            self.points[winner.team().0] += score;
             if self.tricks.len() == 8 {
                 // 10 de der
-                self.scores[winner.team().0] += 10;
+                self.points[winner.team().0] += 10;
             } else {
                 self.tricks.push(trick::Trick::new(winner));
             }
@@ -137,26 +140,26 @@ impl GameState {
         }
 
         let taking_team = self.contract.author.team();
-        let taking_score = self.scores[taking_team.0];
+        let taking_points = self.points[taking_team.0];
 
         let capot = self.is_capot(taking_team);
 
-        let victory = self.contract.target.victory(taking_score, capot);
+        let victory = self.contract.target.victory(taking_points, capot);
 
         let winners = if victory { taking_team } else { taking_team.opponent() };
 
         // TODO: Allow for variants in scoring. (See wikipedia article)
-        let mut final_scores = [0; 2];
+        let mut scores = [0; 2];
         if victory {
-            final_scores[winners.0] = self.contract.target.score();
+            scores[winners.0] = self.contract.target.score();
         } else {
-            final_scores[winners.0] = 160;
+            scores[winners.0] = 160;
         }
 
         GameResult::GameOver {
-            points: self.scores,
+            points: self.points,
             winners: winners,
-            final_scores: final_scores,
+            scores: scores,
         }
     }
 
