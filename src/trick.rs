@@ -15,7 +15,7 @@ pub fn empty_trick(first: pos::PlayerPos) -> Trick {
     Trick {
         first: first,
         winner: first,
-        cards: [cards::Card(0); 4],
+        cards: [cards::Card::null(); 4],
     }
 }
 
@@ -27,7 +27,6 @@ impl Trick {
     }
 
     pub fn winner(&self, trump: cards::Suit, current: pos::PlayerPos) -> pos::PlayerPos {
-        // For every player between 
         let mut best = self.first;
         let mut best_strength = 0;
         // Iterate on every player between the first and the current, excluded

@@ -9,7 +9,7 @@ use rustc_serialize;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club
 #[derive(PartialEq,Clone,Copy)]
-pub struct Suit(pub u32);
+pub struct Suit(u32);
 
 /// The Heart suit
 pub const HEART: Suit = Suit(1 << 0);
@@ -58,7 +58,7 @@ impl Suit {
 
 /// Rank of a card in a suit
 #[derive(PartialEq,Clone,Copy)]
-pub struct Rank(pub u32);
+pub struct Rank(u32);
 /// 7
 pub const RANK_7: Rank = Rank(1 << 0);
 /// 8
@@ -113,7 +113,7 @@ impl Rank {
 
 /// Represents a single card
 #[derive(PartialEq,Clone,Copy)]
-pub struct Card(pub u32);
+pub struct Card(u32);
 
 impl rustc_serialize::Encodable for Card {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
@@ -133,6 +133,11 @@ impl Card {
         }
 
         i-1
+    }
+
+    /// Returns an invalid card
+    pub fn null() -> Self {
+        Card(0)
     }
 
     /// Returns the card corresponding to the given number
@@ -202,7 +207,7 @@ fn card_test() {
 
 /// Represents an unordered set of cards
 #[derive(PartialEq,Clone,Copy)]
-pub struct Hand(pub u32);
+pub struct Hand(u32);
 
 impl rustc_serialize::Encodable for Hand {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
