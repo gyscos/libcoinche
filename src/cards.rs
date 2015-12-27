@@ -90,11 +90,11 @@ impl Rank {
     /// * `0`: 7
     /// * `1`: 8
     /// * `2`: 9
-    /// * `3`: J
-    /// * `4`: Q
-    /// * `5`: K
-    /// * `6`: X
-    /// * `7`: A
+    /// * `3`: Jack
+    /// * `4`: Queen
+    /// * `5`: King
+    /// * `6`: 10
+    /// * `7`: Ace
     /// * `>=8`: panics
     pub fn from_n(n: u32) -> Self {
         if n >= 8 { panic!("Invalid rank number: {}", n); }
