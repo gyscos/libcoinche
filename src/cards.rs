@@ -10,7 +10,7 @@ use std::num::Wrapping;
 use std::string::ToString;
 use rustc_serialize;
 
-/// One of the four Suits: Heart, Spade, Diamond, Club
+/// One of the four Suits: Heart, Spade, Diamond, Club.
 #[derive(PartialEq,Clone,Copy)]
 pub struct Suit(u32);
 
@@ -45,7 +45,7 @@ impl Suit {
     ///
     /// # Panics
     ///
-    /// If `n >= 4`
+    /// If `n >= 4`.
     pub fn from_n(n: u32) -> Self {
         if n >= 4 { panic!("Bad suit number"); }
         Suit(1 << 8*n)
@@ -64,7 +64,7 @@ impl Suit {
 }
 
 
-/// Rank of a card in a suit
+/// Rank of a card in a suit.
 #[derive(PartialEq,Clone,Copy)]
 pub struct Rank(u32);
 /// 7
@@ -101,13 +101,13 @@ impl Rank {
     ///
     /// # Panics
     ///
-    /// If `n >= 8`
+    /// If `n >= 8`.
     pub fn from_n(n: u32) -> Self {
         if n >= 8 { panic!("Invalid rank number: {}", n); }
         Rank(1 << n)
     }
 
-    /// Returns a character representing the given rank
+    /// Returns a character representing the given rank.
     pub fn to_string(self) -> String {
         match self {
             RANK_7 => "7",
@@ -123,7 +123,7 @@ impl Rank {
     }
 }
 
-/// Represents a single card
+/// Represents a single card.
 #[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Card(u32);
 
@@ -154,7 +154,11 @@ impl Card {
         Card(0)
     }
 
-    /// Returns the card corresponding to the given number
+    /// Returns the card corresponding to the given number.
+    ///
+    /// # Panics
+    ///
+    /// If `id >= 32`
     pub fn from_id(id: u32) -> Self {
         if id > 31 { panic!("invalid card id"); }
         Card(1 << id)
@@ -177,14 +181,14 @@ impl Card {
         Rank(r)
     }
 
-    /// Returns the card's suit
+    /// Returns the card's suit.
     pub fn suit(self) -> Suit {
         let Card(v) = self;
         let Rank(r) = self.rank();
         Suit(v / r)
     }
 
-    /// Returns a string representation of the card
+    /// Returns a string representation of the card.
     pub fn to_string(self) -> String {
         let r = self.rank();
         let s = self.suit();
