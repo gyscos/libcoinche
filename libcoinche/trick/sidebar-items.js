@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Trick","The current cards on the table"]]});

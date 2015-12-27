@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["AuctionState","Current state of an auction"],["BidError","Possible error occuring during an Auction."],["Target","Goal set by a contract."]],"struct":[["Auction","Represents the entire auction process."],["Contract","Contract taken by a team."]]});

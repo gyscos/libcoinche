@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["GameResult","Result of a game."],["PlayError","Error that can occur during play"],["TrickResult","Result of a trick"]],"struct":[["GameState","Describes the state of a coinche game, ready to play a card."]]});
