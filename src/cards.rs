@@ -42,7 +42,10 @@ impl Suit {
     /// * `1`: Spade
     /// * `2`: Diamond
     /// * `3`: Club
-    /// * `>=4`: panics
+    ///
+    /// # Panics
+    ///
+    /// If `n >= 4`
     pub fn from_n(n: u32) -> Self {
         if n >= 4 { panic!("Bad suit number"); }
         Suit(1 << 8*n)
@@ -95,7 +98,10 @@ impl Rank {
     /// * `5`: King
     /// * `6`: 10
     /// * `7`: Ace
-    /// * `>=8`: panics
+    ///
+    /// # Panics
+    ///
+    /// If `n >= 8`
     pub fn from_n(n: u32) -> Self {
         if n >= 8 { panic!("Invalid rank number: {}", n); }
         Rank(1 << n)
