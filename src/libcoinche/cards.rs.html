@@ -621,11 +621,11 @@
     <span class='doccomment'>/// * `0`: 7</span>
     <span class='doccomment'>/// * `1`: 8</span>
     <span class='doccomment'>/// * `2`: 9</span>
-    <span class='doccomment'>/// * `3`: J</span>
-    <span class='doccomment'>/// * `4`: Q</span>
-    <span class='doccomment'>/// * `5`: K</span>
-    <span class='doccomment'>/// * `6`: X</span>
-    <span class='doccomment'>/// * `7`: A</span>
+    <span class='doccomment'>/// * `3`: Jack</span>
+    <span class='doccomment'>/// * `4`: Queen</span>
+    <span class='doccomment'>/// * `5`: King</span>
+    <span class='doccomment'>/// * `6`: 10</span>
+    <span class='doccomment'>/// * `7`: Ace</span>
     <span class='doccomment'>/// * `&gt;=8`: panics</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_n</span>(<span class='ident'>n</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>8</span> { <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid rank number: {}&quot;</span>, <span class='ident'>n</span>); }
