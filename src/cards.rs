@@ -1,8 +1,11 @@
 //! This module represents a basic, rule-agnostic 32-cards system.
 
-extern crate rand;
-
-use self::rand::{thread_rng,Rng};
+use ::rand::{
+    thread_rng,
+    Rng,
+    IsaacRng,
+    SeedableRng
+};
 use std::num::Wrapping;
 use std::string::ToString;
 use rustc_serialize;
@@ -114,7 +117,7 @@ impl Rank {
 }
 
 /// Represents a single card
-#[derive(PartialEq,Clone,Copy)]
+#[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Card(u32);
 
 // TODO: Add card constants? (8 of heart, Queen of spades, ...?)
@@ -317,7 +320,20 @@ impl Deck {
 
     /// Shuffle this deck.
     pub fn shuffle(&mut self) {
-        thread_rng().shuffle(&mut self.cards[..]);
+        self.shuffle_from(thread_rng());
+    }
+
+    /// Shuffle this deck with the given random seed.
+    ///
+    /// Result is determined by the seed.
+    pub fn shuffle_seeded(&mut self, seed: &[u32]) {
+        let mut rng = IsaacRng::new_unseeded();
+        rng.reseed(seed);
+        self.shuffle_from(rng);
+    }
+
+    fn shuffle_from<RNG: Rng>(&mut self, mut rng: RNG) {
+        rng.shuffle(&mut self.cards[..]);
     }
 
     /// Draw the top card from the deck.
@@ -438,5 +454,33 @@ mod tests {
         for c in count.iter() {
             assert!(*c == 1);
         }
+    }
+}
+
+#[cfg(feature="use_bench")]
+mod benchs {
+    use ::test::Bencher;
+    use ::deal_seeded_hands;
+
+    #[bench]
+    fn bench_deal(b: &mut Bencher) {
+        let seed = &[1,2,3,4,5];
+        b.iter(|| {
+            deal_seeded_hands(seed);
+        });
+    }
+
+    #[bench]
+    fn bench_add(b: &mut Bencher) {
+        let seed = &[1,2,3,4,5];
+        let hands = deal_seeded_hands(seed);
+        b.iter(|| {
+            let mut hands = hands.clone();
+            for hand in hands.iter_mut() {
+                for c in hand.list() {
+                    hand.remove(c);
+                }
+            }
+        });
     }
 }

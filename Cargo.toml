@@ -11,3 +11,7 @@ repository = "https://github.com/Gyscos/libcoinche"
 [dependencies]
 rustc-serialize = "0.3"
 rand = "0.3"
+
+[features]
+default = []
+use_bench = []

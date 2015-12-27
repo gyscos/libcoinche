@@ -8,6 +8,7 @@ use super::bid;
 use super::points;
 
 /// Describes the state of a coinche game, ready to play a card.
+#[derive(Clone)]
 pub struct GameState {
     players: [cards::Hand; 4],
 
@@ -17,19 +18,6 @@ pub struct GameState {
 
     scores: [i32; 2],
     tricks: Vec<trick::Trick>,
-}
-
-impl GameState {
-    /// Creates a new GameState, with the given cards, first player and contract.
-    pub fn new(first: pos::PlayerPos, hands: [cards::Hand; 4], contract: bid::Contract) -> Self {
-        GameState {
-            players: hands,
-            current: first,
-            contract: contract,
-            tricks: vec![trick::Trick::new(first)],
-            scores: [0; 2],
-        }
-    }
 }
 
 /// Result of a game.
@@ -86,6 +74,17 @@ impl fmt::Display for PlayError {
 
 impl GameState {
 
+    /// Creates a new GameState, with the given cards, first player and contract.
+    pub fn new(first: pos::PlayerPos, hands: [cards::Hand; 4], contract: bid::Contract) -> Self {
+        GameState {
+            players: hands,
+            current: first,
+            contract: contract,
+            tricks: vec![trick::Trick::new(first)],
+            scores: [0; 2],
+        }
+    }
+
     /// Returns the contract used for this game
     pub fn contract(&self) -> &bid::Contract {
         &self.contract
@@ -116,15 +115,20 @@ impl GameState {
             } else {
                 self.tricks.push(trick::Trick::new(winner));
             }
+            self.current = winner;
             TrickResult::TrickOver(winner, self.get_game_result())
         } else {
+            self.current = self.current.next();
             TrickResult::Nothing
         };
 
-        // Next!
-        self.current = self.current.next();
 
         Ok(result)
+    }
+
+    /// Returns the player expected to play next.
+    pub fn next_player(&self) -> pos::PlayerPos {
+        self.current
     }
 
     fn get_game_result(&self) -> GameResult {
@@ -180,12 +184,14 @@ impl GameState {
             return Err(PlayError::CardMissing);;
         }
 
-        if p == self.current_trick().first {
+        let trick = self.current_trick();
+
+        if p == trick.first {
             return Ok(());
         }
 
         let card_suit = card.suit();
-        let starting_suit = self.current_trick().cards[self.current_trick().first.0].suit();
+        let starting_suit = trick.cards[trick.first.0].suit();
         if card_suit != starting_suit {
             if hand.has_any(starting_suit) {
                 return Err(PlayError::IncorrectSuit);
@@ -401,5 +407,44 @@ mod tests {
         hand.add(cards::Card::new(cards::DIAMOND, cards::RANK_J));
         hand.add(cards::Card::new(cards::SPADE, cards::RANK_J));
         assert!(!has_higher(hand, cards::CLUB, points::trump_strength(cards::RANK_7)));
+    }
+}
+
+
+#[cfg(feature="use_bench")]
+mod benchs {
+    use ::test::Bencher;
+    use ::deal_seeded_hands;
+
+    use ::{pos,cards,bid};
+    use super::*;
+
+    #[bench]
+    fn bench_can_play(b: &mut Bencher) {
+
+        fn try_deeper(game: &GameState, depth: usize) {
+            let player = game.next_player();
+            for c in game.hands()[player.0].list() {
+                let mut new_game = game.clone();
+                match new_game.play_card(player, c) {
+                    Ok(_) => if depth > 0 {
+                        try_deeper(&new_game, depth - 1);
+                    },
+                    _ => (),
+                };
+            }
+        }
+
+        let seed = &[3, 32, 654, 1, 844];
+        let hands = deal_seeded_hands(seed);
+        let game = GameState::new(pos::P0, hands, bid::Contract {
+            author: pos::P0,
+            trump: cards::HEART,
+            target: bid::Target::Contract80,
+            coinche_level: 0,
+        });
+        b.iter(|| {
+            try_deeper(&game, 4)
+        });
     }
 }

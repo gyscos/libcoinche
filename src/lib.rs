@@ -1,3 +1,4 @@
+#![cfg_attr(feature = "use_bench", feature(test))]
 //! Models a game of [coinche](https://en.wikipedia.org/wiki/Coinche) (a french card game).
 //!
 //! See [coinched](https://github.com/Gyscos/coinched) for an example of usage.
@@ -38,6 +39,8 @@
 //! ```
 extern crate rand;
 extern crate rustc_serialize;
+#[cfg(feature = "use_bench")]
+extern crate test;
 
 pub mod bid;
 pub mod cards;
@@ -63,6 +66,20 @@ pub fn deal_hands() -> [cards::Hand; 4] {
 
     let mut d = cards::Deck::new();
     d.shuffle();
+
+    d.deal_each(&mut hands, 3);
+    d.deal_each(&mut hands, 2);
+    d.deal_each(&mut hands, 3);
+
+    hands
+}
+
+/// Deal cards for 4 players deterministically.
+fn deal_seeded_hands(seed: &[u32]) -> [cards::Hand; 4] {
+    let mut hands = [cards::Hand::new(); 4];
+
+    let mut d = cards::Deck::new();
+    d.shuffle_seeded(seed);
 
     d.deal_each(&mut hands, 3);
     d.deal_each(&mut hands, 2);
