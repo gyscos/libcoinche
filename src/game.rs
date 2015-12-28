@@ -174,7 +174,7 @@ impl GameState {
 
     /// Returns the cards of all players
     pub fn hands(&self) -> [cards::Hand; 4] {
-        cards::Hand::clone(&self.players)
+        self.players
     }
 
     /// Returns `true` if the move appear legal.
@@ -249,7 +249,7 @@ impl GameState {
 impl Clone for GameState {
     fn clone(&self) -> Self {
         GameState {
-            players: cards::Hand::clone(&self.players),
+            players: self.players,
             current: self.current,
             contract: self.contract.clone(),
             points: self.points.clone(),
@@ -260,7 +260,7 @@ impl Clone for GameState {
 
 fn has_higher(hand: &cards::Hand, trump: cards::Suit, strength: i32) -> bool {
     for ri in 0..8 {
-        let rank = cards::Rank::from_id(ri).unwrap();
+        let rank = cards::Rank::from_id(ri);
         if points::trump_strength(rank) > strength && hand.has(cards::Card::new(trump, rank)) {
             return true
         }
@@ -292,7 +292,7 @@ mod tests {
 
     #[test]
     fn test_play_card() {
-        let mut hands = cards::Hand::make_4();
+        let mut hands = [cards::Hand::new(); 4];
         hands[0].add(cards::Card::new(cards::Suit::Heart, cards::Rank::Rank8));
         hands[0].add(cards::Card::new(cards::Suit::Heart, cards::Rank::RankX));
         hands[0].add(cards::Card::new(cards::Suit::Heart, cards::Rank::RankA));

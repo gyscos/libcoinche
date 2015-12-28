@@ -20,7 +20,7 @@
 //!     let hands = auction.hands();
 //!
 //!     // Players bid or pass
-//!     auction.bid(pos::P0, cards::HEART, bid::Target::Contract80).unwrap();
+//!     auction.bid(pos::P0, cards::Suit::Heart, bid::Target::Contract80).unwrap();
 //!     auction.pass(pos::P1).unwrap();
 //!     auction.pass(pos::P2).unwrap();
 //!     // The result is `Over` when the auction is ready to complete
@@ -33,7 +33,7 @@
 //!     let mut game = auction.complete().unwrap();
 //!
 //!     // Play some cards
-//!     game.play_card(pos::P0, hands[0].get_card());
+//!     game.play_card(pos::P0, hands[0].get_card().unwrap());
 //!     // ...
 //! }
 //! ```
@@ -96,7 +96,7 @@ pub fn deal_seeded_hands(seed: &[u32]) -> [cards::Hand; 4] {
 
 #[test]
 fn test_deals() {
-    let hands = deal_hands();
+    let hands = deal_seeded_hands(&[1,2,3,4,5]);
 
     let mut count = [0; 32];
     for hand in hands.iter() {

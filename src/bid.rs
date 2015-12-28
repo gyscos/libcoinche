@@ -270,7 +270,7 @@ impl Auction {
 
     /// Returns the players cards.
     pub fn hands(&self) -> [cards::Hand; 4] {
-        cards::Hand::clone(&self.players)
+        self.players
     }
 
     /// The current player passes his turn.

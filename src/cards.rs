@@ -36,13 +36,13 @@ impl Suit {
     /// * `1`: Spade
     /// * `2`: Diamond
     /// * `3`: Club
-    pub fn from_id(n: u32) -> Option<Self> {
+    pub fn from_id(n: u32) -> Self {
         match n {
-            0 => Some(Suit::Heart),
-            1 => Some(Suit::Spade),
-            2 => Some(Suit::Diamond),
-            3 => Some(Suit::Club),
-            _ => None
+            0 => Suit::Heart,
+            1 => Suit::Spade,
+            2 => Suit::Diamond,
+            3 => Suit::Club,
+            _ => panic!("invalid suit id: {}", n),
         }
     }
 
@@ -53,6 +53,10 @@ impl Suit {
             &Suit::Diamond => 2,
             &Suit::Club => 3,
         }
+    }
+
+    fn bitmask(&self) -> u32 {
+        255 * (1 << (8*self.id()))
     }
 }
 
@@ -94,17 +98,17 @@ impl Rank {
     /// * `5`: King
     /// * `6`: 10
     /// * `7`: Ace
-    pub fn from_id(n: u32) -> Option<Self> {
+    pub fn from_id(n: u32) -> Self {
         match n {
-            0 => Some(Rank::Rank7),
-            1 => Some(Rank::Rank8),
-            2 => Some(Rank::Rank9),
-            3 => Some(Rank::RankJ),
-            4 => Some(Rank::RankQ),
-            5 => Some(Rank::RankK),
-            6 => Some(Rank::RankX),
-            7 => Some(Rank::RankA),
-            _ => None,
+            0 => Rank::Rank7,
+            1 => Rank::Rank8,
+            2 => Rank::Rank9,
+            3 => Rank::RankJ,
+            4 => Rank::RankQ,
+            5 => Rank::RankK,
+            6 => Rank::RankX,
+            7 => Rank::RankA,
+            _ => panic!("Invalid rank id: {}", n),
         }
     }
 
@@ -153,15 +157,19 @@ impl Card {
         8 * self.suit.id() + self.rank.id()
     }
 
+    fn bitset(&self) -> u32 {
+        1 << self.id()
+    }
+
     /// Returns the card corresponding to the given number.
-    pub fn from_id(id: u32) -> Option<Self> {
+    pub fn from_id(id: u32) -> Self {
         match id {
             n if n < 32 => {
-                let suit = Suit::from_id(n / 8).unwrap();
-                let rank = Rank::from_id(n % 8).unwrap();
-                Some(Card::new(suit, rank))
+                let suit = Suit::from_id(n / 8);
+                let rank = Rank::from_id(n % 8);
+                Card::new(suit, rank)
             },
-            _ => None,
+            _ => panic!("Invalid card id: {}", id),
         }
     }
 
@@ -184,34 +192,20 @@ impl ToString for Card {
 
 
 /// Represents an unordered set of cards
-#[derive(PartialEq,Clone,Debug,RustcEncodable)]
-pub struct Hand(Vec<Card>);
+#[derive(PartialEq,Copy,Clone,Debug,RustcEncodable)]
+pub struct Hand(u32);
 
 impl Hand {
     /// Returns an empty hand.
     pub fn new() -> Self {
-        Hand(Vec::new())
-    }
-
-    pub fn make_4() -> [Hand; 4] {
-        [Hand::new(),
-         Hand::new(),
-         Hand::new(),
-         Hand::new()]
-    }
-
-    pub fn clone(hands: &[Hand; 4]) -> [Hand; 4] {
-        [hands[0].clone(),
-         hands[1].clone(),
-         hands[2].clone(),
-         hands[3].clone()]
+        Hand(0)
     }
 
     /// Add `card` to `self`.
     ///
     /// No effect if `self` already contains `card`.
     pub fn add(&mut self, card: Card) -> &mut Hand {
-        self.0.push(card);
+        self.0 |= card.bitset();
         self
     }
 
@@ -219,48 +213,61 @@ impl Hand {
     ///
     /// No effect if `self` does not contains `card`.
     pub fn remove(&mut self, card: Card) -> &mut Hand {
-        self.0.retain(|c| *c != card);
+        self.0 &= !card.bitset();
         self
     }
 
     /// Remove all cards from `self`.
     pub fn clean(&mut self) {
-        self.0.clear();
+        self.0 = 0;
     }
 
     /// Returns `true` if `self` contains `card`.
     pub fn has(&self, card: Card) -> bool {
-        self.0.contains(&card)
+        (self.0 & card.bitset()) != 0
     }
 
     /// Returns `true` if the hand contains any card of the given suit.
     pub fn has_any(&self, suit: Suit) -> bool {
-        for c in self.0.iter() {
-            if c.suit == suit { return true; }
-        }
-        false
+        (self.0 & suit.bitmask()) != 0
     }
 
     /// Returns `true` if `self` contains no card.
     pub fn is_empty(&self) -> bool {
-        self.0.is_empty()
+        self.0 == 0
     }
 
     /// Returns a card from `self`.
     ///
     /// Returns an invalid card if `self` is empty.
     pub fn get_card(&self) -> Option<Card> {
-        self.0.first().map(|c| *c)
+        if self.is_empty() {
+            None
+        } else {
+            // Finds the rightmost bit, shifted to the left by 1.
+            // let n = 1 << (h.trailing_zeros());
+            Some(Card::from_id(self.0.trailing_zeros()))
+        }
     }
 
     /// Returns the cards contained in `self` as a `Vec`.
-    pub fn list(&self) -> &[Card] {
-        &self.0
+    pub fn list(&self) -> Vec<Card> {
+        let mut cards = Vec::new();
+        let mut h = *self;
+
+        while !h.is_empty() {
+            let c = h.get_card().unwrap();
+            h.remove(c);
+            cards.push(c);
+        }
+
+        cards
+
     }
 
     /// Returns the number of cards in `self`.
     pub fn size(&self) -> usize {
-        self.0.len()
+        self.0.count_ones() as usize
     }
 }
 
@@ -290,7 +297,7 @@ impl Deck {
         let mut d = Deck{cards:Vec::with_capacity(32)};
 
         for i in 0..32 {
-            d.cards.push(Card::from_id(i).unwrap());
+            d.cards.push(Card::from_id(i));
         }
 
         d
@@ -369,19 +376,27 @@ mod tests {
     #[test]
     fn test_cards() {
         for i in 0..32 {
-            let card = Card::from_id(i).unwrap();
+            let card = Card::from_id(i);
             assert!(i == card.id());
         }
 
         for s in 0..4 {
-            let suit = Suit::from_id(s).unwrap();
+            let suit = Suit::from_id(s);
             for r in 0..8 {
-                let rank = Rank::from_id(r).unwrap();
+                let rank = Rank::from_id(r);
                 let card = Card::new(suit, rank);
                 assert!(card.rank == rank);
                 assert!(card.suit == suit);
             }
         }
+    }
+
+    #[test]
+    fn test_get_card() {
+        let mut hand = Hand::new();
+        let c = Card::new(Suit::Heart, Rank::RankQ);
+        hand.add(c);
+        assert_eq!(c, hand.get_card().unwrap());
     }
 
     #[test]
@@ -437,7 +452,6 @@ mod tests {
 
 #[cfg(feature="use_bench")]
 mod benchs {
-    use super::*;
     use ::test::Bencher;
     use ::deal_seeded_hands;
 
@@ -454,10 +468,9 @@ mod benchs {
         let seed = &[1,2,3,4,5];
         let hands = deal_seeded_hands(seed);
         b.iter(|| {
-            let mut hands = Hand::clone(&hands);
+            let mut hands = hands;
             for hand in hands.iter_mut() {
-                let list = hand.list().to_vec();
-                for c in list {
+                for c in hand.list() {
                     hand.remove(c);
                 }
             }
