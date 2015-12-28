@@ -8,7 +8,7 @@ use super::points;
 #[derive(Clone,RustcEncodable,Debug)]
 pub struct Trick {
     /// Cards currently on the table (they are invalid until played).
-    pub cards: [cards::Card; 4],
+    pub cards: Vec<cards::Card>,
     /// First player in this trick.
     pub first: pos::PlayerPos,
     /// Current winner of the trick (updated after each card).
@@ -21,7 +21,7 @@ impl Trick {
         Trick {
             first: first,
             winner: first,
-            cards: [cards::Card::null(); 4],
+            cards: Vec::with_capacity(4),
         }
     }
 
@@ -52,12 +52,12 @@ impl Trick {
     ///
     /// Returns `true` if this completes the trick.
     pub fn play_card(&mut self, player: pos::PlayerPos, card: cards::Card, trump: cards::Suit) -> bool {
-        self.cards[player.0] = card;
+        self.cards.push(card);
         if player == self.first {
             return false;
         }
 
-        if points::strength(card, trump) > points::strength(self.cards[self.winner.0], trump) {
+        if points::strength(card, trump) > points::strength(self.cards[self.first.distance_until(self.winner) % 4], trump) {
             self.winner = player
         }
 

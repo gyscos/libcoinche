@@ -270,7 +270,7 @@ impl Auction {
 
     /// Returns the players cards.
     pub fn hands(&self) -> [cards::Hand; 4] {
-        self.players
+        cards::Hand::clone(&self.players)
     }
 
     /// The current player passes his turn.
@@ -336,7 +336,7 @@ impl Auction {
         } else if self.history.is_empty() {
             Err(BidError::NoContract)
         } else {
-            Ok(game::GameState::new(self.first, self.players, self.history.pop().expect("contract history empty")))
+            Ok(game::GameState::new(self.first, self.hands(), self.history.pop().expect("contract history empty")))
         }
     }
 }
@@ -363,24 +363,24 @@ mod tests {
         // Someone bids.
         assert_eq!(auction.bid(
             pos::P3,
-            cards::HEART,
+            cards::Suit::Heart,
             Target::Contract80
         ), Ok(AuctionState::Bidding));
         assert_eq!(auction.bid(
             pos::P0,
-            cards::CLUB,
+            cards::Suit::Club,
             Target::Contract80,
         ).err(), Some(BidError::NonRaisedTarget));
         assert_eq!(auction.bid(
             pos::P1,
-            cards::CLUB,
+            cards::Suit::Club,
             Target::Contract100,
         ).err(), Some(BidError::TurnError));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
         // Partner surbids
         assert_eq!(auction.bid(
             pos::P1,
-            cards::HEART,
+            cards::Suit::Heart,
             Target::Contract100,
         ), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));

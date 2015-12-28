@@ -62,7 +62,10 @@ pub mod trick;
 ///
 /// Deals cards to 4 players randomly.
 pub fn deal_hands() -> [cards::Hand; 4] {
-    let mut hands = [cards::Hand::new(); 4];
+    let mut hands = [cards::Hand::new(),
+                     cards::Hand::new(),
+                     cards::Hand::new(),
+                     cards::Hand::new()];
 
     let mut d = cards::Deck::new();
     d.shuffle();
@@ -76,7 +79,10 @@ pub fn deal_hands() -> [cards::Hand; 4] {
 
 /// Deal cards for 4 players deterministically.
 pub fn deal_seeded_hands(seed: &[u32]) -> [cards::Hand; 4] {
-    let mut hands = [cards::Hand::new(); 4];
+    let mut hands = [cards::Hand::new(),
+                     cards::Hand::new(),
+                     cards::Hand::new(),
+                     cards::Hand::new()];
 
     let mut d = cards::Deck::new();
     d.shuffle_seeded(seed);
