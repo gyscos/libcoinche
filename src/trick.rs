@@ -8,7 +8,7 @@ use super::points;
 #[derive(Clone,RustcEncodable,Debug)]
 pub struct Trick {
     /// Cards currently on the table (they are invalid until played).
-    pub cards: [cards::Card; 4],
+    pub cards: [Option<cards::Card>; 4],
     /// First player in this trick.
     pub first: pos::PlayerPos,
     /// Current winner of the trick (updated after each card).
@@ -21,47 +21,39 @@ impl Trick {
         Trick {
             first: first,
             winner: first,
-            cards: [cards::Card::null(); 4],
+            cards: [None; 4],
         }
     }
 
     /// Returns the points value of this trick
     pub fn score(&self, trump: cards::Suit) -> i32 {
         let mut score = 0;
-        for card in self.cards.iter() { score += points::score(*card, trump); }
+        for card in self.cards.iter() { score += card.map_or(0, |c| points::score(c, trump)); }
         score
-    }
-
-    /// Computes the winner of the trick
-    pub fn winner(&self, trump: cards::Suit, current: pos::PlayerPos) -> pos::PlayerPos {
-        let mut best = self.first;
-        let mut best_strength = 0;
-        // Iterate on every player between the first and the current, excluded
-        for pos in self.first.until(current) {
-            let strength = points::strength(self.cards[pos.0], trump);
-            if strength > best_strength {
-                best_strength = strength;
-                best = pos;
-            }
-        }
-
-        best
     }
 
     /// Plays a card.
     ///
+    /// Updates the winner
     /// Returns `true` if this completes the trick.
     pub fn play_card(&mut self, player: pos::PlayerPos, card: cards::Card, trump: cards::Suit) -> bool {
-        self.cards[player.0] = card;
+        self.cards[player.0] = Some(card);
         if player == self.first {
             return false;
         }
 
-        if points::strength(card, trump) > points::strength(self.cards[self.winner.0], trump) {
+        if points::strength(card, trump) > points::strength(self.cards[self.winner.0].unwrap(), trump) {
             self.winner = player
         }
 
         (player == self.first.prev())
+    }
+
+    /// Returns the starting suit for this trick.
+    ///
+    /// Returns None if the trick hasn't started yet.
+    pub fn suit(&self) -> Option<cards::Suit> {
+        self.cards[self.first.0].map(|c| c.suit())
     }
 }
 

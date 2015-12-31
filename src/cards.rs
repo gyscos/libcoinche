@@ -149,11 +149,6 @@ impl Card {
         i-1
     }
 
-    /// Returns an invalid card
-    pub fn null() -> Self {
-        Card(0)
-    }
-
     /// Returns the card corresponding to the given number.
     ///
     /// # Panics

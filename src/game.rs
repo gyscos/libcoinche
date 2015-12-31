@@ -194,7 +194,7 @@ impl GameState {
         }
 
         let card_suit = card.suit();
-        let starting_suit = trick.cards[trick.first.0].suit();
+        let starting_suit = trick.suit().unwrap();
         if card_suit != starting_suit {
             if hand.has_any(starting_suit) {
                 return Err(PlayError::IncorrectSuit);
@@ -262,8 +262,8 @@ fn highest_trump(trick: &trick::Trick, trump: cards::Suit, player: pos::PlayerPo
     let mut highest = -1;
 
     for p in trick.first.until(player) {
-        if trick.cards[p.0].suit() == trump {
-            let str = points::trump_strength(trick.cards[p.0].rank());
+        if trick.cards[p.0].unwrap().suit() == trump {
+            let str = points::trump_strength(trick.cards[p.0].unwrap().rank());
             if str > highest {
                 highest = str;
             }
