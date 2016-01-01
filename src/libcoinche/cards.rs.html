@@ -534,20 +534,16 @@
 <span id="491">491</span>
 <span id="492">492</span>
 <span id="493">493</span>
+<span id="494">494</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This module represents a basic, rule-agnostic 32-cards system.</span>
 
-<span class='kw'>use</span> ::<span class='ident'>rand</span>::{
-    <span class='ident'>thread_rng</span>,
-    <span class='ident'>Rng</span>,
-    <span class='ident'>IsaacRng</span>,
-    <span class='ident'>SeedableRng</span>
-};
+<span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='ident'>thread_rng</span>, <span class='ident'>Rng</span>, <span class='ident'>IsaacRng</span>, <span class='ident'>SeedableRng</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>num</span>::<span class='ident'>Wrapping</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>string</span>::<span class='ident'>ToString</span>;
 <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>;
 
-<span class='doccomment'>/// One of the four Suits: Heart, Spade, Diamond, Club</span>
+<span class='doccomment'>/// One of the four Suits: Heart, Spade, Diamond, Club.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Suit</span>(<span class='ident'>u32</span>);
 
@@ -582,10 +578,12 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If `n &gt;= 4`</span>
+    <span class='doccomment'>/// If `n &gt;= 4`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_n</span>(<span class='ident'>n</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>4</span> { <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Bad suit number&quot;</span>); }
-        <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span><span class='op'>*</span><span class='ident'>n</span>)
+        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>4</span> {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Bad suit number&quot;</span>);
+        }
+        <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span> <span class='op'>*</span> <span class='ident'>n</span>)
     }
 
     <span class='doccomment'>/// Returns a UTF-8 character representing the suit.</span>
@@ -596,12 +594,13 @@
             <span class='ident'>DIAMOND</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♦&quot;</span>,
             <span class='ident'>CLUB</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♣&quot;</span>,
             _ <span class='op'>=&gt;</span> <span class='string'>&quot;?&quot;</span>,
-        }.<span class='ident'>to_string</span>()
+        }
+        .<span class='ident'>to_string</span>()
     }
 }
 
 
-<span class='doccomment'>/// Rank of a card in a suit</span>
+<span class='doccomment'>/// Rank of a card in a suit.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Rank</span>(<span class='ident'>u32</span>);
 <span class='doccomment'>/// 7</span>
@@ -624,7 +623,6 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_MASK</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>255</span>);
 
 <span class='kw'>impl</span> <span class='ident'>Rank</span> {
-
     <span class='doccomment'>/// Returns the rank corresponding to the given number:</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// * `0`: 7</span>
@@ -638,13 +636,15 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If `n &gt;= 8`</span>
+    <span class='doccomment'>/// If `n &gt;= 8`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_n</span>(<span class='ident'>n</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>8</span> { <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid rank number: {}&quot;</span>, <span class='ident'>n</span>); }
+        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>8</span> {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid rank number: {}&quot;</span>, <span class='ident'>n</span>);
+        }
         <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>n</span>)
     }
 
-    <span class='doccomment'>/// Returns a character representing the given rank</span>
+    <span class='doccomment'>/// Returns a character representing the given rank.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>match</span> <span class='self'>self</span> {
             <span class='ident'>RANK_7</span> <span class='op'>=&gt;</span> <span class='string'>&quot;7&quot;</span>,
@@ -656,11 +656,12 @@
             <span class='ident'>RANK_X</span> <span class='op'>=&gt;</span> <span class='string'>&quot;X&quot;</span>,
             <span class='ident'>RANK_A</span> <span class='op'>=&gt;</span> <span class='string'>&quot;A&quot;</span>,
             _ <span class='op'>=&gt;</span> <span class='string'>&quot;?&quot;</span>,
-        }.<span class='ident'>to_string</span>()
+        }
+        .<span class='ident'>to_string</span>()
     }
 }
 
-<span class='doccomment'>/// Represents a single card</span>
+<span class='doccomment'>/// Represents a single card.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Card</span>(<span class='ident'>u32</span>);
 
@@ -679,21 +680,22 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='kw-2'>mut</span> <span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
         <span class='kw'>while</span> <span class='ident'>v</span> <span class='op'>!=</span> <span class='number'>0</span> {
-            <span class='ident'>i</span><span class='op'>+=</span><span class='number'>1</span>;
-            <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>v</span><span class='op'>&gt;&gt;</span><span class='number'>1</span>;
+            <span class='ident'>i</span> <span class='op'>+=</span> <span class='number'>1</span>;
+            <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>v</span> <span class='op'>&gt;&gt;</span> <span class='number'>1</span>;
         }
 
-        <span class='ident'>i</span><span class='op'>-</span><span class='number'>1</span>
+        <span class='ident'>i</span> <span class='op'>-</span> <span class='number'>1</span>
     }
 
-    <span class='doccomment'>/// Returns an invalid card</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>null</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='ident'>Card</span>(<span class='number'>0</span>)
-    }
-
-    <span class='doccomment'>/// Returns the card corresponding to the given number</span>
+    <span class='doccomment'>/// Returns the card corresponding to the given number.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Panics</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If `id &gt;= 32`</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_id</span>(<span class='ident'>id</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='ident'>id</span> <span class='op'>&gt;</span> <span class='number'>31</span> { <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;invalid card id&quot;</span>); }
+        <span class='kw'>if</span> <span class='ident'>id</span> <span class='op'>&gt;</span> <span class='number'>31</span> {
+            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;invalid card id&quot;</span>);
+        }
         <span class='ident'>Card</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>id</span>)
     }
 
@@ -714,14 +716,14 @@
         <span class='ident'>Rank</span>(<span class='ident'>r</span>)
     }
 
-    <span class='doccomment'>/// Returns the card&#39;s suit</span>
+    <span class='doccomment'>/// Returns the card&#39;s suit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>suit</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Suit</span> {
         <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
         <span class='kw'>let</span> <span class='ident'>Rank</span>(<span class='ident'>r</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rank</span>();
         <span class='ident'>Suit</span>(<span class='ident'>v</span> <span class='op'>/</span> <span class='ident'>r</span>)
     }
 
-    <span class='doccomment'>/// Returns a string representation of the card</span>
+    <span class='doccomment'>/// Returns a string representation of the card.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rank</span>();
         <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>suit</span>();
@@ -837,7 +839,7 @@
 
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> (<span class='op'>*</span><span class='self'>self</span>).<span class='ident'>list</span>().<span class='ident'>iter</span>() {
             <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='kw-2'>&amp;</span><span class='ident'>c</span>.<span class='ident'>to_string</span>();
-            <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span><span class='string'>&quot;,&quot;</span>;
+            <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='string'>&quot;,&quot;</span>;
         }
 
         <span class='ident'>s</span> <span class='op'>+</span> <span class='string'>&quot;]&quot;</span>
@@ -845,7 +847,7 @@
 }
 
 <span class='doccomment'>/// A deck of cards.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Deck</span>{
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Deck</span> {
     <span class='ident'>cards</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Card</span><span class='op'>&gt;</span>,
 }
 
@@ -853,7 +855,7 @@
 <span class='kw'>impl</span> <span class='ident'>Deck</span> {
     <span class='doccomment'>/// Returns a full, sorted deck of 32 cards.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>d</span> <span class='op'>=</span> <span class='ident'>Deck</span>{<span class='ident'>cards</span>:<span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='number'>32</span>)};
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>d</span> <span class='op'>=</span> <span class='ident'>Deck</span> { <span class='ident'>cards</span>: <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='number'>32</span>) };
 
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>32</span> {
             <span class='ident'>d</span>.<span class='ident'>cards</span>.<span class='ident'>push</span>(<span class='ident'>Card</span>::<span class='ident'>from_id</span>(<span class='ident'>i</span>));
@@ -903,7 +905,7 @@
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>/// If `self.len() &lt; 4 * n`</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>deal_each</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>hands</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='ident'>Hand</span>; <span class='number'>4</span>], <span class='ident'>n</span>: <span class='ident'>usize</span>) {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>4</span><span class='op'>*</span><span class='ident'>n</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>4</span> <span class='op'>*</span> <span class='ident'>n</span> {
             <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Deck has too few cards!&quot;</span>);
         }
 
@@ -921,7 +923,7 @@
 
         <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>cards</span>.<span class='ident'>iter</span>() {
             <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='kw-2'>&amp;</span><span class='ident'>c</span>.<span class='ident'>to_string</span>();
-            <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span><span class='string'>&quot;,&quot;</span>;
+            <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>s</span> <span class='op'>+</span> <span class='string'>&quot;,&quot;</span>;
         }
 
         <span class='ident'>s</span> <span class='op'>+</span> <span class='string'>&quot;]&quot;</span>
@@ -1003,12 +1005,12 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;use_bench&quot;</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>benchs</span> {
-    <span class='kw'>use</span> ::<span class='ident'>test</span>::<span class='ident'>Bencher</span>;
-    <span class='kw'>use</span> ::<span class='ident'>deal_seeded_hands</span>;
+    <span class='kw'>use</span> <span class='ident'>test</span>::<span class='ident'>Bencher</span>;
+    <span class='kw'>use</span> <span class='ident'>deal_seeded_hands</span>;
 
     <span class='attribute'>#[<span class='ident'>bench</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>bench_deal</span>(<span class='ident'>b</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Bencher</span>) {
-        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>,<span class='number'>5</span>];
+        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
         <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
             <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
         });
@@ -1016,7 +1018,7 @@
 
     <span class='attribute'>#[<span class='ident'>bench</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>bench_add</span>(<span class='ident'>b</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Bencher</span>) {
-        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>,<span class='number'>2</span>,<span class='number'>3</span>,<span class='number'>4</span>,<span class='number'>5</span>];
+        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
         <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
         <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>hands</span>.<span class='ident'>clone</span>();

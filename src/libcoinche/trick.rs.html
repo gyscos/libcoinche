@@ -105,9 +105,6 @@
 <span id="62">62</span>
 <span id="63">63</span>
 <span id="64">64</span>
-<span id="65">65</span>
-<span id="66">66</span>
-<span id="67">67</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This module implements a trick in a game of coinchet vec</span>
 
@@ -119,7 +116,7 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>,<span class='ident'>RustcEncodable</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Trick</span> {
     <span class='doccomment'>/// Cards currently on the table (they are invalid until played).</span>
-    <span class='kw'>pub</span> <span class='ident'>cards</span>: [<span class='ident'>cards</span>::<span class='ident'>Card</span>; <span class='number'>4</span>],
+    <span class='kw'>pub</span> <span class='ident'>cards</span>: [<span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>cards</span>::<span class='ident'>Card</span><span class='op'>&gt;</span>; <span class='number'>4</span>],
     <span class='doccomment'>/// First player in this trick.</span>
     <span class='kw'>pub</span> <span class='ident'>first</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
     <span class='doccomment'>/// Current winner of the trick (updated after each card).</span>
@@ -132,50 +129,47 @@
         <span class='ident'>Trick</span> {
             <span class='ident'>first</span>: <span class='ident'>first</span>,
             <span class='ident'>winner</span>: <span class='ident'>first</span>,
-            <span class='ident'>cards</span>: [<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>null</span>(); <span class='number'>4</span>],
+            <span class='ident'>cards</span>: [<span class='prelude-val'>None</span>; <span class='number'>4</span>],
         }
     }
 
     <span class='doccomment'>/// Returns the points value of this trick</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>score</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>score</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>for</span> <span class='ident'>card</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>cards</span>.<span class='ident'>iter</span>() { <span class='ident'>score</span> <span class='op'>+=</span> <span class='ident'>points</span>::<span class='ident'>score</span>(<span class='op'>*</span><span class='ident'>card</span>, <span class='ident'>trump</span>); }
-        <span class='ident'>score</span>
-    }
-
-    <span class='doccomment'>/// Computes the winner of the trick</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>winner</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>, <span class='ident'>current</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>) <span class='op'>-&gt;</span> <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>best</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>first</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>best_strength</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='comment'>// Iterate on every player between the first and the current, excluded</span>
-        <span class='kw'>for</span> <span class='ident'>pos</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>first</span>.<span class='ident'>until</span>(<span class='ident'>current</span>) {
-            <span class='kw'>let</span> <span class='ident'>strength</span> <span class='op'>=</span> <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='self'>self</span>.<span class='ident'>cards</span>[<span class='ident'>pos</span>.<span class='number'>0</span>], <span class='ident'>trump</span>);
-            <span class='kw'>if</span> <span class='ident'>strength</span> <span class='op'>&gt;</span> <span class='ident'>best_strength</span> {
-                <span class='ident'>best_strength</span> <span class='op'>=</span> <span class='ident'>strength</span>;
-                <span class='ident'>best</span> <span class='op'>=</span> <span class='ident'>pos</span>;
-            }
-        }
-
-        <span class='ident'>best</span>
+        <span class='self'>self</span>.<span class='ident'>cards</span>
+            .<span class='ident'>iter</span>()
+            .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>c</span>.<span class='ident'>map_or</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>points</span>::<span class='ident'>score</span>(<span class='ident'>c</span>, <span class='ident'>trump</span>)))
+            .<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>a</span>, <span class='ident'>b</span><span class='op'>|</span> <span class='ident'>a</span> <span class='op'>+</span> <span class='ident'>b</span>)
     }
 
     <span class='doccomment'>/// Plays a card.</span>
     <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Updates the winner</span>
     <span class='doccomment'>/// Returns `true` if this completes the trick.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>play_card</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>player</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>, <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>, <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='ident'>player</span>.<span class='number'>0</span>] <span class='op'>=</span> <span class='ident'>card</span>;
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>play_card</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                     <span class='ident'>player</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
+                     <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>,
+                     <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>)
+                     <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='ident'>player</span>.<span class='number'>0</span>] <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>card</span>);
         <span class='kw'>if</span> <span class='ident'>player</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>first</span> {
             <span class='kw'>return</span> <span class='boolval'>false</span>;
         }
 
-        <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='ident'>card</span>, <span class='ident'>trump</span>) <span class='op'>&gt;</span> <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>winner</span>.<span class='number'>0</span>], <span class='ident'>trump</span>) {
+        <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='ident'>card</span>, <span class='ident'>trump</span>) <span class='op'>&gt;</span>
+           <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>winner</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>(), <span class='ident'>trump</span>) {
             <span class='self'>self</span>.<span class='ident'>winner</span> <span class='op'>=</span> <span class='ident'>player</span>
         }
 
         (<span class='ident'>player</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>first</span>.<span class='ident'>prev</span>())
     }
-}
 
+    <span class='doccomment'>/// Returns the starting suit for this trick.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Returns None if the trick hasn&#39;t started yet.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>suit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>cards</span>::<span class='ident'>Suit</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>first</span>.<span class='number'>0</span>].<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>c</span>.<span class='ident'>suit</span>())
+    }
+}
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

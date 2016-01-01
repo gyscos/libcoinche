@@ -494,6 +494,9 @@
 <span id="451">451</span>
 <span id="452">452</span>
 <span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Module for the card game, after auctions are complete.</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
@@ -526,11 +529,11 @@
     <span class='doccomment'>/// The game is over</span>
     <span class='ident'>GameOver</span> {
         <span class='doccomment'>/// Worth of won tricks</span>
-        <span class='ident'>points</span>: [<span class='ident'>i32</span>;<span class='number'>2</span>],
+        <span class='ident'>points</span>: [<span class='ident'>i32</span>; <span class='number'>2</span>],
         <span class='doccomment'>/// Winning team</span>
         <span class='ident'>winners</span>: <span class='ident'>pos</span>::<span class='ident'>Team</span>,
         <span class='doccomment'>/// Score for this game</span>
-        <span class='ident'>scores</span>: [<span class='ident'>i32</span>;<span class='number'>2</span>]
+        <span class='ident'>scores</span>: [<span class='ident'>i32</span>; <span class='number'>2</span>],
     },
 }
 
@@ -573,7 +576,6 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>GameState</span> {
-
     <span class='doccomment'>/// Creates a new GameState, with the given cards, first player and contract.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>first</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>, <span class='ident'>hands</span>: [<span class='ident'>cards</span>::<span class='ident'>Hand</span>; <span class='number'>4</span>], <span class='ident'>contract</span>: <span class='ident'>bid</span>::<span class='ident'>Contract</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='ident'>GameState</span> {
@@ -591,14 +593,20 @@
     }
 
     <span class='doccomment'>/// Try to play a card</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>play_card</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>player</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>, <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>)
-                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>TrickResult</span>,<span class='ident'>PlayError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>play_card</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                     <span class='ident'>player</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
+                     <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>)
+                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>TrickResult</span>, <span class='ident'>PlayError</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>current</span> <span class='op'>!=</span> <span class='ident'>player</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>TurnError</span>);
         }
 
         <span class='comment'>// Is that a valid move?</span>
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>can_play</span>(<span class='ident'>player</span>, <span class='ident'>card</span>));
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>can_play</span>(<span class='ident'>player</span>,
+                      <span class='ident'>card</span>,
+                      <span class='self'>self</span>.<span class='ident'>players</span>[<span class='ident'>player</span>.<span class='number'>0</span>],
+                      <span class='self'>self</span>.<span class='ident'>current_trick</span>(),
+                      <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span>));
 
         <span class='comment'>// Play the card</span>
         <span class='kw'>let</span> <span class='ident'>trump</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span>;
@@ -643,7 +651,11 @@
 
         <span class='kw'>let</span> <span class='ident'>victory</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>target</span>.<span class='ident'>victory</span>(<span class='ident'>taking_points</span>, <span class='ident'>capot</span>);
 
-        <span class='kw'>let</span> <span class='ident'>winners</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>victory</span> { <span class='ident'>taking_team</span> } <span class='kw'>else</span> { <span class='ident'>taking_team</span>.<span class='ident'>opponent</span>() };
+        <span class='kw'>let</span> <span class='ident'>winners</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>victory</span> {
+            <span class='ident'>taking_team</span>
+        } <span class='kw'>else</span> {
+            <span class='ident'>taking_team</span>.<span class='ident'>opponent</span>()
+        };
 
         <span class='comment'>// TODO: Allow for variants in scoring. (See wikipedia article)</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>scores</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>2</span>];
@@ -675,80 +687,81 @@
         <span class='self'>self</span>.<span class='ident'>players</span>
     }
 
-    <span class='doccomment'>/// Returns `true` if the move appear legal.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>can_play</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>p</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>, <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(),<span class='ident'>PlayError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>players</span>[<span class='ident'>p</span>.<span class='number'>0</span>];
-
-        <span class='comment'>// First, we need the card to be able to play</span>
-        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>hand</span>.<span class='ident'>has</span>(<span class='ident'>card</span>) {
-            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>CardMissing</span>);;
-        }
-
-        <span class='kw'>let</span> <span class='ident'>trick</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>current_trick</span>();
-
-        <span class='kw'>if</span> <span class='ident'>p</span> <span class='op'>==</span> <span class='ident'>trick</span>.<span class='ident'>first</span> {
-            <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
-        }
-
-        <span class='kw'>let</span> <span class='ident'>card_suit</span> <span class='op'>=</span> <span class='ident'>card</span>.<span class='ident'>suit</span>();
-        <span class='kw'>let</span> <span class='ident'>starting_suit</span> <span class='op'>=</span> <span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>trick</span>.<span class='ident'>first</span>.<span class='number'>0</span>].<span class='ident'>suit</span>();
-        <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>!=</span> <span class='ident'>starting_suit</span> {
-            <span class='kw'>if</span> <span class='ident'>hand</span>.<span class='ident'>has_any</span>(<span class='ident'>starting_suit</span>) {
-                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>IncorrectSuit</span>);
-            }
-
-            <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span> {
-                <span class='kw'>let</span> <span class='ident'>partner_winning</span> <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>is_partner</span>(<span class='self'>self</span>.<span class='ident'>current_trick</span>().<span class='ident'>winner</span>);
-                <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>partner_winning</span> <span class='op'>&amp;&amp;</span> <span class='ident'>hand</span>.<span class='ident'>has_any</span>(<span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span>) {
-                    <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>InvalidPiss</span>);
-                }
-            }
-        }
-
-        <span class='comment'>// One must raise when playing trump</span>
-        <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span> {
-            <span class='kw'>let</span> <span class='ident'>highest</span> <span class='op'>=</span> <span class='ident'>highest_trump</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>current_trick</span>(), <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span>, <span class='ident'>p</span>);
-            <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>card</span>.<span class='ident'>rank</span>()) <span class='op'>&lt;</span> <span class='ident'>highest</span> {
-                <span class='kw'>if</span> <span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>card_suit</span>, <span class='ident'>highest</span>) {
-                    <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>NonRaisedTrump</span>);;
-                }
-            }
-        }
-
-        <span class='prelude-val'>Ok</span>(())
-    }
-
     <span class='kw'>fn</span> <span class='ident'>is_over</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>8</span>
     }
 
     <span class='doccomment'>/// Return the last trick, if possible</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>last_trick</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>trick</span>::<span class='ident'>Trick</span>,<span class='ident'>PlayError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>last_trick</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>trick</span>::<span class='ident'>Trick</span>, <span class='ident'>PlayError</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span> {
             <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>NoLastTrick</span>)
         } <span class='kw'>else</span> {
-            <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>()<span class='op'>-</span><span class='number'>2</span>;
+            <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>2</span>;
             <span class='prelude-val'>Ok</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>tricks</span>[<span class='ident'>i</span>])
         }
     }
 
     <span class='doccomment'>/// Returns the current trick.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>current_trick</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>trick</span>::<span class='ident'>Trick</span> {
-        <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>()<span class='op'>-</span><span class='number'>1</span>;
+        <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>;
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>tricks</span>[<span class='ident'>i</span>]
     }
 
     <span class='kw'>fn</span> <span class='ident'>current_trick_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>trick</span>::<span class='ident'>Trick</span> {
-        <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>()<span class='op'>-</span><span class='number'>1</span>;
+        <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>;
         <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>tricks</span>[<span class='ident'>i</span>]
     }
+}
+
+<span class='doccomment'>/// Returns `true` if the move appear legal.</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>can_play</span>(<span class='ident'>p</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
+                <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>,
+                <span class='ident'>hand</span>: <span class='ident'>cards</span>::<span class='ident'>Hand</span>,
+                <span class='ident'>trick</span>: <span class='kw-2'>&amp;</span><span class='ident'>trick</span>::<span class='ident'>Trick</span>,
+                <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>)
+                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>PlayError</span><span class='op'>&gt;</span> {
+    <span class='comment'>// First, we need the card to be able to play</span>
+    <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>hand</span>.<span class='ident'>has</span>(<span class='ident'>card</span>) {
+        <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>CardMissing</span>);;
+    }
+
+    <span class='kw'>if</span> <span class='ident'>p</span> <span class='op'>==</span> <span class='ident'>trick</span>.<span class='ident'>first</span> {
+        <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
+    }
+
+    <span class='kw'>let</span> <span class='ident'>card_suit</span> <span class='op'>=</span> <span class='ident'>card</span>.<span class='ident'>suit</span>();
+    <span class='kw'>let</span> <span class='ident'>starting_suit</span> <span class='op'>=</span> <span class='ident'>trick</span>.<span class='ident'>suit</span>().<span class='ident'>unwrap</span>();
+    <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>!=</span> <span class='ident'>starting_suit</span> {
+        <span class='kw'>if</span> <span class='ident'>hand</span>.<span class='ident'>has_any</span>(<span class='ident'>starting_suit</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>IncorrectSuit</span>);
+        }
+
+        <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>!=</span> <span class='ident'>trump</span> {
+            <span class='kw'>let</span> <span class='ident'>partner_winning</span> <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>is_partner</span>(<span class='ident'>trick</span>.<span class='ident'>winner</span>);
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>partner_winning</span> <span class='op'>&amp;&amp;</span> <span class='ident'>hand</span>.<span class='ident'>has_any</span>(<span class='ident'>trump</span>) {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>InvalidPiss</span>);
+            }
+        }
+    }
+
+    <span class='comment'>// One must raise when playing trump</span>
+    <span class='kw'>if</span> <span class='ident'>card_suit</span> <span class='op'>==</span> <span class='ident'>trump</span> {
+        <span class='kw'>let</span> <span class='ident'>highest</span> <span class='op'>=</span> <span class='ident'>highest_trump</span>(<span class='ident'>trick</span>, <span class='ident'>trump</span>, <span class='ident'>p</span>);
+        <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>card</span>.<span class='ident'>rank</span>()) <span class='op'>&lt;</span> <span class='ident'>highest</span> {
+            <span class='kw'>if</span> <span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>card_suit</span>, <span class='ident'>highest</span>) {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>PlayError</span>::<span class='ident'>NonRaisedTrump</span>);;
+            }
+        }
+    }
+
+    <span class='prelude-val'>Ok</span>(())
 }
 
 <span class='kw'>fn</span> <span class='ident'>has_higher</span>(<span class='ident'>hand</span>: <span class='ident'>cards</span>::<span class='ident'>Hand</span>, <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>, <span class='ident'>strength</span>: <span class='ident'>i32</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
     <span class='kw'>for</span> <span class='ident'>ri</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>8</span> {
         <span class='kw'>let</span> <span class='ident'>rank</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>from_n</span>(<span class='ident'>ri</span>);
         <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>rank</span>) <span class='op'>&gt;</span> <span class='ident'>strength</span> <span class='op'>&amp;&amp;</span> <span class='ident'>hand</span>.<span class='ident'>has</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>trump</span>, <span class='ident'>rank</span>)) {
-            <span class='kw'>return</span> <span class='boolval'>true</span>
+            <span class='kw'>return</span> <span class='boolval'>true</span>;
         }
     }
 
@@ -759,8 +772,8 @@
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>highest</span> <span class='op'>=</span> <span class='op'>-</span><span class='number'>1</span>;
 
     <span class='kw'>for</span> <span class='ident'>p</span> <span class='kw'>in</span> <span class='ident'>trick</span>.<span class='ident'>first</span>.<span class='ident'>until</span>(<span class='ident'>player</span>) {
-        <span class='kw'>if</span> <span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>suit</span>() <span class='op'>==</span> <span class='ident'>trump</span> {
-            <span class='kw'>let</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>rank</span>());
+        <span class='kw'>if</span> <span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>().<span class='ident'>suit</span>() <span class='op'>==</span> <span class='ident'>trump</span> {
+            <span class='kw'>let</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>().<span class='ident'>rank</span>());
             <span class='kw'>if</span> <span class='ident'>str</span> <span class='op'>&gt;</span> <span class='ident'>highest</span> {
                 <span class='ident'>highest</span> <span class='op'>=</span> <span class='ident'>str</span>;
             }
@@ -774,7 +787,7 @@
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>has_higher</span>;
-    <span class='kw'>use</span> ::{<span class='ident'>points</span>,<span class='ident'>cards</span>,<span class='ident'>bid</span>,<span class='ident'>pos</span>};
+    <span class='kw'>use</span> {<span class='ident'>points</span>, <span class='ident'>cards</span>, <span class='ident'>bid</span>, <span class='ident'>pos</span>};
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_play_card</span>() {
@@ -825,37 +838,28 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>, <span class='ident'>contract</span>);
 
         <span class='comment'>// Wrong turn</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>)).<span class='ident'>err</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>TurnError</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>ok</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>)).<span class='ident'>err</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>TurnError</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>ok</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// Card missing</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>CardMissing</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>CardMissing</span>));
         <span class='comment'>// Wrong color</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>IncorrectSuit</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>IncorrectSuit</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// Invalid piss</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>InvalidPiss</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>InvalidPiss</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// UnderTrump</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>NonRaisedTrump</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(
-            <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>)).<span class='ident'>ok</span>(),
-            <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>TrickOver</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>game</span>.<span class='ident'>get_game_result</span>())));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>NonRaisedTrump</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>)).<span class='ident'>ok</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>TrickOver</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>game</span>.<span class='ident'>get_game_result</span>())));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -913,10 +917,10 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;use_bench&quot;</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>benchs</span> {
-    <span class='kw'>use</span> ::<span class='ident'>test</span>::<span class='ident'>Bencher</span>;
-    <span class='kw'>use</span> ::<span class='ident'>deal_seeded_hands</span>;
+    <span class='kw'>use</span> <span class='ident'>test</span>::<span class='ident'>Bencher</span>;
+    <span class='kw'>use</span> <span class='ident'>deal_seeded_hands</span>;
 
-    <span class='kw'>use</span> ::{<span class='ident'>pos</span>,<span class='ident'>cards</span>,<span class='ident'>bid</span>};
+    <span class='kw'>use</span> {<span class='ident'>pos</span>, <span class='ident'>cards</span>, <span class='ident'>bid</span>};
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
 
     <span class='attribute'>#[<span class='ident'>bench</span>]</span>
@@ -927,9 +931,11 @@
             <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>game</span>.<span class='ident'>hands</span>()[<span class='ident'>player</span>.<span class='number'>0</span>].<span class='ident'>list</span>() {
                 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>new_game</span> <span class='op'>=</span> <span class='ident'>game</span>.<span class='ident'>clone</span>();
                 <span class='kw'>match</span> <span class='ident'>new_game</span>.<span class='ident'>play_card</span>(<span class='ident'>player</span>, <span class='ident'>c</span>) {
-                    <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> <span class='kw'>if</span> <span class='ident'>depth</span> <span class='op'>&gt;</span> <span class='number'>0</span> {
-                        <span class='ident'>try_deeper</span>(<span class='kw-2'>&amp;</span><span class='ident'>new_game</span>, <span class='ident'>depth</span> <span class='op'>-</span> <span class='number'>1</span>);
-                    },
+                    <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> {
+                        <span class='kw'>if</span> <span class='ident'>depth</span> <span class='op'>&gt;</span> <span class='number'>0</span> {
+                            <span class='ident'>try_deeper</span>(<span class='kw-2'>&amp;</span><span class='ident'>new_game</span>, <span class='ident'>depth</span> <span class='op'>-</span> <span class='number'>1</span>);
+                        }
+                    }
                     _ <span class='op'>=&gt;</span> (),
                 };
             }
@@ -937,15 +943,15 @@
 
         <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>3</span>, <span class='number'>32</span>, <span class='number'>654</span>, <span class='number'>1</span>, <span class='number'>844</span>];
         <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
-        <span class='kw'>let</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>, <span class='ident'>bid</span>::<span class='ident'>Contract</span> {
-            <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>P0</span>,
-            <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>HEART</span>,
-            <span class='ident'>target</span>: <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>,
-            <span class='ident'>coinche_level</span>: <span class='number'>0</span>,
-        });
-        <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
-            <span class='ident'>try_deeper</span>(<span class='kw-2'>&amp;</span><span class='ident'>game</span>, <span class='number'>4</span>)
-        });
+        <span class='kw'>let</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>,
+                                  <span class='ident'>hands</span>,
+                                  <span class='ident'>bid</span>::<span class='ident'>Contract</span> {
+                                      <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>P0</span>,
+                                      <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>HEART</span>,
+                                      <span class='ident'>target</span>: <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>,
+                                      <span class='ident'>coinche_level</span>: <span class='number'>0</span>,
+                                  });
+        <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> <span class='ident'>try_deeper</span>(<span class='kw-2'>&amp;</span><span class='ident'>game</span>, <span class='number'>4</span>));
     }
 }
 </pre>

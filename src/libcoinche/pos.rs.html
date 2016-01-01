@@ -266,7 +266,7 @@
         <span class='kw'>if</span> <span class='self'>self</span> <span class='op'>==</span> <span class='ident'>P3</span> {
             <span class='ident'>P0</span>
         } <span class='kw'>else</span> {
-            <span class='ident'>PlayerPos</span>(<span class='self'>self</span>.<span class='number'>0</span><span class='op'>+</span><span class='number'>1</span>)
+            <span class='ident'>PlayerPos</span>(<span class='self'>self</span>.<span class='number'>0</span> <span class='op'>+</span> <span class='number'>1</span>)
         }
     }
 
@@ -291,7 +291,7 @@
     <span class='doccomment'>/// Returns an iterator that iterates on `n` players, including this one.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>until_n</span>(<span class='self'>self</span>, <span class='ident'>n</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>PlayerIterator</span> {
         <span class='ident'>PlayerIterator</span> {
-            <span class='ident'>current</span>:<span class='self'>self</span>,
+            <span class='ident'>current</span>: <span class='self'>self</span>,
             <span class='ident'>remaining</span>: <span class='ident'>n</span>,
         }
     }
@@ -330,8 +330,8 @@
         }
 
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>4</span> {
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>PlayerPos</span>(<span class='ident'>i</span>).<span class='ident'>next</span>() <span class='op'>==</span> <span class='ident'>PlayerPos</span>((<span class='ident'>i</span><span class='op'>+</span><span class='number'>1</span>)<span class='op'>%</span><span class='number'>4</span>));
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>PlayerPos</span>(<span class='ident'>i</span>) <span class='op'>==</span> <span class='ident'>PlayerPos</span>((<span class='ident'>i</span><span class='op'>+</span><span class='number'>1</span>)<span class='op'>%</span><span class='number'>4</span>).<span class='ident'>prev</span>());
+            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>PlayerPos</span>(<span class='ident'>i</span>).<span class='ident'>next</span>() <span class='op'>==</span> <span class='ident'>PlayerPos</span>((<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='op'>%</span> <span class='number'>4</span>));
+            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>PlayerPos</span>(<span class='ident'>i</span>) <span class='op'>==</span> <span class='ident'>PlayerPos</span>((<span class='ident'>i</span> <span class='op'>+</span> <span class='number'>1</span>) <span class='op'>%</span> <span class='number'>4</span>).<span class='ident'>prev</span>());
             <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>PlayerPos</span>(<span class='ident'>i</span>).<span class='ident'>next</span>().<span class='ident'>prev</span>() <span class='op'>==</span> <span class='ident'>PlayerPos</span>(<span class='ident'>i</span>));
         }
     }

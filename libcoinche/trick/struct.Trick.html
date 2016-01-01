@@ -46,9 +46,9 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-786' class='srclink' href='../../src/libcoinche/trick.rs.html#9-16' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-785' class='srclink' href='../../src/libcoinche/trick.rs.html#9-16' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Trick {
-    pub cards: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a class='struct' href='../../libcoinche/cards/struct.Card.html' title='libcoinche::cards::Card'>Card</a>; 4]</a>,
+    pub cards: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../libcoinche/cards/struct.Card.html' title='libcoinche::cards::Card'>Card</a>&gt;; 4]</a>,
     pub first: <a class='struct' href='../../libcoinche/pos/struct.PlayerPos.html' title='libcoinche::pos::PlayerPos'>PlayerPos</a>,
     pub winner: <a class='struct' href='../../libcoinche/pos/struct.PlayerPos.html' title='libcoinche::pos::PlayerPos'>PlayerPos</a>,
 }</pre><div class='docblock'><p>The current cards on the table</p>
@@ -63,12 +63,15 @@
 <div class='docblock'><p>Creates a new, empty trick.</p>
 </div><h4 id='method.score' class='method'><code>fn <a href='#method.score' class='fnname'>score</a>(&amp;self, trump: <a class='struct' href='../../libcoinche/cards/struct.Suit.html' title='libcoinche::cards::Suit'>Suit</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></h4>
 <div class='docblock'><p>Returns the points value of this trick</p>
-</div><h4 id='method.winner' class='method'><code>fn <a href='#method.winner' class='fnname'>winner</a>(&amp;self, trump: <a class='struct' href='../../libcoinche/cards/struct.Suit.html' title='libcoinche::cards::Suit'>Suit</a>, current: <a class='struct' href='../../libcoinche/pos/struct.PlayerPos.html' title='libcoinche::pos::PlayerPos'>PlayerPos</a>) -&gt; <a class='struct' href='../../libcoinche/pos/struct.PlayerPos.html' title='libcoinche::pos::PlayerPos'>PlayerPos</a></code></h4>
-<div class='docblock'><p>Computes the winner of the trick</p>
 </div><h4 id='method.play_card' class='method'><code>fn <a href='#method.play_card' class='fnname'>play_card</a>(&amp;mut self, player: <a class='struct' href='../../libcoinche/pos/struct.PlayerPos.html' title='libcoinche::pos::PlayerPos'>PlayerPos</a>, card: <a class='struct' href='../../libcoinche/cards/struct.Card.html' title='libcoinche::cards::Card'>Card</a>, trump: <a class='struct' href='../../libcoinche/cards/struct.Suit.html' title='libcoinche::cards::Suit'>Suit</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
 <div class='docblock'><p>Plays a card.</p>
 
-<p>Returns <code>true</code> if this completes the trick.</p>
+<p>Updates the winner
+Returns <code>true</code> if this completes the trick.</p>
+</div><h4 id='method.suit' class='method'><code>fn <a href='#method.suit' class='fnname'>suit</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../libcoinche/cards/struct.Suit.html' title='libcoinche::cards::Suit'>Suit</a>&gt;</code></h4>
+<div class='docblock'><p>Returns the starting suit for this trick.</p>
+
+<p>Returns None if the trick hasn&#39;t started yet.</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../libcoinche/trick/struct.Trick.html' title='libcoinche::trick::Trick'>Trick</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
 </div><h3 class='impl'><code>impl <a class='trait' href='../../rustc_serialize/serialize/trait.Encodable.html' title='rustc_serialize::serialize::Encodable'>Encodable</a> for <a class='struct' href='../../libcoinche/trick/struct.Trick.html' title='libcoinche::trick::Trick'>Trick</a></code></h3><div class='impl-items'><h4 id='method.encode' class='method'><code>fn <a href='../../rustc_serialize/serialize/trait.Encodable.html#method.encode' class='fnname'>encode</a>&lt;__S: <a class='trait' href='../../rustc_serialize/serialize/trait.Encoder.html' title='rustc_serialize::serialize::Encoder'>Encoder</a>&gt;(&amp;self, __arg_0: &amp;mut __S) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, __S::Error&gt;</code></h4>
 </div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../libcoinche/trick/struct.Trick.html' title='libcoinche::trick::Trick'>Trick</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../libcoinche/trick/struct.Trick.html' title='libcoinche::trick::Trick'>Trick</a></code></h4>
