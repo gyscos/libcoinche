@@ -28,7 +28,9 @@ impl Trick {
     /// Returns the points value of this trick
     pub fn score(&self, trump: cards::Suit) -> i32 {
         let mut score = 0;
-        for card in self.cards.iter() { score += card.map_or(0, |c| points::score(c, trump)); }
+        for card in self.cards.iter() {
+            score += card.map_or(0, |c| points::score(c, trump));
+        }
         score
     }
 
@@ -36,13 +38,18 @@ impl Trick {
     ///
     /// Updates the winner
     /// Returns `true` if this completes the trick.
-    pub fn play_card(&mut self, player: pos::PlayerPos, card: cards::Card, trump: cards::Suit) -> bool {
+    pub fn play_card(&mut self,
+                     player: pos::PlayerPos,
+                     card: cards::Card,
+                     trump: cards::Suit)
+                     -> bool {
         self.cards[player.0] = Some(card);
         if player == self.first {
             return false;
         }
 
-        if points::strength(card, trump) > points::strength(self.cards[self.winner.0].unwrap(), trump) {
+        if points::strength(card, trump) >
+           points::strength(self.cards[self.winner.0].unwrap(), trump) {
             self.winner = player
         }
 
@@ -56,4 +63,3 @@ impl Trick {
         self.cards[self.first.0].map(|c| c.suit())
     }
 }
-

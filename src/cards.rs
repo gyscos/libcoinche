@@ -1,11 +1,6 @@
 //! This module represents a basic, rule-agnostic 32-cards system.
 
-use ::rand::{
-    thread_rng,
-    Rng,
-    IsaacRng,
-    SeedableRng
-};
+use rand::{thread_rng, Rng, IsaacRng, SeedableRng};
 use std::num::Wrapping;
 use std::string::ToString;
 use rustc_serialize;
@@ -47,8 +42,10 @@ impl Suit {
     ///
     /// If `n >= 4`.
     pub fn from_n(n: u32) -> Self {
-        if n >= 4 { panic!("Bad suit number"); }
-        Suit(1 << 8*n)
+        if n >= 4 {
+            panic!("Bad suit number");
+        }
+        Suit(1 << 8 * n)
     }
 
     /// Returns a UTF-8 character representing the suit.
@@ -59,7 +56,8 @@ impl Suit {
             DIAMOND => "♦",
             CLUB => "♣",
             _ => "?",
-        }.to_string()
+        }
+        .to_string()
     }
 }
 
@@ -87,7 +85,6 @@ pub const RANK_A: Rank = Rank(1 << 7);
 pub const RANK_MASK: Rank = Rank(255);
 
 impl Rank {
-
     /// Returns the rank corresponding to the given number:
     ///
     /// * `0`: 7
@@ -103,7 +100,9 @@ impl Rank {
     ///
     /// If `n >= 8`.
     pub fn from_n(n: u32) -> Self {
-        if n >= 8 { panic!("Invalid rank number: {}", n); }
+        if n >= 8 {
+            panic!("Invalid rank number: {}", n);
+        }
         Rank(1 << n)
     }
 
@@ -119,7 +118,8 @@ impl Rank {
             RANK_X => "X",
             RANK_A => "A",
             _ => "?",
-        }.to_string()
+        }
+        .to_string()
     }
 }
 
@@ -142,11 +142,11 @@ impl Card {
         let mut i = 0;
         let Card(mut v) = self;
         while v != 0 {
-            i+=1;
-            v = v>>1;
+            i += 1;
+            v = v >> 1;
         }
 
-        i-1
+        i - 1
     }
 
     /// Returns the card corresponding to the given number.
@@ -155,7 +155,9 @@ impl Card {
     ///
     /// If `id >= 32`
     pub fn from_id(id: u32) -> Self {
-        if id > 31 { panic!("invalid card id"); }
+        if id > 31 {
+            panic!("invalid card id");
+        }
         Card(1 << id)
     }
 
@@ -299,7 +301,7 @@ impl ToString for Hand {
 
         for c in (*self).list().iter() {
             s = s + &c.to_string();
-            s = s +",";
+            s = s + ",";
         }
 
         s + "]"
@@ -307,7 +309,7 @@ impl ToString for Hand {
 }
 
 /// A deck of cards.
-pub struct Deck{
+pub struct Deck {
     cards: Vec<Card>,
 }
 
@@ -315,7 +317,7 @@ pub struct Deck{
 impl Deck {
     /// Returns a full, sorted deck of 32 cards.
     pub fn new() -> Self {
-        let mut d = Deck{cards:Vec::with_capacity(32)};
+        let mut d = Deck { cards: Vec::with_capacity(32) };
 
         for i in 0..32 {
             d.cards.push(Card::from_id(i));
@@ -365,7 +367,7 @@ impl Deck {
     /// # Panics
     /// If `self.len() < 4 * n`
     pub fn deal_each(&mut self, hands: &mut [Hand; 4], n: usize) {
-        if self.len() < 4*n {
+        if self.len() < 4 * n {
             panic!("Deck has too few cards!");
         }
 
@@ -383,7 +385,7 @@ impl ToString for Deck {
 
         for c in self.cards.iter() {
             s = s + &c.to_string();
-            s = s +",";
+            s = s + ",";
         }
 
         s + "]"
@@ -465,12 +467,12 @@ mod tests {
 
 #[cfg(feature="use_bench")]
 mod benchs {
-    use ::test::Bencher;
-    use ::deal_seeded_hands;
+    use test::Bencher;
+    use deal_seeded_hands;
 
     #[bench]
     fn bench_deal(b: &mut Bencher) {
-        let seed = &[1,2,3,4,5];
+        let seed = &[1, 2, 3, 4, 5];
         b.iter(|| {
             deal_seeded_hands(seed);
         });
@@ -478,7 +480,7 @@ mod benchs {
 
     #[bench]
     fn bench_add(b: &mut Bencher) {
-        let seed = &[1,2,3,4,5];
+        let seed = &[1, 2, 3, 4, 5];
         let hands = deal_seeded_hands(seed);
         b.iter(|| {
             let mut hands = hands.clone();

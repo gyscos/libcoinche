@@ -75,7 +75,7 @@ impl PlayerPos {
         if self == P3 {
             P0
         } else {
-            PlayerPos(self.0+1)
+            PlayerPos(self.0 + 1)
         }
     }
 
@@ -100,7 +100,7 @@ impl PlayerPos {
     /// Returns an iterator that iterates on `n` players, including this one.
     pub fn until_n(self, n: usize) -> PlayerIterator {
         PlayerIterator {
-            current:self,
+            current: self,
             remaining: n,
         }
     }
@@ -139,8 +139,8 @@ mod tests {
         }
 
         for i in 0..4 {
-            assert!(PlayerPos(i).next() == PlayerPos((i+1)%4));
-            assert!(PlayerPos(i) == PlayerPos((i+1)%4).prev());
+            assert!(PlayerPos(i).next() == PlayerPos((i + 1) % 4));
+            assert!(PlayerPos(i) == PlayerPos((i + 1) % 4).prev());
             assert!(PlayerPos(i).next().prev() == PlayerPos(i));
         }
     }

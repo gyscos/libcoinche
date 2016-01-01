@@ -29,11 +29,11 @@ pub enum GameResult {
     /// The game is over
     GameOver {
         /// Worth of won tricks
-        points: [i32;2],
+        points: [i32; 2],
         /// Winning team
         winners: pos::Team,
         /// Score for this game
-        scores: [i32;2]
+        scores: [i32; 2],
     },
 }
 
@@ -76,7 +76,6 @@ impl fmt::Display for PlayError {
 }
 
 impl GameState {
-
     /// Creates a new GameState, with the given cards, first player and contract.
     pub fn new(first: pos::PlayerPos, hands: [cards::Hand; 4], contract: bid::Contract) -> Self {
         GameState {
@@ -94,8 +93,10 @@ impl GameState {
     }
 
     /// Try to play a card
-    pub fn play_card(&mut self, player: pos::PlayerPos, card: cards::Card)
-                     -> Result<TrickResult,PlayError> {
+    pub fn play_card(&mut self,
+                     player: pos::PlayerPos,
+                     card: cards::Card)
+                     -> Result<TrickResult, PlayError> {
         if self.current != player {
             return Err(PlayError::TurnError);
         }
@@ -146,7 +147,11 @@ impl GameState {
 
         let victory = self.contract.target.victory(taking_points, capot);
 
-        let winners = if victory { taking_team } else { taking_team.opponent() };
+        let winners = if victory {
+            taking_team
+        } else {
+            taking_team.opponent()
+        };
 
         // TODO: Allow for variants in scoring. (See wikipedia article)
         let mut scores = [0; 2];
@@ -179,7 +184,7 @@ impl GameState {
     }
 
     /// Returns `true` if the move appear legal.
-    pub fn can_play(&self, p: pos::PlayerPos, card: cards::Card) -> Result<(),PlayError> {
+    pub fn can_play(&self, p: pos::PlayerPos, card: cards::Card) -> Result<(), PlayError> {
         let hand = self.players[p.0];
 
         // First, we need the card to be able to play
@@ -226,23 +231,23 @@ impl GameState {
     }
 
     /// Return the last trick, if possible
-    pub fn last_trick(&self) -> Result<&trick::Trick,PlayError> {
+    pub fn last_trick(&self) -> Result<&trick::Trick, PlayError> {
         if self.tricks.len() == 1 {
             Err(PlayError::NoLastTrick)
         } else {
-            let i = self.tricks.len()-2;
+            let i = self.tricks.len() - 2;
             Ok(&self.tricks[i])
         }
     }
 
     /// Returns the current trick.
     pub fn current_trick(&self) -> &trick::Trick {
-        let i = self.tricks.len()-1;
+        let i = self.tricks.len() - 1;
         &self.tricks[i]
     }
 
     fn current_trick_mut(&mut self) -> &mut trick::Trick {
-        let i = self.tricks.len()-1;
+        let i = self.tricks.len() - 1;
         &mut self.tricks[i]
     }
 }
@@ -251,7 +256,7 @@ fn has_higher(hand: cards::Hand, trump: cards::Suit, strength: i32) -> bool {
     for ri in 0..8 {
         let rank = cards::Rank::from_n(ri);
         if points::trump_strength(rank) > strength && hand.has(cards::Card::new(trump, rank)) {
-            return true
+            return true;
         }
     }
 
@@ -277,7 +282,7 @@ fn highest_trump(trick: &trick::Trick, trump: cards::Suit, player: pos::PlayerPo
 mod tests {
     use super::*;
     use super::has_higher;
-    use ::{points,cards,bid,pos};
+    use {points, cards, bid, pos};
 
     #[test]
     fn test_play_card() {
@@ -328,37 +333,28 @@ mod tests {
         let mut game = GameState::new(pos::P0, hands, contract);
 
         // Wrong turn
-        assert_eq!(
-            game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_X)).err(),
-            Some(PlayError::TurnError));
-        assert_eq!(
-            game.play_card(pos::P0, cards::Card::new(cards::CLUB, cards::RANK_7)).ok(),
-            Some(TrickResult::Nothing));
+        assert_eq!(game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_X)).err(),
+                   Some(PlayError::TurnError));
+        assert_eq!(game.play_card(pos::P0, cards::Card::new(cards::CLUB, cards::RANK_7)).ok(),
+                   Some(TrickResult::Nothing));
         // Card missing
-        assert_eq!(
-            game.play_card(pos::P1, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
-            Some(PlayError::CardMissing));
+        assert_eq!(game.play_card(pos::P1, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
+                   Some(PlayError::CardMissing));
         // Wrong color
-        assert_eq!(
-            game.play_card(pos::P1, cards::Card::new(cards::SPADE, cards::RANK_7)).err(),
-            Some(PlayError::IncorrectSuit));
-        assert_eq!(
-            game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_Q)).ok(),
-            Some(TrickResult::Nothing));
+        assert_eq!(game.play_card(pos::P1, cards::Card::new(cards::SPADE, cards::RANK_7)).err(),
+                   Some(PlayError::IncorrectSuit));
+        assert_eq!(game.play_card(pos::P1, cards::Card::new(cards::CLUB, cards::RANK_Q)).ok(),
+                   Some(TrickResult::Nothing));
         // Invalid piss
-        assert_eq!(
-            game.play_card(pos::P2, cards::Card::new(cards::DIAMOND, cards::RANK_7)).err(),
-            Some(PlayError::InvalidPiss));
-        assert_eq!(
-            game.play_card(pos::P2, cards::Card::new(cards::HEART, cards::RANK_Q)).ok(),
-            Some(TrickResult::Nothing));
+        assert_eq!(game.play_card(pos::P2, cards::Card::new(cards::DIAMOND, cards::RANK_7)).err(),
+                   Some(PlayError::InvalidPiss));
+        assert_eq!(game.play_card(pos::P2, cards::Card::new(cards::HEART, cards::RANK_Q)).ok(),
+                   Some(TrickResult::Nothing));
         // UnderTrump
-        assert_eq!(
-            game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
-            Some(PlayError::NonRaisedTrump));
-        assert_eq!(
-            game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_J)).ok(),
-            Some(TrickResult::TrickOver(pos::P3, game.get_game_result())));
+        assert_eq!(game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_7)).err(),
+                   Some(PlayError::NonRaisedTrump));
+        assert_eq!(game.play_card(pos::P3, cards::Card::new(cards::HEART, cards::RANK_J)).ok(),
+                   Some(TrickResult::TrickOver(pos::P3, game.get_game_result())));
     }
 
     #[test]
@@ -416,10 +412,10 @@ mod tests {
 
 #[cfg(feature="use_bench")]
 mod benchs {
-    use ::test::Bencher;
-    use ::deal_seeded_hands;
+    use test::Bencher;
+    use deal_seeded_hands;
 
-    use ::{pos,cards,bid};
+    use {pos, cards, bid};
     use super::*;
 
     #[bench]
@@ -430,9 +426,11 @@ mod benchs {
             for c in game.hands()[player.0].list() {
                 let mut new_game = game.clone();
                 match new_game.play_card(player, c) {
-                    Ok(_) => if depth > 0 {
-                        try_deeper(&new_game, depth - 1);
-                    },
+                    Ok(_) => {
+                        if depth > 0 {
+                            try_deeper(&new_game, depth - 1);
+                        }
+                    }
                     _ => (),
                 };
             }
@@ -440,14 +438,14 @@ mod benchs {
 
         let seed = &[3, 32, 654, 1, 844];
         let hands = deal_seeded_hands(seed);
-        let game = GameState::new(pos::P0, hands, bid::Contract {
-            author: pos::P0,
-            trump: cards::HEART,
-            target: bid::Target::Contract80,
-            coinche_level: 0,
-        });
-        b.iter(|| {
-            try_deeper(&game, 4)
-        });
+        let game = GameState::new(pos::P0,
+                                  hands,
+                                  bid::Contract {
+                                      author: pos::P0,
+                                      trump: cards::HEART,
+                                      target: bid::Target::Contract80,
+                                      coinche_level: 0,
+                                  });
+        b.iter(|| try_deeper(&game, 4));
     }
 }

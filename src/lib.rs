@@ -104,4 +104,3 @@ fn test_deals() {
         assert!(*c == 1);
     }
 }
-
