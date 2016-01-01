@@ -27,11 +27,10 @@ impl Trick {
 
     /// Returns the points value of this trick
     pub fn score(&self, trump: cards::Suit) -> i32 {
-        let mut score = 0;
-        for card in self.cards.iter() {
-            score += card.map_or(0, |c| points::score(c, trump));
-        }
-        score
+        self.cards
+            .iter()
+            .map(|c| c.map_or(0, |c| points::score(c, trump)))
+            .fold(0, |a, b| a + b)
     }
 
     /// Plays a card.
