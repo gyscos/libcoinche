@@ -102,7 +102,11 @@ impl GameState {
         }
 
         // Is that a valid move?
-        try!(self.can_play(player, card));
+        try!(can_play(player,
+                      card,
+                      self.players[player.0],
+                      self.current_trick(),
+                      self.contract.trump));
 
         // Play the card
         let trump = self.contract.trump;
@@ -183,49 +187,6 @@ impl GameState {
         self.players
     }
 
-    /// Returns `true` if the move appear legal.
-    pub fn can_play(&self, p: pos::PlayerPos, card: cards::Card) -> Result<(), PlayError> {
-        let hand = self.players[p.0];
-
-        // First, we need the card to be able to play
-        if !hand.has(card) {
-            return Err(PlayError::CardMissing);;
-        }
-
-        let trick = self.current_trick();
-
-        if p == trick.first {
-            return Ok(());
-        }
-
-        let card_suit = card.suit();
-        let starting_suit = trick.suit().unwrap();
-        if card_suit != starting_suit {
-            if hand.has_any(starting_suit) {
-                return Err(PlayError::IncorrectSuit);
-            }
-
-            if card_suit != self.contract.trump {
-                let partner_winning = p.is_partner(self.current_trick().winner);
-                if !partner_winning && hand.has_any(self.contract.trump) {
-                    return Err(PlayError::InvalidPiss);
-                }
-            }
-        }
-
-        // One must raise when playing trump
-        if card_suit == self.contract.trump {
-            let highest = highest_trump(&self.current_trick(), self.contract.trump, p);
-            if points::trump_strength(card.rank()) < highest {
-                if has_higher(hand, card_suit, highest) {
-                    return Err(PlayError::NonRaisedTrump);;
-                }
-            }
-        }
-
-        Ok(())
-    }
-
     fn is_over(&self) -> bool {
         self.tricks.len() == 8
     }
@@ -250,6 +211,50 @@ impl GameState {
         let i = self.tricks.len() - 1;
         &mut self.tricks[i]
     }
+}
+
+/// Returns `true` if the move appear legal.
+pub fn can_play(p: pos::PlayerPos,
+                card: cards::Card,
+                hand: cards::Hand,
+                trick: &trick::Trick,
+                trump: cards::Suit)
+                -> Result<(), PlayError> {
+    // First, we need the card to be able to play
+    if !hand.has(card) {
+        return Err(PlayError::CardMissing);;
+    }
+
+    if p == trick.first {
+        return Ok(());
+    }
+
+    let card_suit = card.suit();
+    let starting_suit = trick.suit().unwrap();
+    if card_suit != starting_suit {
+        if hand.has_any(starting_suit) {
+            return Err(PlayError::IncorrectSuit);
+        }
+
+        if card_suit != trump {
+            let partner_winning = p.is_partner(trick.winner);
+            if !partner_winning && hand.has_any(trump) {
+                return Err(PlayError::InvalidPiss);
+            }
+        }
+    }
+
+    // One must raise when playing trump
+    if card_suit == trump {
+        let highest = highest_trump(trick, trump, p);
+        if points::trump_strength(card.rank()) < highest {
+            if has_higher(hand, card_suit, highest) {
+                return Err(PlayError::NonRaisedTrump);;
+            }
+        }
+    }
+
+    Ok(())
 }
 
 fn has_higher(hand: cards::Hand, trump: cards::Suit, strength: i32) -> bool {
