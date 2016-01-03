@@ -479,14 +479,39 @@ mod benchs {
     }
 
     #[bench]
-    fn bench_add(b: &mut Bencher) {
+    fn bench_list_hand(b: &mut Bencher) {
         let seed = &[1, 2, 3, 4, 5];
         let hands = deal_seeded_hands(seed);
         b.iter(|| {
+            for hand in hands.iter() {
+                hand.list().len();
+            }
+        });
+    }
+
+    #[bench]
+    fn bench_del_add_check(b: &mut Bencher) {
+        let seed = &[1, 2, 3, 4, 5];
+        let hands = deal_seeded_hands(seed);
+        let cards: Vec<_> = hands.iter().map(|h| h.list()).collect();
+        b.iter(|| {
             let mut hands = hands.clone();
-            for hand in hands.iter_mut() {
-                for c in hand.list() {
-                    hand.remove(c);
+            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+                for c in cards.iter() {
+                    hand.remove(*c);
+                }
+            }
+            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+                for c in cards.iter() {
+                    hand.add(*c);
+                }
+            }
+            
+            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+                for c in cards.iter() {
+                    if !hand.has(*c) {
+                        panic!("Error!");
+                    }
                 }
             }
         });
