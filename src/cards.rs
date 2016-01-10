@@ -6,7 +6,7 @@ use std::string::ToString;
 use rustc_serialize;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club.
-#[derive(PartialEq,Clone,Copy)]
+#[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Suit(u32);
 
 // TODO: Make these associated const when it's stable
@@ -27,6 +27,12 @@ impl rustc_serialize::Encodable for Suit {
             HEART | SPADE | DIAMOND | CLUB => self.0.encode(s),
             _ => "??".encode(s),
         }
+    }
+}
+
+impl rustc_serialize::Decodable for Suit {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
+        Ok(Suit(try!(d.read_u32())))
     }
 }
 
@@ -63,7 +69,7 @@ impl Suit {
 
 
 /// Rank of a card in a suit.
-#[derive(PartialEq,Clone,Copy)]
+#[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Rank(u32);
 /// 7
 pub const RANK_7: Rank = Rank(1 << 0);
@@ -135,6 +141,11 @@ impl rustc_serialize::Encodable for Card {
     }
 }
 
+impl rustc_serialize::Decodable for Card {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
+        Ok(Card(try!(d.read_u32())))
+    }
+}
 
 impl Card {
     /// Returns the card number (from 0 to 31)
@@ -203,12 +214,19 @@ impl Card {
 
 
 /// Represents an unordered set of cards
-#[derive(PartialEq,Clone,Copy)]
+#[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Hand(u32);
 
 impl rustc_serialize::Encodable for Hand {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
         self.0.encode(s)
+    }
+}
+
+
+impl rustc_serialize::Decodable for Hand {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
+        Ok(Hand(try!(d.read_u32())))
     }
 }
 

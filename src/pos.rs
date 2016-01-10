@@ -3,14 +3,14 @@
 use rustc_serialize;
 
 /// One of two teams
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,RustcDecodable,RustcEncodable)]
 pub struct Team(pub usize);
 
-impl rustc_serialize::Encodable for Team {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        self.0.encode(s)
-    }
-}
+// impl rustc_serialize::Encodable for Team {
+//     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
+//         self.0.encode(s)
+//     }
+// }
 
 impl Team {
     /// Returns the other team
@@ -26,6 +26,12 @@ pub struct PlayerPos(pub usize);
 impl rustc_serialize::Encodable for PlayerPos {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
         self.0.encode(s)
+    }
+}
+
+impl rustc_serialize::Decodable for PlayerPos {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
+        Ok(PlayerPos(try!(d.read_usize())))
     }
 }
 

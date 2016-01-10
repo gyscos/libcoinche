@@ -12,7 +12,7 @@ use rustc_serialize;
 /// Goal set by a contract.
 ///
 /// Determines the winning conditions and the score on success.
-#[derive(PartialEq,Clone,Copy)]
+#[derive(PartialEq,Clone,Copy,Debug)]
 pub enum Target {
     /// Team must get 80 points
     Contract80,
@@ -50,6 +50,24 @@ impl rustc_serialize::Encodable for Target {
             &Target::Contract160 => "160",
             &Target::ContractCapot => "Capot",
         })
+    }
+}
+
+impl rustc_serialize::Decodable for Target {
+    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
+        match try!(d.read_str()).as_ref() {
+            "80" => Ok(Target::Contract80),
+            "90" => Ok(Target::Contract90),
+            "100" => Ok(Target::Contract100),
+            "110" => Ok(Target::Contract110),
+            "120" => Ok(Target::Contract120),
+            "130" => Ok(Target::Contract130),
+            "140" => Ok(Target::Contract140),
+            "150" => Ok(Target::Contract150),
+            "160" => Ok(Target::Contract160),
+            "Capot" => Ok(Target::ContractCapot),
+            _ => Err(d.error("unknown contract"))
+        }
     }
 }
 
@@ -111,7 +129,7 @@ impl FromStr for Target {
 /// Contract taken by a team.
 ///
 /// Composed of a trump suit and a target to reach.
-#[derive(Clone,RustcEncodable)]
+#[derive(Clone,Debug,RustcEncodable,RustcDecodable)]
 pub struct Contract {
     /// Initial author of the contract.
     pub author: pos::PlayerPos,
