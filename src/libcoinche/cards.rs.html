@@ -535,6 +535,49 @@
 <span id="492">492</span>
 <span id="493">493</span>
 <span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This module represents a basic, rule-agnostic 32-cards system.</span>
 
@@ -544,7 +587,7 @@
 <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>;
 
 <span class='doccomment'>/// One of the four Suits: Heart, Spade, Diamond, Club.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Suit</span>(<span class='ident'>u32</span>);
 
 <span class='comment'>// TODO: Make these associated const when it&#39;s stable</span>
@@ -565,6 +608,12 @@
             <span class='ident'>HEART</span> <span class='op'>|</span> <span class='ident'>SPADE</span> <span class='op'>|</span> <span class='ident'>DIAMOND</span> <span class='op'>|</span> <span class='ident'>CLUB</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>encode</span>(<span class='ident'>s</span>),
             _ <span class='op'>=&gt;</span> <span class='string'>&quot;??&quot;</span>.<span class='ident'>encode</span>(<span class='ident'>s</span>),
         }
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Suit</span> {
+    <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_u32</span>())))
     }
 }
 
@@ -601,7 +650,7 @@
 
 
 <span class='doccomment'>/// Rank of a card in a suit.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Rank</span>(<span class='ident'>u32</span>);
 <span class='doccomment'>/// 7</span>
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_7</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>);
@@ -673,6 +722,11 @@
     }
 }
 
+<span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Card</span> {
+    <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>Card</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_u32</span>())))
+    }
+}
 
 <span class='kw'>impl</span> <span class='ident'>Card</span> {
     <span class='doccomment'>/// Returns the card number (from 0 to 31)</span>
@@ -741,12 +795,19 @@
 
 
 <span class='doccomment'>/// Represents an unordered set of cards</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Hand</span>(<span class='ident'>u32</span>);
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Encodable</span> <span class='kw'>for</span> <span class='ident'>Hand</span> {
     <span class='kw'>fn</span> <span class='ident'>encode</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Encoder</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>s</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>encode</span>(<span class='ident'>s</span>)
+    }
+}
+
+
+<span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Hand</span> {
+    <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='ident'>Hand</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_u32</span>())))
     }
 }
 
@@ -1017,14 +1078,39 @@
     }
 
     <span class='attribute'>#[<span class='ident'>bench</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>bench_add</span>(<span class='ident'>b</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Bencher</span>) {
+    <span class='kw'>fn</span> <span class='ident'>bench_list_hand</span>(<span class='ident'>b</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Bencher</span>) {
         <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
         <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
         <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
+            <span class='kw'>for</span> <span class='ident'>hand</span> <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter</span>() {
+                <span class='ident'>hand</span>.<span class='ident'>list</span>().<span class='ident'>len</span>();
+            }
+        });
+    }
+
+    <span class='attribute'>#[<span class='ident'>bench</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>bench_del_add_check</span>(<span class='ident'>b</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Bencher</span>) {
+        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>];
+        <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
+        <span class='kw'>let</span> <span class='ident'>cards</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>hands</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>h</span><span class='op'>|</span> <span class='ident'>h</span>.<span class='ident'>list</span>()).<span class='ident'>collect</span>();
+        <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>hands</span>.<span class='ident'>clone</span>();
-            <span class='kw'>for</span> <span class='ident'>hand</span> <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>() {
-                <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>hand</span>.<span class='ident'>list</span>() {
-                    <span class='ident'>hand</span>.<span class='ident'>remove</span>(<span class='ident'>c</span>);
+            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+                <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
+                    <span class='ident'>hand</span>.<span class='ident'>remove</span>(<span class='op'>*</span><span class='ident'>c</span>);
+                }
+            }
+            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+                <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
+                    <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='op'>*</span><span class='ident'>c</span>);
+                }
+            }
+            
+            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+                <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
+                    <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>hand</span>.<span class='ident'>has</span>(<span class='op'>*</span><span class='ident'>c</span>) {
+                        <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Error!&quot;</span>);
+                    }
                 }
             }
         });
