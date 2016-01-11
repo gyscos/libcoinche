@@ -1,6 +1,7 @@
 //! This module represents a basic, rule-agnostic 32-cards system.
 
 use rand::{thread_rng, Rng, IsaacRng, SeedableRng};
+use std::str::FromStr;
 use std::num::Wrapping;
 use std::string::ToString;
 use rustc_serialize;
@@ -64,6 +65,20 @@ impl Suit {
             _ => "?",
         }
         .to_string()
+    }
+}
+
+impl FromStr for Suit {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, String> {
+        match s {
+            "H" | "h" | "heart" | "HEART" | "Heart" => Ok(HEART),
+            "C" | "c" | "club" | "CLUB" | "Club" => Ok(CLUB),
+            "S" | "s" | "spade" | "SPADE" | "Spade"  => Ok(SPADE),
+            "D" | "d" | "diamond" | "DIAMOND" | "Diamond" => Ok(DIAMOND),
+            _ => Err(format!("invalid suit: {}", s)),
+        }
     }
 }
 
