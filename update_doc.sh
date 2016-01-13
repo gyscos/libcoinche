@@ -1,3 +1,5 @@
+set -e
+
 cargo doc
 FROM=$(git rev-parse --short HEAD)
 git checkout gh-pages
