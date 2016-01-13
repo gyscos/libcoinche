@@ -1,2 +1,3 @@
 Cargo.lock
 /target
+.fuse_hidden*
