@@ -38,36 +38,14 @@ pub enum Target {
 
 impl rustc_serialize::Encodable for Target {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.emit_str(match self {
-            &Target::Contract80 => "80",
-            &Target::Contract90 => "90",
-            &Target::Contract100 => "100",
-            &Target::Contract110 => "110",
-            &Target::Contract120 => "120",
-            &Target::Contract130 => "130",
-            &Target::Contract140 => "140",
-            &Target::Contract150 => "150",
-            &Target::Contract160 => "160",
-            &Target::ContractCapot => "Capot",
-        })
+        s.emit_str(self.to_str())
     }
 }
 
 impl rustc_serialize::Decodable for Target {
     fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        match try!(d.read_str()).as_ref() {
-            "80" => Ok(Target::Contract80),
-            "90" => Ok(Target::Contract90),
-            "100" => Ok(Target::Contract100),
-            "110" => Ok(Target::Contract110),
-            "120" => Ok(Target::Contract120),
-            "130" => Ok(Target::Contract130),
-            "140" => Ok(Target::Contract140),
-            "150" => Ok(Target::Contract150),
-            "160" => Ok(Target::Contract160),
-            "Capot" => Ok(Target::ContractCapot),
-            _ => Err(d.error("unknown contract"))
-        }
+        let content = try!(d.read_str());
+        Self::from_str(&content).map_err(|s| d.error(&s))
     }
 }
 
@@ -89,19 +67,26 @@ impl Target {
         }
     }
 
+    pub fn to_str(&self) -> &'static str {
+        match self {
+            &Target::Contract80 => "80",
+            &Target::Contract90 => "90",
+            &Target::Contract100 => "100",
+            &Target::Contract110 => "110",
+            &Target::Contract120 => "120",
+            &Target::Contract130 => "130",
+            &Target::Contract140 => "140",
+            &Target::Contract150 => "150",
+            &Target::Contract160 => "160",
+            &Target::ContractCapot => "Capot",
+        }
+    }
+
     /// Determines whether this target was reached.
     pub fn victory(&self, points: i32, capot: bool) -> bool {
         match *self {
-            Target::Contract80 => points >= 80,
-            Target::Contract90 => points >= 90,
-            Target::Contract100 => points >= 100,
-            Target::Contract110 => points >= 110,
-            Target::Contract120 => points >= 120,
-            Target::Contract130 => points >= 130,
-            Target::Contract140 => points >= 140,
-            Target::Contract150 => points >= 150,
-            Target::Contract160 => points >= 160,
             Target::ContractCapot => capot,
+            other => points >= other.score(),
         }
     }
 }
@@ -123,6 +108,12 @@ impl FromStr for Target {
             "Capot" => Ok(Target::ContractCapot),
             _ => Err(format!("invalid target: {}", s)),
         }
+    }
+}
+
+impl ToString for Target {
+    fn to_string(&self) -> String {
+        self.to_str().to_string()
     }
 }
 
@@ -254,28 +245,28 @@ impl Auction {
                pos: pos::PlayerPos,
                trump: cards::Suit,
                target: Target)
-               -> Result<AuctionState, BidError> {
-        if pos != self.next_player() {
-            return Err(BidError::TurnError);
+        -> Result<AuctionState, BidError> {
+            if pos != self.next_player() {
+                return Err(BidError::TurnError);
+            }
+
+            match self.can_bid(target) {
+                Err(err) => return Err(err),
+                Ok(_) => (),
+            }
+
+            // If we're all the way to the top, there's nowhere else to go
+            if target == Target::ContractCapot {
+                self.state = AuctionState::Coinching;
+            }
+
+            let contract = Contract::new(pos, trump, target);
+            self.history.push(contract);
+            self.pass_count = 0;
+
+            // Only stops the bids if the guy asked for a capot
+            Ok(self.state)
         }
-
-        match self.can_bid(target) {
-            Err(err) => return Err(err),
-            Ok(_) => (),
-        }
-
-        // If we're all the way to the top, there's nowhere else to go
-        if target == Target::ContractCapot {
-            self.state = AuctionState::Coinching;
-        }
-
-        let contract = Contract::new(pos, trump, target);
-        self.history.push(contract);
-        self.pass_count = 0;
-
-        // Only stops the bids if the guy asked for a capot
-        Ok(self.state)
-    }
 
     /// Look at the last offered contract.
     ///
@@ -384,17 +375,17 @@ mod tests {
 
         // Someone bids.
         assert_eq!(auction.bid(pos::P3, cards::HEART, Target::Contract80),
-                   Ok(AuctionState::Bidding));
+        Ok(AuctionState::Bidding));
         assert_eq!(auction.bid(pos::P0, cards::CLUB, Target::Contract80)
-                          .err(),
+                   .err(),
                    Some(BidError::NonRaisedTarget));
         assert_eq!(auction.bid(pos::P1, cards::CLUB, Target::Contract100)
-                          .err(),
+                   .err(),
                    Some(BidError::TurnError));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
         // Partner surbids
         assert_eq!(auction.bid(pos::P1, cards::HEART, Target::Contract100),
-                   Ok(AuctionState::Bidding));
+        Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P3), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Over));
