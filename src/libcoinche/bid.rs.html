@@ -441,15 +441,6 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
-<span id="401">401</span>
-<span id="402">402</span>
-<span id="403">403</span>
-<span id="404">404</span>
-<span id="405">405</span>
-<span id="406">406</span>
-<span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Auctions and bidding during the first phase of the game.</span>
 
@@ -491,36 +482,14 @@
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Encodable</span> <span class='kw'>for</span> <span class='ident'>Target</span> {
     <span class='kw'>fn</span> <span class='ident'>encode</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Encoder</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>s</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='ident'>s</span>.<span class='ident'>emit_str</span>(<span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract80</span> <span class='op'>=&gt;</span> <span class='string'>&quot;80&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract90</span> <span class='op'>=&gt;</span> <span class='string'>&quot;90&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract100</span> <span class='op'>=&gt;</span> <span class='string'>&quot;100&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract110</span> <span class='op'>=&gt;</span> <span class='string'>&quot;110&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract120</span> <span class='op'>=&gt;</span> <span class='string'>&quot;120&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract130</span> <span class='op'>=&gt;</span> <span class='string'>&quot;130&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract140</span> <span class='op'>=&gt;</span> <span class='string'>&quot;140&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract150</span> <span class='op'>=&gt;</span> <span class='string'>&quot;150&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract160</span> <span class='op'>=&gt;</span> <span class='string'>&quot;160&quot;</span>,
-            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Capot&quot;</span>,
-        })
+        <span class='ident'>s</span>.<span class='ident'>emit_str</span>(<span class='self'>self</span>.<span class='ident'>to_str</span>())
     }
 }
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Target</span> {
     <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_str</span>()).<span class='ident'>as_ref</span>() {
-            <span class='string'>&quot;80&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract80</span>),
-            <span class='string'>&quot;90&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract90</span>),
-            <span class='string'>&quot;100&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract100</span>),
-            <span class='string'>&quot;110&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract110</span>),
-            <span class='string'>&quot;120&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract120</span>),
-            <span class='string'>&quot;130&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract130</span>),
-            <span class='string'>&quot;140&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract140</span>),
-            <span class='string'>&quot;150&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract150</span>),
-            <span class='string'>&quot;160&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>Contract160</span>),
-            <span class='string'>&quot;Capot&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>ContractCapot</span>),
-            _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>d</span>.<span class='ident'>error</span>(<span class='string'>&quot;unknown contract&quot;</span>))
-        }
+        <span class='kw'>let</span> <span class='ident'>content</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_str</span>());
+        <span class='ident'>Self</span>::<span class='ident'>from_str</span>(<span class='kw-2'>&amp;</span><span class='ident'>content</span>).<span class='ident'>map_err</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> <span class='ident'>d</span>.<span class='ident'>error</span>(<span class='kw-2'>&amp;</span><span class='ident'>s</span>))
     }
 }
 
@@ -542,19 +511,26 @@
         }
     }
 
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_str</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> {
+        <span class='kw'>match</span> <span class='self'>self</span> {
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract80</span> <span class='op'>=&gt;</span> <span class='string'>&quot;80&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract90</span> <span class='op'>=&gt;</span> <span class='string'>&quot;90&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract100</span> <span class='op'>=&gt;</span> <span class='string'>&quot;100&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract110</span> <span class='op'>=&gt;</span> <span class='string'>&quot;110&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract120</span> <span class='op'>=&gt;</span> <span class='string'>&quot;120&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract130</span> <span class='op'>=&gt;</span> <span class='string'>&quot;130&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract140</span> <span class='op'>=&gt;</span> <span class='string'>&quot;140&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract150</span> <span class='op'>=&gt;</span> <span class='string'>&quot;150&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>Contract160</span> <span class='op'>=&gt;</span> <span class='string'>&quot;160&quot;</span>,
+            <span class='kw-2'>&amp;</span><span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Capot&quot;</span>,
+        }
+    }
+
     <span class='doccomment'>/// Determines whether this target was reached.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>victory</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>points</span>: <span class='ident'>i32</span>, <span class='ident'>capot</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>Target</span>::<span class='ident'>Contract80</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>80</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract90</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>90</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract100</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>100</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract110</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>110</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract120</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>120</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract130</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>130</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract140</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>140</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract150</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>150</span>,
-            <span class='ident'>Target</span>::<span class='ident'>Contract160</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='number'>160</span>,
             <span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> <span class='op'>=&gt;</span> <span class='ident'>capot</span>,
+            <span class='ident'>other</span> <span class='op'>=&gt;</span> <span class='ident'>points</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>score</span>(),
         }
     }
 }
@@ -576,6 +552,12 @@
             <span class='string'>&quot;Capot&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Target</span>::<span class='ident'>ContractCapot</span>),
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;invalid target: {}&quot;</span>, <span class='ident'>s</span>)),
         }
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>ToString</span> <span class='kw'>for</span> <span class='ident'>Target</span> {
+    <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+        <span class='self'>self</span>.<span class='ident'>to_str</span>().<span class='ident'>to_string</span>()
     }
 }
 
@@ -707,28 +689,28 @@
                <span class='ident'>pos</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
                <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>,
                <span class='ident'>target</span>: <span class='ident'>Target</span>)
-               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>AuctionState</span>, <span class='ident'>BidError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>pos</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>next_player</span>() {
-            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>);
+        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>AuctionState</span>, <span class='ident'>BidError</span><span class='op'>&gt;</span> {
+            <span class='kw'>if</span> <span class='ident'>pos</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>next_player</span>() {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>);
+            }
+
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>can_bid</span>(<span class='ident'>target</span>) {
+                <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>),
+                <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> (),
+            }
+
+            <span class='comment'>// If we&#39;re all the way to the top, there&#39;s nowhere else to go</span>
+            <span class='kw'>if</span> <span class='ident'>target</span> <span class='op'>==</span> <span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> {
+                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>AuctionState</span>::<span class='ident'>Coinching</span>;
+            }
+
+            <span class='kw'>let</span> <span class='ident'>contract</span> <span class='op'>=</span> <span class='ident'>Contract</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>, <span class='ident'>trump</span>, <span class='ident'>target</span>);
+            <span class='self'>self</span>.<span class='ident'>history</span>.<span class='ident'>push</span>(<span class='ident'>contract</span>);
+            <span class='self'>self</span>.<span class='ident'>pass_count</span> <span class='op'>=</span> <span class='number'>0</span>;
+
+            <span class='comment'>// Only stops the bids if the guy asked for a capot</span>
+            <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>state</span>)
         }
-
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>can_bid</span>(<span class='ident'>target</span>) {
-            <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>),
-            <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> (),
-        }
-
-        <span class='comment'>// If we&#39;re all the way to the top, there&#39;s nowhere else to go</span>
-        <span class='kw'>if</span> <span class='ident'>target</span> <span class='op'>==</span> <span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> {
-            <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>AuctionState</span>::<span class='ident'>Coinching</span>;
-        }
-
-        <span class='kw'>let</span> <span class='ident'>contract</span> <span class='op'>=</span> <span class='ident'>Contract</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>, <span class='ident'>trump</span>, <span class='ident'>target</span>);
-        <span class='self'>self</span>.<span class='ident'>history</span>.<span class='ident'>push</span>(<span class='ident'>contract</span>);
-        <span class='self'>self</span>.<span class='ident'>pass_count</span> <span class='op'>=</span> <span class='number'>0</span>;
-
-        <span class='comment'>// Only stops the bids if the guy asked for a capot</span>
-        <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>state</span>)
-    }
 
     <span class='doccomment'>/// Look at the last offered contract.</span>
     <span class='doccomment'>///</span>
@@ -837,17 +819,17 @@
 
         <span class='comment'>// Someone bids.</span>
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>),
-                   <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>)
-                          .<span class='ident'>err</span>(),
+                   .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>BidError</span>::<span class='ident'>NonRaisedTarget</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>)
-                          .<span class='ident'>err</span>(),
+                   .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='comment'>// Partner surbids</span>
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>),
-                   <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Over</span>));
