@@ -75,7 +75,7 @@ impl FromStr for Suit {
         match s {
             "H" | "h" | "heart" | "HEART" | "Heart" => Ok(HEART),
             "C" | "c" | "club" | "CLUB" | "Club" => Ok(CLUB),
-            "S" | "s" | "spade" | "SPADE" | "Spade"  => Ok(SPADE),
+            "S" | "s" | "spade" | "SPADE" | "Spade" => Ok(SPADE),
             "D" | "d" | "diamond" | "DIAMOND" | "Diamond" => Ok(DIAMOND),
             _ => Err(format!("invalid suit: {}", s)),
         }
@@ -529,18 +529,18 @@ mod benchs {
         let cards: Vec<_> = hands.iter().map(|h| h.list()).collect();
         b.iter(|| {
             let mut hands = hands.clone();
-            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+            for (hand, cards) in hands.iter_mut().zip(cards.iter()) {
                 for c in cards.iter() {
                     hand.remove(*c);
                 }
             }
-            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+            for (hand, cards) in hands.iter_mut().zip(cards.iter()) {
                 for c in cards.iter() {
                     hand.add(*c);
                 }
             }
-            
-            for (hand,cards) in hands.iter_mut().zip(cards.iter()) {
+
+            for (hand, cards) in hands.iter_mut().zip(cards.iter()) {
                 for c in cards.iter() {
                     if !hand.has(*c) {
                         panic!("Error!");

@@ -245,28 +245,28 @@ impl Auction {
                pos: pos::PlayerPos,
                trump: cards::Suit,
                target: Target)
-        -> Result<AuctionState, BidError> {
-            if pos != self.next_player() {
-                return Err(BidError::TurnError);
-            }
-
-            match self.can_bid(target) {
-                Err(err) => return Err(err),
-                Ok(_) => (),
-            }
-
-            // If we're all the way to the top, there's nowhere else to go
-            if target == Target::ContractCapot {
-                self.state = AuctionState::Coinching;
-            }
-
-            let contract = Contract::new(pos, trump, target);
-            self.history.push(contract);
-            self.pass_count = 0;
-
-            // Only stops the bids if the guy asked for a capot
-            Ok(self.state)
+               -> Result<AuctionState, BidError> {
+        if pos != self.next_player() {
+            return Err(BidError::TurnError);
         }
+
+        match self.can_bid(target) {
+            Err(err) => return Err(err),
+            Ok(_) => (),
+        }
+
+        // If we're all the way to the top, there's nowhere else to go
+        if target == Target::ContractCapot {
+            self.state = AuctionState::Coinching;
+        }
+
+        let contract = Contract::new(pos, trump, target);
+        self.history.push(contract);
+        self.pass_count = 0;
+
+        // Only stops the bids if the guy asked for a capot
+        Ok(self.state)
+    }
 
     /// Look at the last offered contract.
     ///
@@ -375,17 +375,17 @@ mod tests {
 
         // Someone bids.
         assert_eq!(auction.bid(pos::P3, cards::HEART, Target::Contract80),
-        Ok(AuctionState::Bidding));
+                   Ok(AuctionState::Bidding));
         assert_eq!(auction.bid(pos::P0, cards::CLUB, Target::Contract80)
-                   .err(),
+                          .err(),
                    Some(BidError::NonRaisedTarget));
         assert_eq!(auction.bid(pos::P1, cards::CLUB, Target::Contract100)
-                   .err(),
+                          .err(),
                    Some(BidError::TurnError));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
         // Partner surbids
         assert_eq!(auction.bid(pos::P1, cards::HEART, Target::Contract100),
-        Ok(AuctionState::Bidding));
+                   Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P3), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Over));
