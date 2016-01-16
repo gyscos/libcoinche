@@ -4,27 +4,45 @@ use rustc_serialize;
 
 /// One of two teams
 #[derive(PartialEq,Clone,Copy,Debug,RustcDecodable,RustcEncodable)]
-pub struct Team(pub usize);
-
-// impl rustc_serialize::Encodable for Team {
-//     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-//         self.0.encode(s)
-//     }
-// }
+pub enum Team {
+    /// Players P0 and P2
+    T02,
+    /// Players P1 and P3
+    T13,
+}
 
 impl Team {
+    /// Return the team corresponding to the given number.
+    pub fn from_n(n: usize) -> Self {
+        match n {
+            0 => Team::T02,
+            1 => Team::T13,
+            // I shouldn't accept those, but...
+            2 => Team::T02,
+            3 => Team::T13,
+            other => panic!("invalid team number: {}", other),
+        }
+    }
+
     /// Returns the other team
     pub fn opponent(self) -> Team {
-        Team(1 - self.0)
+        match self {
+            Team::T02 => Team::T13,
+            Team::T13 => Team::T02,
+        }
     }
 }
 
 /// A position in the table
 #[derive(PartialEq,Clone,Copy,Debug)]
 pub enum PlayerPos {
+    /// Player 0
     P0,
+    /// Player 1
     P1,
+    /// Player 2
     P2,
+    /// Player 3
     P3,
 }
 
@@ -67,10 +85,16 @@ impl Iterator for PlayerIterator {
 impl PlayerPos {
     /// Returns the player's team
     pub fn team(self) -> Team {
-        Team(self as usize % 2)
+        match self {
+            PlayerPos::P0 | PlayerPos::P2 => Team::T02,
+            PlayerPos::P1 | PlayerPos::P3 => Team::T13,
+        }
     }
 
-    fn from_n(n: usize) -> Self {
+    /// Returns the position corresponding to the number (0 => P0, ...).
+    ///
+    /// Panics if `n > 3`.
+    pub fn from_n(n: usize) -> Self {
         match n {
             0 => PlayerPos::P0,
             1 => PlayerPos::P1,
@@ -138,6 +162,17 @@ impl PlayerPos {
 mod tests {
 
     use super::*;
+
+    #[test]
+    fn test_teams() {
+        assert_eq!(PlayerPos::P0.team(), PlayerPos::P2.team());
+        assert_eq!(PlayerPos::P0.team(), Team::T02);
+
+        assert_eq!(PlayerPos::P1.team(), PlayerPos::P3.team());
+        assert_eq!(PlayerPos::P1.team(), Team::T13);
+
+        assert!(PlayerPos::P0.team() != PlayerPos::P1.team());
+    }
 
     #[test]
     fn test_pos() {

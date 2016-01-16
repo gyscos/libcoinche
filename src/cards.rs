@@ -163,6 +163,7 @@ impl Rank {
 pub struct Card(u32);
 
 // TODO: Add card constants? (8 of heart, Queen of spades, ...?)
+// (As associated constants when it's stable?)
 
 impl rustc_serialize::Encodable for Card {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {

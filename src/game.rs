@@ -116,10 +116,10 @@ impl GameState {
         let result = if trick_over {
             let winner = self.current_trick().winner;
             let score = self.current_trick().score(trump);
-            self.points[winner.team().0] += score;
+            self.points[winner.team() as usize] += score;
             if self.tricks.len() == 8 {
                 // 10 de der
-                self.points[winner.team().0] += 10;
+                self.points[winner.team() as usize] += 10;
             } else {
                 self.tricks.push(trick::Trick::new(winner));
             }
@@ -145,7 +145,7 @@ impl GameState {
         }
 
         let taking_team = self.contract.author.team();
-        let taking_points = self.points[taking_team.0];
+        let taking_points = self.points[taking_team as usize];
 
         let capot = self.is_capot(taking_team);
 
@@ -160,9 +160,9 @@ impl GameState {
         // TODO: Allow for variants in scoring. (See wikipedia article)
         let mut scores = [0; 2];
         if victory {
-            scores[winners.0] = self.contract.target.score();
+            scores[winners as usize] = self.contract.target.score();
         } else {
-            scores[winners.0] = 160;
+            scores[winners as usize] = 160;
         }
 
         GameResult::GameOver {
