@@ -11,7 +11,7 @@
 //!
 //! fn main() {
 //!     // The first player
-//!     let first = pos::P0;
+//!     let first = pos::PlayerPos::P0;
 //!
 //!     // Start the first phase with an auction
 //!     let mut auction = bid::Auction::new(first);
@@ -20,11 +20,11 @@
 //!     let hands = auction.hands();
 //!
 //!     // Players bid or pass
-//!     auction.bid(pos::P0, cards::Suit::Heart, bid::Target::Contract80).unwrap();
-//!     auction.pass(pos::P1).unwrap();
-//!     auction.pass(pos::P2).unwrap();
+//!     auction.bid(pos::PlayerPos::P0, cards::Suit::Heart, bid::Target::Contract80).unwrap();
+//!     auction.pass(pos::PlayerPos::P1).unwrap();
+//!     auction.pass(pos::PlayerPos::P2).unwrap();
 //!     // The result is `Over` when the auction is ready to complete
-//!     match auction.pass(pos::P3) {
+//!     match auction.pass(pos::PlayerPos::P3) {
 //!         Ok(bid::AuctionState::Over) => (),
 //!         _ => panic!("Should not happen"),
 //!     };
@@ -33,7 +33,7 @@
 //!     let mut game = auction.complete().unwrap();
 //!
 //!     // Play some cards
-//!     game.play_card(pos::P0, hands[0].get_card());
+//!     game.play_card(pos::PlayerPos::P0, hands[0].get_card());
 //!     // ...
 //! }
 //! ```

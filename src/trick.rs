@@ -42,13 +42,13 @@ impl Trick {
                      card: cards::Card,
                      trump: cards::Suit)
                      -> bool {
-        self.cards[player.0] = Some(card);
+        self.cards[player as usize] = Some(card);
         if player == self.first {
             return false;
         }
 
         if points::strength(card, trump) >
-           points::strength(self.cards[self.winner.0].unwrap(), trump) {
+           points::strength(self.cards[self.winner as usize].unwrap(), trump) {
             self.winner = player
         }
 
@@ -59,6 +59,6 @@ impl Trick {
     ///
     /// Returns None if the trick hasn't started yet.
     pub fn suit(&self) -> Option<cards::Suit> {
-        self.cards[self.first.0].map(|c| c.suit())
+        self.cards[self.first as usize].map(|c| c.suit())
     }
 }
