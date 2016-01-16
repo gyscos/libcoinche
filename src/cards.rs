@@ -8,32 +8,29 @@ use rustc_serialize;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club.
 #[derive(PartialEq,Clone,Copy,Debug)]
-pub struct Suit(u32);
-
-// TODO: Make these associated const when it's stable
-
-/// The Heart suit
-pub const HEART: Suit = Suit(1 << 0);
-/// The Spade suit
-pub const SPADE: Suit = Suit(1 << 8);
-/// The Diamond suit
-pub const DIAMOND: Suit = Suit(1 << 16);
-/// The Club suit
-pub const CLUB: Suit = Suit(1 << 24);
-
+#[repr(u32)]
+pub enum Suit {
+    Heart = 1 << 0,
+    Spade = 1 << 8,
+    Diamond = 1 << 16,
+    Club = 1 << 24,
+}
 
 impl rustc_serialize::Encodable for Suit {
     fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        match *self {
-            HEART | SPADE | DIAMOND | CLUB => self.0.encode(s),
-            _ => "??".encode(s),
-        }
+        (*self as u32).encode(s)
     }
 }
 
 impl rustc_serialize::Decodable for Suit {
     fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        Ok(Suit(try!(d.read_u32())))
+        match try!(d.read_u32()) {
+            0x00000001 => Ok(Suit::Heart),
+            0x00000100 => Ok(Suit::Spade),
+            0x00010000 => Ok(Suit::Diamond),
+            0x01000000 => Ok(Suit::Club),
+            other => Err(d.error(&format!("unknown suit: {}", other))),
+        }
     }
 }
 
@@ -49,20 +46,22 @@ impl Suit {
     ///
     /// If `n >= 4`.
     pub fn from_n(n: u32) -> Self {
-        if n >= 4 {
-            panic!("Bad suit number");
+        match n {
+            0 => Suit::Heart,
+            1 => Suit::Spade,
+            2 => Suit::Diamond,
+            3 => Suit::Club,
+            other => panic!("bad suit number: {}", other),
         }
-        Suit(1 << 8 * n)
     }
 
     /// Returns a UTF-8 character representing the suit.
     pub fn to_string(self) -> String {
         match self {
-            HEART => "♥",
-            SPADE => "♠",
-            DIAMOND => "♦",
-            CLUB => "♣",
-            _ => "?",
+            Suit::Heart => "♥",
+            Suit::Spade => "♠",
+            Suit::Diamond => "♦",
+            Suit::Club => "♣",
         }
         .to_string()
     }
@@ -73,10 +72,10 @@ impl FromStr for Suit {
 
     fn from_str(s: &str) -> Result<Self, String> {
         match s {
-            "H" | "h" | "heart" | "HEART" | "Heart" => Ok(HEART),
-            "C" | "c" | "club" | "CLUB" | "Club" => Ok(CLUB),
-            "S" | "s" | "spade" | "SPADE" | "Spade" => Ok(SPADE),
-            "D" | "d" | "diamond" | "DIAMOND" | "Diamond" => Ok(DIAMOND),
+            "H" | "h" | "heart" | "Suit::Heart" | "Heart" => Ok(Suit::Heart),
+            "C" | "c" | "club" | "Suit::Club" | "Club" => Ok(Suit::Club),
+            "S" | "s" | "spade" | "Suit::Spade" | "Spade" => Ok(Suit::Spade),
+            "D" | "d" | "diamond" | "Suit::Diamond" | "Diamond" => Ok(Suit::Diamond),
             _ => Err(format!("invalid suit: {}", s)),
         }
     }
@@ -85,25 +84,20 @@ impl FromStr for Suit {
 
 /// Rank of a card in a suit.
 #[derive(PartialEq,Clone,Copy,Debug)]
-pub struct Rank(u32);
-/// 7
-pub const RANK_7: Rank = Rank(1 << 0);
-/// 8
-pub const RANK_8: Rank = Rank(1 << 1);
-/// 9
-pub const RANK_9: Rank = Rank(1 << 2);
-/// Jack
-pub const RANK_J: Rank = Rank(1 << 3);
-/// Queen
-pub const RANK_Q: Rank = Rank(1 << 4);
-/// King
-pub const RANK_K: Rank = Rank(1 << 5);
-/// 10
-pub const RANK_X: Rank = Rank(1 << 6);
-/// Ace
-pub const RANK_A: Rank = Rank(1 << 7);
-/// Bit mask over all ranks
-pub const RANK_MASK: Rank = Rank(255);
+#[repr(u32)]
+pub enum Rank {
+    Rank7 = 1 << 0,
+    Rank8 = 1 << 1,
+    Rank9 = 1 << 2,
+    RankJ = 1 << 3,
+    RankQ = 1 << 4,
+    RankK = 1 << 5,
+    RankX = 1 << 6,
+    RankA = 1 << 7,
+}
+
+/// Bit RANK_MASK over all ranks
+const RANK_MASK: u32 = 255;
 
 impl Rank {
     /// Returns the rank corresponding to the given number:
@@ -121,24 +115,44 @@ impl Rank {
     ///
     /// If `n >= 8`.
     pub fn from_n(n: u32) -> Self {
-        if n >= 8 {
-            panic!("Invalid rank number: {}", n);
+        match n {
+            0 => Rank::Rank7,
+            1 => Rank::Rank8,
+            2 => Rank::Rank9,
+            3 => Rank::RankJ,
+            4 => Rank::RankQ,
+            5 => Rank::RankK,
+            6 => Rank::RankX,
+            7 => Rank::RankA,
+            other => panic!("invalid rank number: {}", other),
         }
-        Rank(1 << n)
+    }
+
+    fn from_discriminant(rank: u32) -> Self {
+        match rank {
+            1 => Rank::Rank7,
+            2 => Rank::Rank8,
+            4 => Rank::Rank9,
+            8 => Rank::RankJ,
+            16 => Rank::RankQ,
+            32 => Rank::RankK,
+            64 => Rank::RankX,
+            128 => Rank::RankA,
+            other => panic!("invalid rank discrimant: {}", other),
+        }
     }
 
     /// Returns a character representing the given rank.
     pub fn to_string(self) -> String {
         match self {
-            RANK_7 => "7",
-            RANK_8 => "8",
-            RANK_9 => "9",
-            RANK_J => "J",
-            RANK_Q => "Q",
-            RANK_K => "K",
-            RANK_X => "X",
-            RANK_A => "A",
-            _ => "?",
+            Rank::Rank7 => "7",
+            Rank::Rank8 => "8",
+            Rank::Rank9 => "9",
+            Rank::RankJ => "J",
+            Rank::RankQ => "Q",
+            Rank::RankK => "K",
+            Rank::RankX => "X",
+            Rank::RankA => "A",
         }
         .to_string()
     }
@@ -189,26 +203,23 @@ impl Card {
 
     /// Returns the card's rank
     pub fn rank(self) -> Rank {
-        let Card(mut v) = self;
-        let mut r: u32 = 0;
-        let Rank(mask) = RANK_MASK;
-
-        r |= mask & v;
-        v = v >> 8;
-        r |= mask & v;
-        v = v >> 8;
-        r |= mask & v;
-        v = v >> 8;
-        r |= v;
-
-        Rank(r)
+        let suit = self.suit();
+        let Card(v) = self;
+        return Rank::from_discriminant(v / suit as u32);
     }
 
     /// Returns the card's suit.
     pub fn suit(self) -> Suit {
-        let Card(v) = self;
-        let Rank(r) = self.rank();
-        Suit(v / r)
+        let Card(n) = self;
+        if n < Suit::Spade as u32 {
+            Suit::Heart
+        } else if n < Suit::Diamond as u32 {
+            Suit::Spade
+        } else if n < Suit::Club as u32 {
+            Suit::Diamond
+        } else {
+            Suit::Club
+        }
     }
 
     /// Returns a string representation of the card.
@@ -220,10 +231,7 @@ impl Card {
 
     /// Creates a card from the given suit and rank
     pub fn new(suit: Suit, rank: Rank) -> Self {
-        let Suit(s) = suit;
-        let Rank(r) = rank;
-
-        Card(s * r)
+        Card(suit as u32 * rank as u32)
     }
 }
 
@@ -278,7 +286,7 @@ impl Hand {
 
     /// Returns `true` if the hand contains any card of the given suit.
     pub fn has_any(self, suit: Suit) -> bool {
-        (self.0 & (RANK_MASK.0 * suit.0)) != 0
+        (self.0 & (RANK_MASK * suit as u32)) != 0
     }
 
     /// Returns `true` if `self` contains no card.
@@ -452,14 +460,14 @@ mod tests {
         let mut hand = Hand::new();
 
         let cards: Vec<Card> = vec![
-            Card::new(HEART, RANK_7),
-            Card::new(HEART, RANK_8),
-            Card::new(SPADE, RANK_9),
-            Card::new(SPADE, RANK_J),
-            Card::new(CLUB, RANK_Q),
-            Card::new(CLUB, RANK_K),
-            Card::new(DIAMOND, RANK_X),
-            Card::new(DIAMOND, RANK_A),
+            Card::new(Suit::Heart, Rank::Rank7),
+            Card::new(Suit::Heart, Rank::Rank8),
+            Card::new(Suit::Spade, Rank::Rank9),
+            Card::new(Suit::Spade, Rank::RankJ),
+            Card::new(Suit::Club, Rank::RankQ),
+            Card::new(Suit::Club, Rank::RankK),
+            Card::new(Suit::Diamond, Rank::RankX),
+            Card::new(Suit::Diamond, Rank::RankA),
         ];
 
         assert!(hand.is_empty());

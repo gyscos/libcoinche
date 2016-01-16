@@ -374,17 +374,17 @@ mod tests {
         assert_eq!(auction.coinche(pos::P2), Err(BidError::TurnError));
 
         // Someone bids.
-        assert_eq!(auction.bid(pos::P3, cards::HEART, Target::Contract80),
+        assert_eq!(auction.bid(pos::P3, cards::Suit::Heart, Target::Contract80),
                    Ok(AuctionState::Bidding));
-        assert_eq!(auction.bid(pos::P0, cards::CLUB, Target::Contract80)
+        assert_eq!(auction.bid(pos::P0, cards::Suit::Club, Target::Contract80)
                           .err(),
                    Some(BidError::NonRaisedTarget));
-        assert_eq!(auction.bid(pos::P1, cards::CLUB, Target::Contract100)
+        assert_eq!(auction.bid(pos::P1, cards::Suit::Club, Target::Contract100)
                           .err(),
                    Some(BidError::TurnError));
         assert_eq!(auction.pass(pos::P0), Ok(AuctionState::Bidding));
         // Partner surbids
-        assert_eq!(auction.bid(pos::P1, cards::HEART, Target::Contract100),
+        assert_eq!(auction.bid(pos::P1, cards::Suit::Heart, Target::Contract100),
                    Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P2), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::P3), Ok(AuctionState::Bidding));

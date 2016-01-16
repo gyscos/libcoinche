@@ -28,8 +28,8 @@ pub fn strength(card: cards::Card, trump: cards::Suit) -> i32 {
 /// If `rank` is invalid.
 pub fn trump_score(rank: cards::Rank) -> i32 {
     match rank {
-        cards::RANK_J => 20,
-        cards::RANK_9 => 14,
+        cards::Rank::RankJ => 20,
+        cards::Rank::Rank9 => 14,
         _ => usual_score(rank),
     }
 }
@@ -40,15 +40,14 @@ pub fn trump_score(rank: cards::Rank) -> i32 {
 /// If `rank` is invalid.
 pub fn usual_score(rank: cards::Rank) -> i32 {
     match rank {
-        cards::RANK_7 => 0,
-        cards::RANK_8 => 0,
-        cards::RANK_9 => 0,
-        cards::RANK_J => 2,
-        cards::RANK_Q => 3,
-        cards::RANK_K => 4,
-        cards::RANK_X => 10,
-        cards::RANK_A => 11,
-        _ => panic!("getting score of invalid card"),
+        cards::Rank::Rank7 => 0,
+        cards::Rank::Rank8 => 0,
+        cards::Rank::Rank9 => 0,
+        cards::Rank::RankJ => 2,
+        cards::Rank::RankQ => 3,
+        cards::Rank::RankK => 4,
+        cards::Rank::RankX => 10,
+        cards::Rank::RankA => 11,
     }
 }
 
@@ -58,15 +57,14 @@ pub fn usual_score(rank: cards::Rank) -> i32 {
 /// If `rank` is invalid.
 pub fn trump_strength(rank: cards::Rank) -> i32 {
     match rank {
-        cards::RANK_7 => 0,
-        cards::RANK_8 => 1,
-        cards::RANK_Q => 2,
-        cards::RANK_K => 3,
-        cards::RANK_X => 4,
-        cards::RANK_A => 5,
-        cards::RANK_9 => 6,
-        cards::RANK_J => 7,
-        _ => panic!("getting strength of invalid card"),
+        cards::Rank::Rank7 => 0,
+        cards::Rank::Rank8 => 1,
+        cards::Rank::RankQ => 2,
+        cards::Rank::RankK => 3,
+        cards::Rank::RankX => 4,
+        cards::Rank::RankA => 5,
+        cards::Rank::Rank9 => 6,
+        cards::Rank::RankJ => 7,
     }
 }
 
@@ -76,14 +74,13 @@ pub fn trump_strength(rank: cards::Rank) -> i32 {
 /// If `rank` is invalid.
 pub fn usual_strength(rank: cards::Rank) -> i32 {
     match rank {
-        cards::RANK_7 => 0,
-        cards::RANK_8 => 1,
-        cards::RANK_9 => 2,
-        cards::RANK_J => 3,
-        cards::RANK_Q => 4,
-        cards::RANK_K => 5,
-        cards::RANK_X => 6,
-        cards::RANK_A => 7,
-        _ => panic!("getting strength of invalid card"),
+        cards::Rank::Rank7 => 0,
+        cards::Rank::Rank8 => 1,
+        cards::Rank::Rank9 => 2,
+        cards::Rank::RankJ => 3,
+        cards::Rank::RankQ => 4,
+        cards::Rank::RankK => 5,
+        cards::Rank::RankX => 6,
+        cards::Rank::RankA => 7,
     }
 }

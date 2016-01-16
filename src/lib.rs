@@ -20,7 +20,7 @@
 //!     let hands = auction.hands();
 //!
 //!     // Players bid or pass
-//!     auction.bid(pos::P0, cards::HEART, bid::Target::Contract80).unwrap();
+//!     auction.bid(pos::P0, cards::Suit::Heart, bid::Target::Contract80).unwrap();
 //!     auction.pass(pos::P1).unwrap();
 //!     auction.pass(pos::P2).unwrap();
 //!     // The result is `Over` when the auction is ready to complete
