@@ -602,6 +602,19 @@
 <span id="559">559</span>
 <span id="560">560</span>
 <span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This module represents a basic, rule-agnostic 32-cards system.</span>
 
@@ -615,9 +628,13 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>u32</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Suit</span> {
+    <span class='doccomment'>/// The suit of hearts</span>
     <span class='ident'>Heart</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>,
+    <span class='doccomment'>/// The suit of spades</span>
     <span class='ident'>Spade</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span>,
+    <span class='doccomment'>/// The suit of diamonds</span>
     <span class='ident'>Diamond</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>16</span>,
+    <span class='doccomment'>/// The suit of clubs</span>
     <span class='ident'>Club</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>24</span>,
 }
 
@@ -691,13 +708,21 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>u32</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Rank</span> {
+    <span class='doccomment'>/// 7</span>
     <span class='ident'>Rank7</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>,
+    <span class='doccomment'>/// 8</span>
     <span class='ident'>Rank8</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span>,
+    <span class='doccomment'>/// 9</span>
     <span class='ident'>Rank9</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>2</span>,
+    <span class='doccomment'>/// Jack</span>
     <span class='ident'>RankJ</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>3</span>,
+    <span class='doccomment'>/// Queen</span>
     <span class='ident'>RankQ</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>4</span>,
+    <span class='doccomment'>/// King</span>
     <span class='ident'>RankK</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>5</span>,
+    <span class='doccomment'>/// 10</span>
     <span class='ident'>RankX</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>6</span>,
+    <span class='doccomment'>/// Ace</span>
     <span class='ident'>RankA</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>7</span>,
 }
 
@@ -733,6 +758,7 @@
         }
     }
 
+    <span class='comment'>// Return the enum by its discriminant.</span>
     <span class='kw'>fn</span> <span class='ident'>from_discriminant</span>(<span class='ident'>rank</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='kw'>match</span> <span class='ident'>rank</span> {
             <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank7</span>,
