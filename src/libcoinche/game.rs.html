@@ -497,6 +497,34 @@
 <span id="454">454</span>
 <span id="455">455</span>
 <span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Module for the card game, after auctions are complete.</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
@@ -604,7 +632,7 @@
         <span class='comment'>// Is that a valid move?</span>
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>can_play</span>(<span class='ident'>player</span>,
                       <span class='ident'>card</span>,
-                      <span class='self'>self</span>.<span class='ident'>players</span>[<span class='ident'>player</span>.<span class='number'>0</span>],
+                      <span class='self'>self</span>.<span class='ident'>players</span>[<span class='ident'>player</span> <span class='kw'>as</span> <span class='ident'>usize</span>],
                       <span class='self'>self</span>.<span class='ident'>current_trick</span>(),
                       <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>trump</span>));
 
@@ -616,10 +644,10 @@
         <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>trick_over</span> {
             <span class='kw'>let</span> <span class='ident'>winner</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>current_trick</span>().<span class='ident'>winner</span>;
             <span class='kw'>let</span> <span class='ident'>score</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>current_trick</span>().<span class='ident'>score</span>(<span class='ident'>trump</span>);
-            <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>winner</span>.<span class='ident'>team</span>().<span class='number'>0</span>] <span class='op'>+=</span> <span class='ident'>score</span>;
+            <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>winner</span>.<span class='ident'>team</span>() <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>+=</span> <span class='ident'>score</span>;
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>8</span> {
                 <span class='comment'>// 10 de der</span>
-                <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>winner</span>.<span class='ident'>team</span>().<span class='number'>0</span>] <span class='op'>+=</span> <span class='number'>10</span>;
+                <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>winner</span>.<span class='ident'>team</span>() <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>+=</span> <span class='number'>10</span>;
             } <span class='kw'>else</span> {
                 <span class='self'>self</span>.<span class='ident'>tricks</span>.<span class='ident'>push</span>(<span class='ident'>trick</span>::<span class='ident'>Trick</span>::<span class='ident'>new</span>(<span class='ident'>winner</span>));
             }
@@ -645,7 +673,7 @@
         }
 
         <span class='kw'>let</span> <span class='ident'>taking_team</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>author</span>.<span class='ident'>team</span>();
-        <span class='kw'>let</span> <span class='ident'>taking_points</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>taking_team</span>.<span class='number'>0</span>];
+        <span class='kw'>let</span> <span class='ident'>taking_points</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>points</span>[<span class='ident'>taking_team</span> <span class='kw'>as</span> <span class='ident'>usize</span>];
 
         <span class='kw'>let</span> <span class='ident'>capot</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>is_capot</span>(<span class='ident'>taking_team</span>);
 
@@ -660,9 +688,9 @@
         <span class='comment'>// TODO: Allow for variants in scoring. (See wikipedia article)</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>scores</span> <span class='op'>=</span> [<span class='number'>0</span>; <span class='number'>2</span>];
         <span class='kw'>if</span> <span class='ident'>victory</span> {
-            <span class='ident'>scores</span>[<span class='ident'>winners</span>.<span class='number'>0</span>] <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>target</span>.<span class='ident'>score</span>();
+            <span class='ident'>scores</span>[<span class='ident'>winners</span> <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>contract</span>.<span class='ident'>target</span>.<span class='ident'>score</span>();
         } <span class='kw'>else</span> {
-            <span class='ident'>scores</span>[<span class='ident'>winners</span>.<span class='number'>0</span>] <span class='op'>=</span> <span class='number'>160</span>;
+            <span class='ident'>scores</span>[<span class='ident'>winners</span> <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>=</span> <span class='number'>160</span>;
         }
 
         <span class='ident'>GameResult</span>::<span class='ident'>GameOver</span> {
@@ -772,8 +800,8 @@
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>highest</span> <span class='op'>=</span> <span class='op'>-</span><span class='number'>1</span>;
 
     <span class='kw'>for</span> <span class='ident'>p</span> <span class='kw'>in</span> <span class='ident'>trick</span>.<span class='ident'>first</span>.<span class='ident'>until</span>(<span class='ident'>player</span>) {
-        <span class='kw'>if</span> <span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>().<span class='ident'>suit</span>() <span class='op'>==</span> <span class='ident'>trump</span> {
-            <span class='kw'>let</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>().<span class='ident'>rank</span>());
+        <span class='kw'>if</span> <span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span> <span class='kw'>as</span> <span class='ident'>usize</span>].<span class='ident'>unwrap</span>().<span class='ident'>suit</span>() <span class='op'>==</span> <span class='ident'>trump</span> {
+            <span class='kw'>let</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>trick</span>.<span class='ident'>cards</span>[<span class='ident'>p</span> <span class='kw'>as</span> <span class='ident'>usize</span>].<span class='ident'>unwrap</span>().<span class='ident'>rank</span>());
             <span class='kw'>if</span> <span class='ident'>str</span> <span class='op'>&gt;</span> <span class='ident'>highest</span> {
                 <span class='ident'>highest</span> <span class='op'>=</span> <span class='ident'>str</span>;
             }
@@ -792,74 +820,92 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_play_card</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hands</span> <span class='op'>=</span> [<span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>(); <span class='number'>4</span>];
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_A</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_9</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_9</span>));
-        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span>));
+        <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
 
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_K</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_A</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_9</span>));
-        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span>));
+        <span class='ident'>hands</span>[<span class='number'>1</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
 
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_9</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_K</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>));
-        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_K</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>));
+        <span class='ident'>hands</span>[<span class='number'>2</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span>));
 
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_K</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_A</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_A</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>));
-        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>));
+        <span class='ident'>hands</span>[<span class='number'>3</span>].<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
 
         <span class='kw'>let</span> <span class='ident'>contract</span> <span class='op'>=</span> <span class='ident'>bid</span>::<span class='ident'>Contract</span> {
-            <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>HEART</span>,
-            <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>P0</span>,
+            <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>,
+            <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>,
             <span class='ident'>target</span>: <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>,
             <span class='ident'>coinche_level</span>: <span class='number'>0</span>,
         };
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>, <span class='ident'>contract</span>);
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>, <span class='ident'>contract</span>);
 
         <span class='comment'>// Wrong turn</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>)).<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>))
+                       .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>TurnError</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>ok</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>))
+                       .<span class='ident'>ok</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// Card missing</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>))
+                       .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>CardMissing</span>));
         <span class='comment'>// Wrong color</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>))
+                       .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>IncorrectSuit</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>))
+                       .<span class='ident'>ok</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// Invalid piss</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>))
+                       .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>InvalidPiss</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)).<span class='ident'>ok</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>))
+                       .<span class='ident'>ok</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>Nothing</span>));
         <span class='comment'>// UnderTrump</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)).<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>))
+                       .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>PlayError</span>::<span class='ident'>NonRaisedTrump</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>)).<span class='ident'>ok</span>(),
-                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>TrickOver</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>game</span>.<span class='ident'>get_game_result</span>())));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>,
+                                  <span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>))
+                       .<span class='ident'>ok</span>(),
+                   <span class='prelude-val'>Some</span>(<span class='ident'>TrickResult</span>::<span class='ident'>TrickOver</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>, <span class='ident'>game</span>.<span class='ident'>get_game_result</span>())));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -867,9 +913,11 @@
         <span class='comment'>// Simple case: X is always higher than Q.</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>has_higher</span>(<span class='ident'>hand</span>,
+                           <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>,
+                           <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>)));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -877,9 +925,11 @@
         <span class='comment'>// Test that we don&#39;t mix colors</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>RANK_Q</span>)));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>,
+                            <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>,
+                            <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span>)));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -887,9 +937,11 @@
         <span class='comment'>// In the trump order, X is lower than 9</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_X</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>RANK_9</span>)));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span>));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>,
+                            <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>,
+                            <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span>)));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -897,9 +949,11 @@
         <span class='comment'>// In the trump order, J is higher than A</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_8</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>RANK_A</span>)));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>has_higher</span>(<span class='ident'>hand</span>,
+                           <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>,
+                           <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span>)));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -907,10 +961,12 @@
         <span class='comment'>// Test when we have no trump at all</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>cards</span>::<span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>DIAMOND</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>SPADE</span>, <span class='ident'>cards</span>::<span class='ident'>RANK_J</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>, <span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>RANK_7</span>)));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='ident'>cards</span>::<span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span>));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>has_higher</span>(<span class='ident'>hand</span>,
+                            <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>,
+                            <span class='ident'>points</span>::<span class='ident'>trump_strength</span>(<span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span>)));
     }
 }
 
@@ -928,7 +984,7 @@
 
         <span class='kw'>fn</span> <span class='ident'>try_deeper</span>(<span class='ident'>game</span>: <span class='kw-2'>&amp;</span><span class='ident'>GameState</span>, <span class='ident'>depth</span>: <span class='ident'>usize</span>) {
             <span class='kw'>let</span> <span class='ident'>player</span> <span class='op'>=</span> <span class='ident'>game</span>.<span class='ident'>next_player</span>();
-            <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>game</span>.<span class='ident'>hands</span>()[<span class='ident'>player</span>.<span class='number'>0</span>].<span class='ident'>list</span>() {
+            <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>game</span>.<span class='ident'>hands</span>()[<span class='ident'>player</span> <span class='kw'>as</span> <span class='ident'>usize</span>].<span class='ident'>list</span>() {
                 <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>new_game</span> <span class='op'>=</span> <span class='ident'>game</span>.<span class='ident'>clone</span>();
                 <span class='kw'>match</span> <span class='ident'>new_game</span>.<span class='ident'>play_card</span>(<span class='ident'>player</span>, <span class='ident'>c</span>) {
                     <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> {
@@ -943,11 +999,11 @@
 
         <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span>[<span class='number'>3</span>, <span class='number'>32</span>, <span class='number'>654</span>, <span class='number'>1</span>, <span class='number'>844</span>];
         <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>deal_seeded_hands</span>(<span class='ident'>seed</span>);
-        <span class='kw'>let</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>,
+        <span class='kw'>let</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>GameState</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>,
                                   <span class='ident'>hands</span>,
                                   <span class='ident'>bid</span>::<span class='ident'>Contract</span> {
-                                      <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>P0</span>,
-                                      <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>HEART</span>,
+                                      <span class='ident'>author</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>,
+                                      <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>,
                                       <span class='ident'>target</span>: <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>,
                                       <span class='ident'>coinche_level</span>: <span class='number'>0</span>,
                                   });

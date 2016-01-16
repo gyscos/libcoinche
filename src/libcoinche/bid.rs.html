@@ -441,6 +441,7 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
+<span id="401">401</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Auctions and bidding during the first phase of the game.</span>
 
@@ -689,28 +690,28 @@
                <span class='ident'>pos</span>: <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>,
                <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>,
                <span class='ident'>target</span>: <span class='ident'>Target</span>)
-        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>AuctionState</span>, <span class='ident'>BidError</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='ident'>pos</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>next_player</span>() {
-                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>);
-            }
-
-            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>can_bid</span>(<span class='ident'>target</span>) {
-                <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>),
-                <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> (),
-            }
-
-            <span class='comment'>// If we&#39;re all the way to the top, there&#39;s nowhere else to go</span>
-            <span class='kw'>if</span> <span class='ident'>target</span> <span class='op'>==</span> <span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> {
-                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>AuctionState</span>::<span class='ident'>Coinching</span>;
-            }
-
-            <span class='kw'>let</span> <span class='ident'>contract</span> <span class='op'>=</span> <span class='ident'>Contract</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>, <span class='ident'>trump</span>, <span class='ident'>target</span>);
-            <span class='self'>self</span>.<span class='ident'>history</span>.<span class='ident'>push</span>(<span class='ident'>contract</span>);
-            <span class='self'>self</span>.<span class='ident'>pass_count</span> <span class='op'>=</span> <span class='number'>0</span>;
-
-            <span class='comment'>// Only stops the bids if the guy asked for a capot</span>
-            <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>state</span>)
+               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>AuctionState</span>, <span class='ident'>BidError</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>pos</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>next_player</span>() {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>);
         }
+
+        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>can_bid</span>(<span class='ident'>target</span>) {
+            <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>),
+            <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> (),
+        }
+
+        <span class='comment'>// If we&#39;re all the way to the top, there&#39;s nowhere else to go</span>
+        <span class='kw'>if</span> <span class='ident'>target</span> <span class='op'>==</span> <span class='ident'>Target</span>::<span class='ident'>ContractCapot</span> {
+            <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>AuctionState</span>::<span class='ident'>Coinching</span>;
+        }
+
+        <span class='kw'>let</span> <span class='ident'>contract</span> <span class='op'>=</span> <span class='ident'>Contract</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>, <span class='ident'>trump</span>, <span class='ident'>target</span>);
+        <span class='self'>self</span>.<span class='ident'>history</span>.<span class='ident'>push</span>(<span class='ident'>contract</span>);
+        <span class='self'>self</span>.<span class='ident'>pass_count</span> <span class='op'>=</span> <span class='number'>0</span>;
+
+        <span class='comment'>// Only stops the bids if the guy asked for a capot</span>
+        <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>state</span>)
+    }
 
     <span class='doccomment'>/// Look at the last offered contract.</span>
     <span class='doccomment'>///</span>
@@ -805,34 +806,35 @@
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_auction</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>auction</span> <span class='op'>=</span> <span class='ident'>Auction</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>(<span class='number'>0</span>));
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>auction</span> <span class='op'>=</span> <span class='ident'>Auction</span>::<span class='ident'>new</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>);
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>);
 
         <span class='comment'>// First three people pass.</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>), <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>coinche</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>), <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>coinche</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>),
+                   <span class='prelude-val'>Err</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
 
         <span class='comment'>// Someone bids.</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>),
-        <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>)
-                   .<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>, <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>),
+                   <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>Target</span>::<span class='ident'>Contract80</span>)
+                          .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>BidError</span>::<span class='ident'>NonRaisedTarget</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>CLUB</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>)
-                   .<span class='ident'>err</span>(),
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>)
+                          .<span class='ident'>err</span>(),
                    <span class='prelude-val'>Some</span>(<span class='ident'>BidError</span>::<span class='ident'>TurnError</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
         <span class='comment'>// Partner surbids</span>
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>),
-        <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Over</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>, <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>Target</span>::<span class='ident'>Contract100</span>),
+                   <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Bidding</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>), <span class='prelude-val'>Ok</span>(<span class='ident'>AuctionState</span>::<span class='ident'>Over</span>));
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>auction</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>AuctionState</span>::<span class='ident'>Over</span>);
 

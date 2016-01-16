@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["P0","Player 0"],["P1","Player 1"],["P2","Player 2"],["P3","Player 3"]],"struct":[["PlayerIterator","Iterates on players"],["PlayerPos","A position in the table"],["Team","One of two teams"]]});
+initSidebarItems({"enum":[["PlayerPos","A position in the table"],["Team","One of two teams"]],"struct":[["PlayerIterator","Iterates on players"]]});

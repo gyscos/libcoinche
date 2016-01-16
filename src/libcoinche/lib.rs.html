@@ -161,7 +161,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! fn main() {</span>
 <span class='doccomment'>//!     // The first player</span>
-<span class='doccomment'>//!     let first = pos::P0;</span>
+<span class='doccomment'>//!     let first = pos::PlayerPos::P0;</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//!     // Start the first phase with an auction</span>
 <span class='doccomment'>//!     let mut auction = bid::Auction::new(first);</span>
@@ -170,11 +170,11 @@
 <span class='doccomment'>//!     let hands = auction.hands();</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//!     // Players bid or pass</span>
-<span class='doccomment'>//!     auction.bid(pos::P0, cards::HEART, bid::Target::Contract80).unwrap();</span>
-<span class='doccomment'>//!     auction.pass(pos::P1).unwrap();</span>
-<span class='doccomment'>//!     auction.pass(pos::P2).unwrap();</span>
+<span class='doccomment'>//!     auction.bid(pos::PlayerPos::P0, cards::Suit::Heart, bid::Target::Contract80).unwrap();</span>
+<span class='doccomment'>//!     auction.pass(pos::PlayerPos::P1).unwrap();</span>
+<span class='doccomment'>//!     auction.pass(pos::PlayerPos::P2).unwrap();</span>
 <span class='doccomment'>//!     // The result is `Over` when the auction is ready to complete</span>
-<span class='doccomment'>//!     match auction.pass(pos::P3) {</span>
+<span class='doccomment'>//!     match auction.pass(pos::PlayerPos::P3) {</span>
 <span class='doccomment'>//!         Ok(bid::AuctionState::Over) =&gt; (),</span>
 <span class='doccomment'>//!         _ =&gt; panic!(&quot;Should not happen&quot;),</span>
 <span class='doccomment'>//!     };</span>
@@ -183,7 +183,7 @@
 <span class='doccomment'>//!     let mut game = auction.complete().unwrap();</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//!     // Play some cards</span>
-<span class='doccomment'>//!     game.play_card(pos::P0, hands[0].get_card());</span>
+<span class='doccomment'>//!     game.play_card(pos::PlayerPos::P0, hands[0].get_card());</span>
 <span class='doccomment'>//!     // ...</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//! ```</span>

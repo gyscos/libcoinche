@@ -150,13 +150,13 @@
                      <span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>,
                      <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>)
                      <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='ident'>player</span>.<span class='number'>0</span>] <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>card</span>);
+        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='ident'>player</span> <span class='kw'>as</span> <span class='ident'>usize</span>] <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>card</span>);
         <span class='kw'>if</span> <span class='ident'>player</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>first</span> {
             <span class='kw'>return</span> <span class='boolval'>false</span>;
         }
 
         <span class='kw'>if</span> <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='ident'>card</span>, <span class='ident'>trump</span>) <span class='op'>&gt;</span>
-           <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>winner</span>.<span class='number'>0</span>].<span class='ident'>unwrap</span>(), <span class='ident'>trump</span>) {
+           <span class='ident'>points</span>::<span class='ident'>strength</span>(<span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>winner</span> <span class='kw'>as</span> <span class='ident'>usize</span>].<span class='ident'>unwrap</span>(), <span class='ident'>trump</span>) {
             <span class='self'>self</span>.<span class='ident'>winner</span> <span class='op'>=</span> <span class='ident'>player</span>
         }
 
@@ -167,7 +167,7 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Returns None if the trick hasn&#39;t started yet.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>suit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>cards</span>::<span class='ident'>Suit</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>first</span>.<span class='number'>0</span>].<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>c</span>.<span class='ident'>suit</span>())
+        <span class='self'>self</span>.<span class='ident'>cards</span>[<span class='self'>self</span>.<span class='ident'>first</span> <span class='kw'>as</span> <span class='ident'>usize</span>].<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> <span class='ident'>c</span>.<span class='ident'>suit</span>())
     }
 }
 </pre>

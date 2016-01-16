@@ -593,6 +593,15 @@
 <span id="550">550</span>
 <span id="551">551</span>
 <span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This module represents a basic, rule-agnostic 32-cards system.</span>
 
@@ -604,32 +613,29 @@
 
 <span class='doccomment'>/// One of the four Suits: Heart, Spade, Diamond, Club.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Suit</span>(<span class='ident'>u32</span>);
-
-<span class='comment'>// TODO: Make these associated const when it&#39;s stable</span>
-
-<span class='doccomment'>/// The Heart suit</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>HEART</span>: <span class='ident'>Suit</span> <span class='op'>=</span> <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>);
-<span class='doccomment'>/// The Spade suit</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>SPADE</span>: <span class='ident'>Suit</span> <span class='op'>=</span> <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span>);
-<span class='doccomment'>/// The Diamond suit</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>DIAMOND</span>: <span class='ident'>Suit</span> <span class='op'>=</span> <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>16</span>);
-<span class='doccomment'>/// The Club suit</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>CLUB</span>: <span class='ident'>Suit</span> <span class='op'>=</span> <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>24</span>);
-
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>u32</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Suit</span> {
+    <span class='ident'>Heart</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>,
+    <span class='ident'>Spade</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span>,
+    <span class='ident'>Diamond</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>16</span>,
+    <span class='ident'>Club</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>24</span>,
+}
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Encodable</span> <span class='kw'>for</span> <span class='ident'>Suit</span> {
     <span class='kw'>fn</span> <span class='ident'>encode</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Encoder</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>s</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>HEART</span> <span class='op'>|</span> <span class='ident'>SPADE</span> <span class='op'>|</span> <span class='ident'>DIAMOND</span> <span class='op'>|</span> <span class='ident'>CLUB</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>encode</span>(<span class='ident'>s</span>),
-            _ <span class='op'>=&gt;</span> <span class='string'>&quot;??&quot;</span>.<span class='ident'>encode</span>(<span class='ident'>s</span>),
-        }
+        (<span class='op'>*</span><span class='self'>self</span> <span class='kw'>as</span> <span class='ident'>u32</span>).<span class='ident'>encode</span>(<span class='ident'>s</span>)
     }
 }
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Suit</span> {
     <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>d</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_u32</span>())))
+        <span class='kw'>match</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>d</span>.<span class='ident'>read_u32</span>()) {
+            <span class='number'>0x00000001</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Heart</span>),
+            <span class='number'>0x00000100</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Spade</span>),
+            <span class='number'>0x00010000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>),
+            <span class='number'>0x01000000</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Club</span>),
+            <span class='ident'>other</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>d</span>.<span class='ident'>error</span>(<span class='kw-2'>&amp;</span><span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;unknown suit: {}&quot;</span>, <span class='ident'>other</span>))),
+        }
     }
 }
 
@@ -645,20 +651,22 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// If `n &gt;= 4`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_n</span>(<span class='ident'>n</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>4</span> {
-            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Bad suit number&quot;</span>);
+        <span class='kw'>match</span> <span class='ident'>n</span> {
+            <span class='number'>0</span> <span class='op'>=&gt;</span> <span class='ident'>Suit</span>::<span class='ident'>Heart</span>,
+            <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>Suit</span>::<span class='ident'>Spade</span>,
+            <span class='number'>2</span> <span class='op'>=&gt;</span> <span class='ident'>Suit</span>::<span class='ident'>Diamond</span>,
+            <span class='number'>3</span> <span class='op'>=&gt;</span> <span class='ident'>Suit</span>::<span class='ident'>Club</span>,
+            <span class='ident'>other</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;bad suit number: {}&quot;</span>, <span class='ident'>other</span>),
         }
-        <span class='ident'>Suit</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span> <span class='op'>*</span> <span class='ident'>n</span>)
     }
 
     <span class='doccomment'>/// Returns a UTF-8 character representing the suit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>HEART</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♥&quot;</span>,
-            <span class='ident'>SPADE</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♠&quot;</span>,
-            <span class='ident'>DIAMOND</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♦&quot;</span>,
-            <span class='ident'>CLUB</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♣&quot;</span>,
-            _ <span class='op'>=&gt;</span> <span class='string'>&quot;?&quot;</span>,
+            <span class='ident'>Suit</span>::<span class='ident'>Heart</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♥&quot;</span>,
+            <span class='ident'>Suit</span>::<span class='ident'>Spade</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♠&quot;</span>,
+            <span class='ident'>Suit</span>::<span class='ident'>Diamond</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♦&quot;</span>,
+            <span class='ident'>Suit</span>::<span class='ident'>Club</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♣&quot;</span>,
         }
         .<span class='ident'>to_string</span>()
     }
@@ -669,10 +677,10 @@
 
     <span class='kw'>fn</span> <span class='ident'>from_str</span>(<span class='ident'>s</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>String</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='ident'>s</span> {
-            <span class='string'>&quot;H&quot;</span> <span class='op'>|</span> <span class='string'>&quot;h&quot;</span> <span class='op'>|</span> <span class='string'>&quot;heart&quot;</span> <span class='op'>|</span> <span class='string'>&quot;HEART&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Heart&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>HEART</span>),
-            <span class='string'>&quot;C&quot;</span> <span class='op'>|</span> <span class='string'>&quot;c&quot;</span> <span class='op'>|</span> <span class='string'>&quot;club&quot;</span> <span class='op'>|</span> <span class='string'>&quot;CLUB&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Club&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>CLUB</span>),
-            <span class='string'>&quot;S&quot;</span> <span class='op'>|</span> <span class='string'>&quot;s&quot;</span> <span class='op'>|</span> <span class='string'>&quot;spade&quot;</span> <span class='op'>|</span> <span class='string'>&quot;SPADE&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Spade&quot;</span>  <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>SPADE</span>),
-            <span class='string'>&quot;D&quot;</span> <span class='op'>|</span> <span class='string'>&quot;d&quot;</span> <span class='op'>|</span> <span class='string'>&quot;diamond&quot;</span> <span class='op'>|</span> <span class='string'>&quot;DIAMOND&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Diamond&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>DIAMOND</span>),
+            <span class='string'>&quot;H&quot;</span> <span class='op'>|</span> <span class='string'>&quot;h&quot;</span> <span class='op'>|</span> <span class='string'>&quot;heart&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Suit::Heart&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Heart&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Heart</span>),
+            <span class='string'>&quot;C&quot;</span> <span class='op'>|</span> <span class='string'>&quot;c&quot;</span> <span class='op'>|</span> <span class='string'>&quot;club&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Suit::Club&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Club&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Club</span>),
+            <span class='string'>&quot;S&quot;</span> <span class='op'>|</span> <span class='string'>&quot;s&quot;</span> <span class='op'>|</span> <span class='string'>&quot;spade&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Suit::Spade&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Spade&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Spade</span>),
+            <span class='string'>&quot;D&quot;</span> <span class='op'>|</span> <span class='string'>&quot;d&quot;</span> <span class='op'>|</span> <span class='string'>&quot;diamond&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Suit::Diamond&quot;</span> <span class='op'>|</span> <span class='string'>&quot;Diamond&quot;</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>),
             _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;invalid suit: {}&quot;</span>, <span class='ident'>s</span>)),
         }
     }
@@ -681,25 +689,20 @@
 
 <span class='doccomment'>/// Rank of a card in a suit.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Rank</span>(<span class='ident'>u32</span>);
-<span class='doccomment'>/// 7</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_7</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>);
-<span class='doccomment'>/// 8</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_8</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span>);
-<span class='doccomment'>/// 9</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_9</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>2</span>);
-<span class='doccomment'>/// Jack</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_J</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>3</span>);
-<span class='doccomment'>/// Queen</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_Q</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>4</span>);
-<span class='doccomment'>/// King</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_K</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>5</span>);
-<span class='doccomment'>/// 10</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_X</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>6</span>);
-<span class='doccomment'>/// Ace</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_A</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>7</span>);
-<span class='doccomment'>/// Bit mask over all ranks</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>RANK_MASK</span>: <span class='ident'>Rank</span> <span class='op'>=</span> <span class='ident'>Rank</span>(<span class='number'>255</span>);
+<span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>u32</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Rank</span> {
+    <span class='ident'>Rank7</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>,
+    <span class='ident'>Rank8</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>1</span>,
+    <span class='ident'>Rank9</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>2</span>,
+    <span class='ident'>RankJ</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>3</span>,
+    <span class='ident'>RankQ</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>4</span>,
+    <span class='ident'>RankK</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>5</span>,
+    <span class='ident'>RankX</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>6</span>,
+    <span class='ident'>RankA</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>7</span>,
+}
+
+<span class='doccomment'>/// Bit RANK_MASK over all ranks</span>
+<span class='kw'>const</span> <span class='ident'>RANK_MASK</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>255</span>;
 
 <span class='kw'>impl</span> <span class='ident'>Rank</span> {
     <span class='doccomment'>/// Returns the rank corresponding to the given number:</span>
@@ -717,24 +720,44 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// If `n &gt;= 8`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_n</span>(<span class='ident'>n</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='number'>8</span> {
-            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid rank number: {}&quot;</span>, <span class='ident'>n</span>);
+        <span class='kw'>match</span> <span class='ident'>n</span> {
+            <span class='number'>0</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank7</span>,
+            <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank8</span>,
+            <span class='number'>2</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank9</span>,
+            <span class='number'>3</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankJ</span>,
+            <span class='number'>4</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankQ</span>,
+            <span class='number'>5</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankK</span>,
+            <span class='number'>6</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankX</span>,
+            <span class='number'>7</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankA</span>,
+            <span class='ident'>other</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;invalid rank number: {}&quot;</span>, <span class='ident'>other</span>),
         }
-        <span class='ident'>Rank</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>n</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>from_discriminant</span>(<span class='ident'>rank</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+        <span class='kw'>match</span> <span class='ident'>rank</span> {
+            <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank7</span>,
+            <span class='number'>2</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank8</span>,
+            <span class='number'>4</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>Rank9</span>,
+            <span class='number'>8</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankJ</span>,
+            <span class='number'>16</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankQ</span>,
+            <span class='number'>32</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankK</span>,
+            <span class='number'>64</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankX</span>,
+            <span class='number'>128</span> <span class='op'>=&gt;</span> <span class='ident'>Rank</span>::<span class='ident'>RankA</span>,
+            <span class='ident'>other</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;invalid rank discrimant: {}&quot;</span>, <span class='ident'>other</span>),
+        }
     }
 
     <span class='doccomment'>/// Returns a character representing the given rank.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>RANK_7</span> <span class='op'>=&gt;</span> <span class='string'>&quot;7&quot;</span>,
-            <span class='ident'>RANK_8</span> <span class='op'>=&gt;</span> <span class='string'>&quot;8&quot;</span>,
-            <span class='ident'>RANK_9</span> <span class='op'>=&gt;</span> <span class='string'>&quot;9&quot;</span>,
-            <span class='ident'>RANK_J</span> <span class='op'>=&gt;</span> <span class='string'>&quot;J&quot;</span>,
-            <span class='ident'>RANK_Q</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Q&quot;</span>,
-            <span class='ident'>RANK_K</span> <span class='op'>=&gt;</span> <span class='string'>&quot;K&quot;</span>,
-            <span class='ident'>RANK_X</span> <span class='op'>=&gt;</span> <span class='string'>&quot;X&quot;</span>,
-            <span class='ident'>RANK_A</span> <span class='op'>=&gt;</span> <span class='string'>&quot;A&quot;</span>,
-            _ <span class='op'>=&gt;</span> <span class='string'>&quot;?&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>Rank7</span> <span class='op'>=&gt;</span> <span class='string'>&quot;7&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>Rank8</span> <span class='op'>=&gt;</span> <span class='string'>&quot;8&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>Rank9</span> <span class='op'>=&gt;</span> <span class='string'>&quot;9&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>RankJ</span> <span class='op'>=&gt;</span> <span class='string'>&quot;J&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>RankQ</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Q&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>RankK</span> <span class='op'>=&gt;</span> <span class='string'>&quot;K&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>RankX</span> <span class='op'>=&gt;</span> <span class='string'>&quot;X&quot;</span>,
+            <span class='ident'>Rank</span>::<span class='ident'>RankA</span> <span class='op'>=&gt;</span> <span class='string'>&quot;A&quot;</span>,
         }
         .<span class='ident'>to_string</span>()
     }
@@ -745,6 +768,7 @@
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Card</span>(<span class='ident'>u32</span>);
 
 <span class='comment'>// TODO: Add card constants? (8 of heart, Queen of spades, ...?)</span>
+<span class='comment'>// (As associated constants when it&#39;s stable?)</span>
 
 <span class='kw'>impl</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Encodable</span> <span class='kw'>for</span> <span class='ident'>Card</span> {
     <span class='kw'>fn</span> <span class='ident'>encode</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>rustc_serialize</span>::<span class='ident'>Encoder</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>s</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
@@ -785,26 +809,23 @@
 
     <span class='doccomment'>/// Returns the card&#39;s rank</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rank</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Rank</span> {
-        <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='kw-2'>mut</span> <span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>r</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>0</span>;
-        <span class='kw'>let</span> <span class='ident'>Rank</span>(<span class='ident'>mask</span>) <span class='op'>=</span> <span class='ident'>RANK_MASK</span>;
-
-        <span class='ident'>r</span> <span class='op'>|=</span> <span class='ident'>mask</span> <span class='kw-2'>&amp;</span> <span class='ident'>v</span>;
-        <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>v</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>;
-        <span class='ident'>r</span> <span class='op'>|=</span> <span class='ident'>mask</span> <span class='kw-2'>&amp;</span> <span class='ident'>v</span>;
-        <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>v</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>;
-        <span class='ident'>r</span> <span class='op'>|=</span> <span class='ident'>mask</span> <span class='kw-2'>&amp;</span> <span class='ident'>v</span>;
-        <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>v</span> <span class='op'>&gt;&gt;</span> <span class='number'>8</span>;
-        <span class='ident'>r</span> <span class='op'>|=</span> <span class='ident'>v</span>;
-
-        <span class='ident'>Rank</span>(<span class='ident'>r</span>)
+        <span class='kw'>let</span> <span class='ident'>suit</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>suit</span>();
+        <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
+        <span class='kw'>return</span> <span class='ident'>Rank</span>::<span class='ident'>from_discriminant</span>(<span class='ident'>v</span> <span class='op'>/</span> <span class='ident'>suit</span> <span class='kw'>as</span> <span class='ident'>u32</span>);
     }
 
     <span class='doccomment'>/// Returns the card&#39;s suit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>suit</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Suit</span> {
-        <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
-        <span class='kw'>let</span> <span class='ident'>Rank</span>(<span class='ident'>r</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rank</span>();
-        <span class='ident'>Suit</span>(<span class='ident'>v</span> <span class='op'>/</span> <span class='ident'>r</span>)
+        <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='ident'>n</span>) <span class='op'>=</span> <span class='self'>self</span>;
+        <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&lt;</span> <span class='ident'>Suit</span>::<span class='ident'>Spade</span> <span class='kw'>as</span> <span class='ident'>u32</span> {
+            <span class='ident'>Suit</span>::<span class='ident'>Heart</span>
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&lt;</span> <span class='ident'>Suit</span>::<span class='ident'>Diamond</span> <span class='kw'>as</span> <span class='ident'>u32</span> {
+            <span class='ident'>Suit</span>::<span class='ident'>Spade</span>
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&lt;</span> <span class='ident'>Suit</span>::<span class='ident'>Club</span> <span class='kw'>as</span> <span class='ident'>u32</span> {
+            <span class='ident'>Suit</span>::<span class='ident'>Diamond</span>
+        } <span class='kw'>else</span> {
+            <span class='ident'>Suit</span>::<span class='ident'>Club</span>
+        }
     }
 
     <span class='doccomment'>/// Returns a string representation of the card.</span>
@@ -816,10 +837,7 @@
 
     <span class='doccomment'>/// Creates a card from the given suit and rank</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>suit</span>: <span class='ident'>Suit</span>, <span class='ident'>rank</span>: <span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='kw'>let</span> <span class='ident'>Suit</span>(<span class='ident'>s</span>) <span class='op'>=</span> <span class='ident'>suit</span>;
-        <span class='kw'>let</span> <span class='ident'>Rank</span>(<span class='ident'>r</span>) <span class='op'>=</span> <span class='ident'>rank</span>;
-
-        <span class='ident'>Card</span>(<span class='ident'>s</span> <span class='op'>*</span> <span class='ident'>r</span>)
+        <span class='ident'>Card</span>(<span class='ident'>suit</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>*</span> <span class='ident'>rank</span> <span class='kw'>as</span> <span class='ident'>u32</span>)
     }
 }
 
@@ -874,7 +892,7 @@
 
     <span class='doccomment'>/// Returns `true` if the hand contains any card of the given suit.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_any</span>(<span class='self'>self</span>, <span class='ident'>suit</span>: <span class='ident'>Suit</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        (<span class='self'>self</span>.<span class='number'>0</span> <span class='kw-2'>&amp;</span> (<span class='ident'>RANK_MASK</span>.<span class='number'>0</span> <span class='op'>*</span> <span class='ident'>suit</span>.<span class='number'>0</span>)) <span class='op'>!=</span> <span class='number'>0</span>
+        (<span class='self'>self</span>.<span class='number'>0</span> <span class='kw-2'>&amp;</span> (<span class='ident'>RANK_MASK</span> <span class='op'>*</span> <span class='ident'>suit</span> <span class='kw'>as</span> <span class='ident'>u32</span>)) <span class='op'>!=</span> <span class='number'>0</span>
     }
 
     <span class='doccomment'>/// Returns `true` if `self` contains no card.</span>
@@ -1048,14 +1066,14 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hand</span> <span class='op'>=</span> <span class='ident'>Hand</span>::<span class='ident'>new</span>();
 
         <span class='kw'>let</span> <span class='ident'>cards</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Card</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>HEART</span>, <span class='ident'>RANK_7</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>HEART</span>, <span class='ident'>RANK_8</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>SPADE</span>, <span class='ident'>RANK_9</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>SPADE</span>, <span class='ident'>RANK_J</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>CLUB</span>, <span class='ident'>RANK_Q</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>CLUB</span>, <span class='ident'>RANK_K</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>DIAMOND</span>, <span class='ident'>RANK_X</span>),
-            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>DIAMOND</span>, <span class='ident'>RANK_A</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>Rank</span>::<span class='ident'>Rank7</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>Rank</span>::<span class='ident'>Rank8</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>Rank</span>::<span class='ident'>Rank9</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Spade</span>, <span class='ident'>Rank</span>::<span class='ident'>RankJ</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>Rank</span>::<span class='ident'>RankQ</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Club</span>, <span class='ident'>Rank</span>::<span class='ident'>RankK</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>Rank</span>::<span class='ident'>RankX</span>),
+            <span class='ident'>Card</span>::<span class='ident'>new</span>(<span class='ident'>Suit</span>::<span class='ident'>Diamond</span>, <span class='ident'>Rank</span>::<span class='ident'>RankA</span>),
         ];
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hand</span>.<span class='ident'>is_empty</span>());
@@ -1125,18 +1143,18 @@
         <span class='kw'>let</span> <span class='ident'>cards</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>hands</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>h</span><span class='op'>|</span> <span class='ident'>h</span>.<span class='ident'>list</span>()).<span class='ident'>collect</span>();
         <span class='ident'>b</span>.<span class='ident'>iter</span>(<span class='op'>||</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>hands</span>.<span class='ident'>clone</span>();
-            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+            <span class='kw'>for</span> (<span class='ident'>hand</span>, <span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
                 <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
                     <span class='ident'>hand</span>.<span class='ident'>remove</span>(<span class='op'>*</span><span class='ident'>c</span>);
                 }
             }
-            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+            <span class='kw'>for</span> (<span class='ident'>hand</span>, <span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
                 <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
                     <span class='ident'>hand</span>.<span class='ident'>add</span>(<span class='op'>*</span><span class='ident'>c</span>);
                 }
             }
-            
-            <span class='kw'>for</span> (<span class='ident'>hand</span>,<span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
+
+            <span class='kw'>for</span> (<span class='ident'>hand</span>, <span class='ident'>cards</span>) <span class='kw'>in</span> <span class='ident'>hands</span>.<span class='ident'>iter_mut</span>().<span class='ident'>zip</span>(<span class='ident'>cards</span>.<span class='ident'>iter</span>()) {
                 <span class='kw'>for</span> <span class='ident'>c</span> <span class='kw'>in</span> <span class='ident'>cards</span>.<span class='ident'>iter</span>() {
                     <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>hand</span>.<span class='ident'>has</span>(<span class='op'>*</span><span class='ident'>c</span>) {
                         <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Error!&quot;</span>);

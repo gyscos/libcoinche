@@ -58,7 +58,7 @@
 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='comment'>// The first player</span>
-    <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>pos</span>::<span class='ident'>P0</span>;
+    <span class='kw'>let</span> <span class='ident'>first</span> <span class='op'>=</span> <span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>;
 
     <span class='comment'>// Start the first phase with an auction</span>
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>auction</span> <span class='op'>=</span> <span class='ident'>bid</span>::<span class='ident'>Auction</span>::<span class='ident'>new</span>(<span class='ident'>first</span>);
@@ -67,11 +67,11 @@
     <span class='kw'>let</span> <span class='ident'>hands</span> <span class='op'>=</span> <span class='ident'>auction</span>.<span class='ident'>hands</span>();
 
     <span class='comment'>// Players bid or pass</span>
-    <span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>HEART</span>, <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>).<span class='ident'>unwrap</span>();
-    <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P1</span>).<span class='ident'>unwrap</span>();
-    <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P2</span>).<span class='ident'>unwrap</span>();
+    <span class='ident'>auction</span>.<span class='ident'>bid</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>, <span class='ident'>cards</span>::<span class='ident'>Suit</span>::<span class='ident'>Heart</span>, <span class='ident'>bid</span>::<span class='ident'>Target</span>::<span class='ident'>Contract80</span>).<span class='ident'>unwrap</span>();
+    <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P1</span>).<span class='ident'>unwrap</span>();
+    <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P2</span>).<span class='ident'>unwrap</span>();
     <span class='comment'>// The result is `Over` when the auction is ready to complete</span>
-    <span class='kw'>match</span> <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>P3</span>) {
+    <span class='kw'>match</span> <span class='ident'>auction</span>.<span class='ident'>pass</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P3</span>) {
         <span class='prelude-val'>Ok</span>(<span class='ident'>bid</span>::<span class='ident'>AuctionState</span>::<span class='ident'>Over</span>) <span class='op'>=&gt;</span> (),
         _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Should not happen&quot;</span>),
     };
@@ -80,7 +80,7 @@
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>game</span> <span class='op'>=</span> <span class='ident'>auction</span>.<span class='ident'>complete</span>().<span class='ident'>unwrap</span>();
 
     <span class='comment'>// Play some cards</span>
-    <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>get_card</span>());
+    <span class='ident'>game</span>.<span class='ident'>play_card</span>(<span class='ident'>pos</span>::<span class='ident'>PlayerPos</span>::<span class='ident'>P0</span>, <span class='ident'>hands</span>[<span class='number'>0</span>].<span class='ident'>get_card</span>());
     <span class='comment'>// ...</span>
 }</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>

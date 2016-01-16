@@ -127,9 +127,6 @@
 <span id="84">84</span>
 <span id="85">85</span>
 <span id="86">86</span>
-<span id="87">87</span>
-<span id="88">88</span>
-<span id="89">89</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Manage score and scores</span>
 
@@ -161,8 +158,8 @@
 <span class='doccomment'>/// If `rank` is invalid.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>trump_score</span>(<span class='ident'>rank</span>: <span class='ident'>cards</span>::<span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
     <span class='kw'>match</span> <span class='ident'>rank</span> {
-        <span class='ident'>cards</span>::<span class='ident'>RANK_J</span> <span class='op'>=&gt;</span> <span class='number'>20</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_9</span> <span class='op'>=&gt;</span> <span class='number'>14</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span> <span class='op'>=&gt;</span> <span class='number'>20</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span> <span class='op'>=&gt;</span> <span class='number'>14</span>,
         _ <span class='op'>=&gt;</span> <span class='ident'>usual_score</span>(<span class='ident'>rank</span>),
     }
 }
@@ -173,15 +170,14 @@
 <span class='doccomment'>/// If `rank` is invalid.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>usual_score</span>(<span class='ident'>rank</span>: <span class='ident'>cards</span>::<span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
     <span class='kw'>match</span> <span class='ident'>rank</span> {
-        <span class='ident'>cards</span>::<span class='ident'>RANK_7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_8</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_9</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_J</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_K</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_X</span> <span class='op'>=&gt;</span> <span class='number'>10</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_A</span> <span class='op'>=&gt;</span> <span class='number'>11</span>,
-        _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;getting score of invalid card&quot;</span>),
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span> <span class='op'>=&gt;</span> <span class='number'>10</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span> <span class='op'>=&gt;</span> <span class='number'>11</span>,
     }
 }
 
@@ -191,15 +187,14 @@
 <span class='doccomment'>/// If `rank` is invalid.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>trump_strength</span>(<span class='ident'>rank</span>: <span class='ident'>cards</span>::<span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
     <span class='kw'>match</span> <span class='ident'>rank</span> {
-        <span class='ident'>cards</span>::<span class='ident'>RANK_7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_8</span> <span class='op'>=&gt;</span> <span class='number'>1</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_K</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_X</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_A</span> <span class='op'>=&gt;</span> <span class='number'>5</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_9</span> <span class='op'>=&gt;</span> <span class='number'>6</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_J</span> <span class='op'>=&gt;</span> <span class='number'>7</span>,
-        _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;getting strength of invalid card&quot;</span>),
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span> <span class='op'>=&gt;</span> <span class='number'>1</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span> <span class='op'>=&gt;</span> <span class='number'>5</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span> <span class='op'>=&gt;</span> <span class='number'>6</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span> <span class='op'>=&gt;</span> <span class='number'>7</span>,
     }
 }
 
@@ -209,15 +204,14 @@
 <span class='doccomment'>/// If `rank` is invalid.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>usual_strength</span>(<span class='ident'>rank</span>: <span class='ident'>cards</span>::<span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
     <span class='kw'>match</span> <span class='ident'>rank</span> {
-        <span class='ident'>cards</span>::<span class='ident'>RANK_7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_8</span> <span class='op'>=&gt;</span> <span class='number'>1</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_9</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_J</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_Q</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_K</span> <span class='op'>=&gt;</span> <span class='number'>5</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_X</span> <span class='op'>=&gt;</span> <span class='number'>6</span>,
-        <span class='ident'>cards</span>::<span class='ident'>RANK_A</span> <span class='op'>=&gt;</span> <span class='number'>7</span>,
-        _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;getting strength of invalid card&quot;</span>),
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank7</span> <span class='op'>=&gt;</span> <span class='number'>0</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank8</span> <span class='op'>=&gt;</span> <span class='number'>1</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>Rank9</span> <span class='op'>=&gt;</span> <span class='number'>2</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankJ</span> <span class='op'>=&gt;</span> <span class='number'>3</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankQ</span> <span class='op'>=&gt;</span> <span class='number'>4</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankK</span> <span class='op'>=&gt;</span> <span class='number'>5</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankX</span> <span class='op'>=&gt;</span> <span class='number'>6</span>,
+        <span class='ident'>cards</span>::<span class='ident'>Rank</span>::<span class='ident'>RankA</span> <span class='op'>=&gt;</span> <span class='number'>7</span>,
     }
 }
 </pre>
