@@ -10,9 +10,13 @@ use rustc_serialize;
 #[derive(PartialEq,Clone,Copy,Debug)]
 #[repr(u32)]
 pub enum Suit {
+    /// The suit of hearts
     Heart = 1 << 0,
+    /// The suit of spades
     Spade = 1 << 8,
+    /// The suit of diamonds
     Diamond = 1 << 16,
+    /// The suit of clubs
     Club = 1 << 24,
 }
 
@@ -86,13 +90,21 @@ impl FromStr for Suit {
 #[derive(PartialEq,Clone,Copy,Debug)]
 #[repr(u32)]
 pub enum Rank {
+    /// 7
     Rank7 = 1 << 0,
+    /// 8
     Rank8 = 1 << 1,
+    /// 9
     Rank9 = 1 << 2,
+    /// Jack
     RankJ = 1 << 3,
+    /// Queen
     RankQ = 1 << 4,
+    /// King
     RankK = 1 << 5,
+    /// 10
     RankX = 1 << 6,
+    /// Ace
     RankA = 1 << 7,
 }
 
@@ -128,6 +140,7 @@ impl Rank {
         }
     }
 
+    // Return the enum by its discriminant.
     fn from_discriminant(rank: u32) -> Self {
         match rank {
             1 => Rank::Rank7,
