@@ -1,4 +1,4 @@
-//! Manage score and scores
+//! Manage points and scores
 
 use super::cards;
 
