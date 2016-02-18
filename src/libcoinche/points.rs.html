@@ -132,7 +132,7 @@
 
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>cards</span>;
 
-<span class='doccomment'>/// Returns the number of score `card` is worth, with the current trump suit.</span>
+<span class='doccomment'>/// Returns the number of points `card` is worth, with the current trump suit.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>score</span>(<span class='ident'>card</span>: <span class='ident'>cards</span>::<span class='ident'>Card</span>, <span class='ident'>trump</span>: <span class='ident'>cards</span>::<span class='ident'>Suit</span>) <span class='op'>-&gt;</span> <span class='ident'>i32</span> {
     <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='ident'>card</span>.<span class='ident'>rank</span>();
     <span class='kw'>if</span> <span class='ident'>card</span>.<span class='ident'>suit</span>() <span class='op'>==</span> <span class='ident'>trump</span> {

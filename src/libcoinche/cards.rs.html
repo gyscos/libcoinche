@@ -628,13 +628,13 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='attribute'>#[<span class='ident'>repr</span>(<span class='ident'>u32</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Suit</span> {
-    <span class='doccomment'>/// The suit of hearts</span>
+    <span class='doccomment'>/// The suit of hearts.</span>
     <span class='ident'>Heart</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>0</span>,
-    <span class='doccomment'>/// The suit of spades</span>
+    <span class='doccomment'>/// The suit of spades.</span>
     <span class='ident'>Spade</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>8</span>,
-    <span class='doccomment'>/// The suit of diamonds</span>
+    <span class='doccomment'>/// The suit of diamonds.</span>
     <span class='ident'>Diamond</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>16</span>,
-    <span class='doccomment'>/// The suit of clubs</span>
+    <span class='doccomment'>/// The suit of clubs.</span>
     <span class='ident'>Club</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>24</span>,
 }
 
@@ -659,10 +659,10 @@
 <span class='kw'>impl</span> <span class='ident'>Suit</span> {
     <span class='doccomment'>/// Returns the suit corresponding to the number:</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `0`: Heart</span>
-    <span class='doccomment'>/// * `1`: Spade</span>
-    <span class='doccomment'>/// * `2`: Diamond</span>
-    <span class='doccomment'>/// * `3`: Club</span>
+    <span class='doccomment'>/// * `0` -&gt; Heart</span>
+    <span class='doccomment'>/// * `1` -&gt; Spade</span>
+    <span class='doccomment'>/// * `2` -&gt; Diamond</span>
+    <span class='doccomment'>/// * `3` -&gt; Club</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
@@ -677,7 +677,7 @@
         }
     }
 
-    <span class='doccomment'>/// Returns a UTF-8 character representing the suit.</span>
+    <span class='doccomment'>/// Returns a UTF-8 character representing the suit (♥, ♠, ♦ or ♣).</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>match</span> <span class='self'>self</span> {
             <span class='ident'>Suit</span>::<span class='ident'>Heart</span> <span class='op'>=&gt;</span> <span class='string'>&quot;♥&quot;</span>,
@@ -726,20 +726,20 @@
     <span class='ident'>RankA</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>7</span>,
 }
 
-<span class='doccomment'>/// Bit RANK_MASK over all ranks</span>
+<span class='doccomment'>/// Bit RANK_MASK over all ranks.</span>
 <span class='kw'>const</span> <span class='ident'>RANK_MASK</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>255</span>;
 
 <span class='kw'>impl</span> <span class='ident'>Rank</span> {
     <span class='doccomment'>/// Returns the rank corresponding to the given number:</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `0`: 7</span>
-    <span class='doccomment'>/// * `1`: 8</span>
-    <span class='doccomment'>/// * `2`: 9</span>
-    <span class='doccomment'>/// * `3`: Jack</span>
-    <span class='doccomment'>/// * `4`: Queen</span>
-    <span class='doccomment'>/// * `5`: King</span>
-    <span class='doccomment'>/// * `6`: 10</span>
-    <span class='doccomment'>/// * `7`: Ace</span>
+    <span class='doccomment'>/// * `0` -&gt; 7</span>
+    <span class='doccomment'>/// * `1` -&gt; 8</span>
+    <span class='doccomment'>/// * `2` -&gt; 9</span>
+    <span class='doccomment'>/// * `3` -&gt; Jack</span>
+    <span class='doccomment'>/// * `4` -&gt; Queen</span>
+    <span class='doccomment'>/// * `5` -&gt; King</span>
+    <span class='doccomment'>/// * `6` -&gt; 10</span>
+    <span class='doccomment'>/// * `7` -&gt; Ace</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
@@ -809,7 +809,7 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>Card</span> {
-    <span class='doccomment'>/// Returns the card number (from 0 to 31)</span>
+    <span class='doccomment'>/// Returns the card id (from 0 to 31).</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>id</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='kw-2'>mut</span> <span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
@@ -821,7 +821,7 @@
         <span class='ident'>i</span> <span class='op'>-</span> <span class='number'>1</span>
     }
 
-    <span class='doccomment'>/// Returns the card corresponding to the given number.</span>
+    <span class='doccomment'>/// Returns the card corresponding to the given id.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Panics</span>
     <span class='doccomment'>///</span>
@@ -833,7 +833,7 @@
         <span class='ident'>Card</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='ident'>id</span>)
     }
 
-    <span class='doccomment'>/// Returns the card&#39;s rank</span>
+    <span class='doccomment'>/// Returns the card&#39;s rank.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>rank</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Rank</span> {
         <span class='kw'>let</span> <span class='ident'>suit</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>suit</span>();
         <span class='kw'>let</span> <span class='ident'>Card</span>(<span class='ident'>v</span>) <span class='op'>=</span> <span class='self'>self</span>;
@@ -854,21 +854,21 @@
         }
     }
 
-    <span class='doccomment'>/// Returns a string representation of the card.</span>
+    <span class='doccomment'>/// Returns a string representation of the card (ex: &quot;7♦&quot;).</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_string</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>rank</span>();
         <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>suit</span>();
         <span class='ident'>r</span>.<span class='ident'>to_string</span>() <span class='op'>+</span> <span class='kw-2'>&amp;</span><span class='ident'>s</span>.<span class='ident'>to_string</span>()
     }
 
-    <span class='doccomment'>/// Creates a card from the given suit and rank</span>
+    <span class='doccomment'>/// Creates a card from the given suit and rank.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>suit</span>: <span class='ident'>Suit</span>, <span class='ident'>rank</span>: <span class='ident'>Rank</span>) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
         <span class='ident'>Card</span>(<span class='ident'>suit</span> <span class='kw'>as</span> <span class='ident'>u32</span> <span class='op'>*</span> <span class='ident'>rank</span> <span class='kw'>as</span> <span class='ident'>u32</span>)
     }
 }
 
 
-<span class='doccomment'>/// Represents an unordered set of cards</span>
+<span class='doccomment'>/// Represents an unordered set of cards.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>,<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Hand</span>(<span class='ident'>u32</span>);
 

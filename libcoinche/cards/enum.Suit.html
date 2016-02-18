@@ -54,24 +54,24 @@
     Club,
 }</pre><div class='docblock'><p>One of the four Suits: Heart, Spade, Diamond, Club.</p>
 </div><h2 class='variants'>Variants</h2>
-<table><tr><td id='variant.Heart'><code>Heart</code></td><td><div class='docblock'><p>The suit of hearts</p>
-</div></td></tr><tr><td id='variant.Spade'><code>Spade</code></td><td><div class='docblock'><p>The suit of spades</p>
-</div></td></tr><tr><td id='variant.Diamond'><code>Diamond</code></td><td><div class='docblock'><p>The suit of diamonds</p>
-</div></td></tr><tr><td id='variant.Club'><code>Club</code></td><td><div class='docblock'><p>The suit of clubs</p>
+<table><tr><td id='variant.Heart'><code>Heart</code></td><td><div class='docblock'><p>The suit of hearts.</p>
+</div></td></tr><tr><td id='variant.Spade'><code>Spade</code></td><td><div class='docblock'><p>The suit of spades.</p>
+</div></td></tr><tr><td id='variant.Diamond'><code>Diamond</code></td><td><div class='docblock'><p>The suit of diamonds.</p>
+</div></td></tr><tr><td id='variant.Club'><code>Club</code></td><td><div class='docblock'><p>The suit of clubs.</p>
 </div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='enum' href='../../libcoinche/cards/enum.Suit.html' title='libcoinche::cards::Suit'>Suit</a></code></h3><div class='impl-items'><h4 id='method.from_n' class='method'><code>fn <a href='#method.from_n' class='fnname'>from_n</a>(n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; Self</code></h4>
 <div class='docblock'><p>Returns the suit corresponding to the number:</p>
 
 <ul>
-<li><code>0</code>: Heart</li>
-<li><code>1</code>: Spade</li>
-<li><code>2</code>: Diamond</li>
-<li><code>3</code>: Club</li>
+<li><code>0</code> -&gt; Heart</li>
+<li><code>1</code> -&gt; Spade</li>
+<li><code>2</code> -&gt; Diamond</li>
+<li><code>3</code> -&gt; Club</li>
 </ul>
 
 <h1 id='panics' class='section-header'><a href='#panics'>Panics</a></h1>
 <p>If <code>n &gt;= 4</code>.</p>
 </div><h4 id='method.to_string' class='method'><code>fn <a href='#method.to_string' class='fnname'>to_string</a>(self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
-<div class='docblock'><p>Returns a UTF-8 character representing the suit.</p>
+<div class='docblock'><p>Returns a UTF-8 character representing the suit (♥, ♠, ♦ or ♣).</p>
 </div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../rustc_serialize/serialize/trait.Encodable.html' title='rustc_serialize::serialize::Encodable'>Encodable</a> for <a class='enum' href='../../libcoinche/cards/enum.Suit.html' title='libcoinche::cards::Suit'>Suit</a></code></h3><div class='impl-items'><h4 id='method.encode' class='method'><code>fn <a href='../../rustc_serialize/serialize/trait.Encodable.html#method.encode' class='fnname'>encode</a>&lt;S: <a class='trait' href='../../rustc_serialize/serialize/trait.Encoder.html' title='rustc_serialize::serialize::Encoder'>Encoder</a>&gt;(&amp;self, s: &amp;mut S) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, S::Error&gt;</code></h4>
 </div><h3 class='impl'><code>impl <a class='trait' href='../../rustc_serialize/serialize/trait.Decodable.html' title='rustc_serialize::serialize::Decodable'>Decodable</a> for <a class='enum' href='../../libcoinche/cards/enum.Suit.html' title='libcoinche::cards::Suit'>Suit</a></code></h3><div class='impl-items'><h4 id='method.decode' class='method'><code>fn <a href='../../rustc_serialize/serialize/trait.Decodable.html#method.decode' class='fnname'>decode</a>&lt;D: <a class='trait' href='../../rustc_serialize/serialize/trait.Decoder.html' title='rustc_serialize::serialize::Decoder'>Decoder</a>&gt;(d: &amp;mut D) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;Self, D::Error&gt;</code></h4>
 </div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html' title='core::str::FromStr'>FromStr</a> for <a class='enum' href='../../libcoinche/cards/enum.Suit.html' title='libcoinche::cards::Suit'>Suit</a></code></h3><div class='impl-items'><h4 id='assoc_type.Err' class='type'><code>type Err = <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>

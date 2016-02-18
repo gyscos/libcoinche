@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Rank","Rank of a card in a suit."],["Suit","One of the four Suits: Heart, Spade, Diamond, Club."]],"struct":[["Card","Represents a single card."],["Deck","A deck of cards."],["Hand","Represents an unordered set of cards"]]});
+initSidebarItems({"enum":[["Rank","Rank of a card in a suit."],["Suit","One of the four Suits: Heart, Spade, Diamond, Club."]],"struct":[["Card","Represents a single card."],["Deck","A deck of cards."],["Hand","Represents an unordered set of cards."]]});
