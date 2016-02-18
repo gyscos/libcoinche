@@ -2,7 +2,7 @@
 
 use super::cards;
 
-/// Returns the number of score `card` is worth, with the current trump suit.
+/// Returns the number of points `card` is worth, with the current trump suit.
 pub fn score(card: cards::Card, trump: cards::Suit) -> i32 {
     let r = card.rank();
     if card.suit() == trump {

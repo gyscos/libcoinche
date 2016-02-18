@@ -10,13 +10,13 @@ use rustc_serialize;
 #[derive(PartialEq,Clone,Copy,Debug)]
 #[repr(u32)]
 pub enum Suit {
-    /// The suit of hearts
+    /// The suit of hearts.
     Heart = 1 << 0,
-    /// The suit of spades
+    /// The suit of spades.
     Spade = 1 << 8,
-    /// The suit of diamonds
+    /// The suit of diamonds.
     Diamond = 1 << 16,
-    /// The suit of clubs
+    /// The suit of clubs.
     Club = 1 << 24,
 }
 
@@ -41,10 +41,10 @@ impl rustc_serialize::Decodable for Suit {
 impl Suit {
     /// Returns the suit corresponding to the number:
     ///
-    /// * `0`: Heart
-    /// * `1`: Spade
-    /// * `2`: Diamond
-    /// * `3`: Club
+    /// * `0` -> Heart
+    /// * `1` -> Spade
+    /// * `2` -> Diamond
+    /// * `3` -> Club
     ///
     /// # Panics
     ///
@@ -59,7 +59,7 @@ impl Suit {
         }
     }
 
-    /// Returns a UTF-8 character representing the suit.
+    /// Returns a UTF-8 character representing the suit (♥, ♠, ♦ or ♣).
     pub fn to_string(self) -> String {
         match self {
             Suit::Heart => "♥",
@@ -108,20 +108,20 @@ pub enum Rank {
     RankA = 1 << 7,
 }
 
-/// Bit RANK_MASK over all ranks
+/// Bit RANK_MASK over all ranks.
 const RANK_MASK: u32 = 255;
 
 impl Rank {
     /// Returns the rank corresponding to the given number:
     ///
-    /// * `0`: 7
-    /// * `1`: 8
-    /// * `2`: 9
-    /// * `3`: Jack
-    /// * `4`: Queen
-    /// * `5`: King
-    /// * `6`: 10
-    /// * `7`: Ace
+    /// * `0` -> 7
+    /// * `1` -> 8
+    /// * `2` -> 9
+    /// * `3` -> Jack
+    /// * `4` -> Queen
+    /// * `5` -> King
+    /// * `6` -> 10
+    /// * `7` -> Ace
     ///
     /// # Panics
     ///
@@ -191,7 +191,7 @@ impl rustc_serialize::Decodable for Card {
 }
 
 impl Card {
-    /// Returns the card number (from 0 to 31)
+    /// Returns the card id (from 0 to 31).
     pub fn id(self) -> u32 {
         let mut i = 0;
         let Card(mut v) = self;
@@ -203,7 +203,7 @@ impl Card {
         i - 1
     }
 
-    /// Returns the card corresponding to the given number.
+    /// Returns the card corresponding to the given id.
     ///
     /// # Panics
     ///
@@ -215,7 +215,7 @@ impl Card {
         Card(1 << id)
     }
 
-    /// Returns the card's rank
+    /// Returns the card's rank.
     pub fn rank(self) -> Rank {
         let suit = self.suit();
         let Card(v) = self;
@@ -236,21 +236,21 @@ impl Card {
         }
     }
 
-    /// Returns a string representation of the card.
+    /// Returns a string representation of the card (ex: "7♦").
     pub fn to_string(self) -> String {
         let r = self.rank();
         let s = self.suit();
         r.to_string() + &s.to_string()
     }
 
-    /// Creates a card from the given suit and rank
+    /// Creates a card from the given suit and rank.
     pub fn new(suit: Suit, rank: Rank) -> Self {
         Card(suit as u32 * rank as u32)
     }
 }
 
 
-/// Represents an unordered set of cards
+/// Represents an unordered set of cards.
 #[derive(PartialEq,Clone,Copy,Debug)]
 pub struct Hand(u32);
 

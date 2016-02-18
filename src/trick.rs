@@ -1,17 +1,17 @@
-//! This module implements a trick in a game of coinchet vec
+//! This module implements a trick in a game of coinche.
 
 use super::pos;
 use super::cards;
 use super::points;
 
-/// The current cards on the table
+/// The current cards on the table.
 #[derive(Clone,RustcEncodable,Debug)]
 pub struct Trick {
-    /// Cards currently on the table (they are invalid until played).
+    /// Cards currently on the table (they are `None` until played).
     pub cards: [Option<cards::Card>; 4],
     /// First player in this trick.
     pub first: pos::PlayerPos,
-    /// Current winner of the trick (updated after each card).
+    /// Current winner of the trick (updated after each card played).
     pub winner: pos::PlayerPos,
 }
 
@@ -25,7 +25,7 @@ impl Trick {
         }
     }
 
-    /// Returns the points value of this trick
+    /// Returns the points value of this trick.
     pub fn score(&self, trump: cards::Suit) -> i32 {
         self.cards
             .iter()
@@ -35,7 +35,8 @@ impl Trick {
 
     /// Plays a card.
     ///
-    /// Updates the winner
+    /// Updates the winner.
+    ///
     /// Returns `true` if this completes the trick.
     pub fn play_card(&mut self,
                      player: pos::PlayerPos,
@@ -57,7 +58,7 @@ impl Trick {
 
     /// Returns the starting suit for this trick.
     ///
-    /// Returns None if the trick hasn't started yet.
+    /// Returns `None` if the trick hasn't started yet.
     pub fn suit(&self) -> Option<cards::Suit> {
         self.cards[self.first as usize].map(|c| c.suit())
     }
