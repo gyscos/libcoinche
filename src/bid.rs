@@ -68,17 +68,17 @@ impl Target {
     }
 
     pub fn to_str(&self) -> &'static str {
-        match self {
-            &Target::Contract80 => "80",
-            &Target::Contract90 => "90",
-            &Target::Contract100 => "100",
-            &Target::Contract110 => "110",
-            &Target::Contract120 => "120",
-            &Target::Contract130 => "130",
-            &Target::Contract140 => "140",
-            &Target::Contract150 => "150",
-            &Target::Contract160 => "160",
-            &Target::ContractCapot => "Capot",
+        match *self {
+            Target::Contract80 => "80",
+            Target::Contract90 => "90",
+            Target::Contract100 => "100",
+            Target::Contract110 => "110",
+            Target::Contract120 => "120",
+            Target::Contract130 => "130",
+            Target::Contract140 => "140",
+            Target::Contract150 => "150",
+            Target::Contract160 => "160",
+            Target::ContractCapot => "Capot",
         }
     }
 
@@ -113,7 +113,7 @@ impl FromStr for Target {
 
 impl ToString for Target {
     fn to_string(&self) -> String {
-        self.to_str().to_string()
+        self.to_str().to_owned()
     }
 }
 
@@ -188,13 +188,13 @@ pub enum BidError {
 
 impl fmt::Display for BidError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            &BidError::AuctionClosed => write!(f, "auctions are closed"),
-            &BidError::TurnError => write!(f, "invalid turn order"),
-            &BidError::NonRaisedTarget => write!(f, "bid must be higher than current contract"),
-            &BidError::AuctionRunning => write!(f, "the auction are still running"),
-            &BidError::NoContract => write!(f, "no contract was offered"),
-            &BidError::OverCoinche => write!(f, "contract is already sur-coinched"),
+        match *self {
+            BidError::AuctionClosed => write!(f, "auctions are closed"),
+            BidError::TurnError => write!(f, "invalid turn order"),
+            BidError::NonRaisedTarget => write!(f, "bid must be higher than current contract"),
+            BidError::AuctionRunning => write!(f, "the auction are still running"),
+            BidError::NoContract => write!(f, "no contract was offered"),
+            BidError::OverCoinche => write!(f, "contract is already sur-coinched"),
         }
     }
 }
@@ -221,10 +221,9 @@ impl Auction {
             return Err(BidError::AuctionClosed);
         }
 
-        if !self.history.is_empty() {
-            if target.score() <= self.history[self.history.len() - 1].target.score() {
-                return Err(BidError::NonRaisedTarget);
-            }
+        if !self.history.is_empty() &&
+           target.score() <= self.history[self.history.len() - 1].target.score() {
+            return Err(BidError::NonRaisedTarget);
         }
 
         Ok(())
@@ -250,10 +249,7 @@ impl Auction {
             return Err(BidError::TurnError);
         }
 
-        match self.can_bid(target) {
-            Err(err) => return Err(err),
-            Ok(_) => (),
-        }
+        try!(self.can_bid(target));
 
         // If we're all the way to the top, there's nowhere else to go
         if target == Target::ContractCapot {
@@ -303,10 +299,8 @@ impl Auction {
             if self.pass_count >= 3 {
                 self.state = AuctionState::Over;
             }
-        } else {
-            if self.pass_count >= 4 {
-                self.state = AuctionState::Cancelled;
-            }
+        } else if self.pass_count >= 4 {
+            self.state = AuctionState::Cancelled;
         };
 
         Ok(self.state)

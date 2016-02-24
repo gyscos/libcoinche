@@ -64,13 +64,13 @@ pub enum PlayError {
 
 impl fmt::Display for PlayError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            &PlayError::TurnError => write!(f, "invalid turn order"),
-            &PlayError::CardMissing => write!(f, "you can only play cards you have"),
-            &PlayError::IncorrectSuit => write!(f, "wrong suit played"),
-            &PlayError::InvalidPiss => write!(f, "you must use trumps"),
-            &PlayError::NonRaisedTrump => write!(f, "too weak trump played"),
-            &PlayError::NoLastTrick => write!(f, "no trick has been played yet"),
+        match *self {
+            PlayError::TurnError => write!(f, "invalid turn order"),
+            PlayError::CardMissing => write!(f, "you can only play cards you have"),
+            PlayError::IncorrectSuit => write!(f, "wrong suit played"),
+            PlayError::InvalidPiss => write!(f, "you must use trumps"),
+            PlayError::NonRaisedTrump => write!(f, "too weak trump played"),
+            PlayError::NoLastTrick => write!(f, "no trick has been played yet"),
         }
     }
 }
@@ -173,7 +173,7 @@ impl GameState {
     }
 
     fn is_capot(&self, team: pos::Team) -> bool {
-        for trick in self.tricks.iter() {
+        for trick in &self.tricks {
             if trick.winner.team() != team {
                 return false;
             }
@@ -247,10 +247,8 @@ pub fn can_play(p: pos::PlayerPos,
     // One must raise when playing trump
     if card_suit == trump {
         let highest = highest_trump(trick, trump, p);
-        if points::trump_strength(card.rank()) < highest {
-            if has_higher(hand, card_suit, highest) {
-                return Err(PlayError::NonRaisedTrump);;
-            }
+        if points::trump_strength(card.rank()) < highest && has_higher(hand, card_suit, highest) {
+            return Err(PlayError::NonRaisedTrump);;
         }
     }
 

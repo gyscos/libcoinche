@@ -1,3 +1,5 @@
+#![cfg_attr(feature="clippy", feature(plugin))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(feature = "use_bench", feature(test))]
 //! Models a game of [coinche](https://en.wikipedia.org/wiki/Coinche) (a french card game).
 //!

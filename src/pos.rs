@@ -15,11 +15,9 @@ impl Team {
     /// Return the team corresponding to the given number.
     pub fn from_n(n: usize) -> Self {
         match n {
-            0 => Team::T02,
-            1 => Team::T13,
-            // I shouldn't accept those, but...
-            2 => Team::T02,
-            3 => Team::T13,
+            // I shouldn't accept 2 or 3, but...
+            0 | 2 => Team::T02,
+            1 | 3 => Team::T13,
             other => panic!("invalid team number: {}", other),
         }
     }

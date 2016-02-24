@@ -67,7 +67,7 @@ impl Suit {
             Suit::Diamond => "♦",
             Suit::Club => "♣",
         }
-        .to_string()
+        .to_owned()
     }
 }
 
@@ -167,7 +167,7 @@ impl Rank {
             Rank::RankX => "X",
             Rank::RankA => "A",
         }
-        .to_string()
+        .to_owned()
     }
 }
 
@@ -219,7 +219,7 @@ impl Card {
     pub fn rank(self) -> Rank {
         let suit = self.suit();
         let Card(v) = self;
-        return Rank::from_discriminant(v / suit as u32);
+        Rank::from_discriminant(v / suit as u32)
     }
 
     /// Returns the card's suit.
@@ -352,9 +352,9 @@ impl Hand {
 impl ToString for Hand {
     /// Returns a string representation of `self`.
     fn to_string(&self) -> String {
-        let mut s = "[".to_string();
+        let mut s = "[".to_owned();
 
-        for c in (*self).list().iter() {
+        for c in &(*self).list() {
             s = s + &c.to_string();
             s = s + ",";
         }
@@ -436,9 +436,9 @@ impl Deck {
 
 impl ToString for Deck {
     fn to_string(&self) -> String {
-        let mut s = "[".to_string();
+        let mut s = "[".to_owned();
 
-        for c in self.cards.iter() {
+        for c in &self.cards {
             s = s + &c.to_string();
             s = s + ",";
         }

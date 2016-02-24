@@ -40,9 +40,7 @@ pub fn trump_score(rank: cards::Rank) -> i32 {
 /// If `rank` is invalid.
 pub fn usual_score(rank: cards::Rank) -> i32 {
     match rank {
-        cards::Rank::Rank7 => 0,
-        cards::Rank::Rank8 => 0,
-        cards::Rank::Rank9 => 0,
+        cards::Rank::Rank7 | cards::Rank::Rank8 | cards::Rank::Rank9 => 0,
         cards::Rank::RankJ => 2,
         cards::Rank::RankQ => 3,
         cards::Rank::RankK => 4,
