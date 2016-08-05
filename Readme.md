@@ -1,7 +1,7 @@
 libcoinche
 ==========
 
-[![Build Status](https://travis-ci.org/Gyscos/coinched.svg?branch=master)](https://travis-ci.org/Gyscos/coinched)
+[![Build Status](https://travis-ci.org/Gyscos/coinched.svg?branch=master)](https://travis-ci.org/gyscos/coinched)
 [![crates.io](http://meritbadge.herokuapp.com/libcoinche)](https://crates.io/crates/libcoinche)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
