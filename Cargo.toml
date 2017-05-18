@@ -7,7 +7,7 @@ license = "MIT"
 name = "libcoinche"
 readme = "Readme.md"
 repository = "https://github.com/Gyscos/libcoinche"
-version = "0.1.9"
+version = "0.2.0"
 
 [dependencies]
 rand = "0.3.15"
