@@ -1,9 +1,7 @@
 //! Player position in the table
 
-use rustc_serialize;
-
 /// One of two teams
-#[derive(PartialEq,Clone,Copy,Debug,RustcDecodable,RustcEncodable)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 pub enum Team {
     /// Players P0 and P2
     T02,
@@ -32,7 +30,7 @@ impl Team {
 }
 
 /// A position in the table
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 pub enum PlayerPos {
     /// Player 0
     P0,
@@ -42,21 +40,6 @@ pub enum PlayerPos {
     P2,
     /// Player 3
     P3,
-}
-
-impl rustc_serialize::Encodable for PlayerPos {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        (*self as usize).encode(s)
-    }
-}
-
-impl rustc_serialize::Decodable for PlayerPos {
-    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        match try!(d.read_usize()) {
-            n @ 0 ... 3 => Ok(PlayerPos::from_n(n)),
-            other => Err(d.error(&format!("invalid pos: {}", other))),
-        }
-    }
 }
 
 /// Iterates on players

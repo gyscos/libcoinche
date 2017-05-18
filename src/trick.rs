@@ -5,7 +5,7 @@ use super::cards;
 use super::points;
 
 /// The current cards on the table.
-#[derive(Clone,RustcEncodable,Debug)]
+#[derive(Clone,Serialize,Debug)]
 pub struct Trick {
     /// Cards currently on the table (they are `None` until played).
     pub cards: [Option<cards::Card>; 4],

@@ -7,12 +7,10 @@ use super::game;
 use super::cards;
 use super::pos;
 
-use rustc_serialize;
-
 /// Goal set by a contract.
 ///
 /// Determines the winning conditions and the score on success.
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 pub enum Target {
     /// Team must get 80 points
     Contract80,
@@ -34,19 +32,6 @@ pub enum Target {
     Contract160,
     /// Team must win all tricks
     ContractCapot,
-}
-
-impl rustc_serialize::Encodable for Target {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.emit_str(self.to_str())
-    }
-}
-
-impl rustc_serialize::Decodable for Target {
-    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        let content = try!(d.read_str());
-        Self::from_str(&content).map_err(|s| d.error(&s))
-    }
 }
 
 
@@ -120,7 +105,7 @@ impl ToString for Target {
 /// Contract taken by a team.
 ///
 /// Composed of a trump suit and a target to reach.
-#[derive(Clone,Debug,RustcEncodable,RustcDecodable)]
+#[derive(Clone,Debug,Serialize,Deserialize)]
 pub struct Contract {
     /// Initial author of the contract.
     pub author: pos::PlayerPos,

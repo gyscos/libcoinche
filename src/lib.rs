@@ -1,5 +1,3 @@
-#![cfg_attr(feature="clippy", feature(plugin))]
-#![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(feature = "use_bench", feature(test))]
 //! Models a game of [coinche](https://en.wikipedia.org/wiki/Coinche) (a french card game).
 //!
@@ -40,7 +38,10 @@
 //! }
 //! ```
 extern crate rand;
-extern crate rustc_serialize;
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+
 #[cfg(feature = "use_bench")]
 extern crate test;
 

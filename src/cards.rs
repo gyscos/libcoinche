@@ -4,10 +4,9 @@ use rand::{thread_rng, Rng, IsaacRng, SeedableRng};
 use std::str::FromStr;
 use std::num::Wrapping;
 use std::string::ToString;
-use rustc_serialize;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club.
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 #[repr(u32)]
 pub enum Suit {
     /// The suit of hearts.
@@ -18,24 +17,6 @@ pub enum Suit {
     Diamond = 1 << 16,
     /// The suit of clubs.
     Club = 1 << 24,
-}
-
-impl rustc_serialize::Encodable for Suit {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        (*self as u32).encode(s)
-    }
-}
-
-impl rustc_serialize::Decodable for Suit {
-    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        match try!(d.read_u32()) {
-            0x00000001 => Ok(Suit::Heart),
-            0x00000100 => Ok(Suit::Spade),
-            0x00010000 => Ok(Suit::Diamond),
-            0x01000000 => Ok(Suit::Club),
-            other => Err(d.error(&format!("unknown suit: {}", other))),
-        }
-    }
 }
 
 impl Suit {
@@ -172,23 +153,11 @@ impl Rank {
 }
 
 /// Represents a single card.
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 pub struct Card(u32);
 
 // TODO: Add card constants? (8 of heart, Queen of spades, ...?)
 // (As associated constants when it's stable?)
-
-impl rustc_serialize::Encodable for Card {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        self.0.encode(s)
-    }
-}
-
-impl rustc_serialize::Decodable for Card {
-    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        Ok(Card(try!(d.read_u32())))
-    }
-}
 
 impl Card {
     /// Returns the card id (from 0 to 31).
@@ -251,21 +220,8 @@ impl Card {
 
 
 /// Represents an unordered set of cards.
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
 pub struct Hand(u32);
-
-impl rustc_serialize::Encodable for Hand {
-    fn encode<S: rustc_serialize::Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        self.0.encode(s)
-    }
-}
-
-
-impl rustc_serialize::Decodable for Hand {
-    fn decode<D: rustc_serialize::Decoder>(d: &mut D) -> Result<Self, D::Error> {
-        Ok(Hand(try!(d.read_u32())))
-    }
-}
 
 impl Hand {
     /// Returns an empty hand.
