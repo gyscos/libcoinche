@@ -1,11 +1,11 @@
 //! This module implements a trick in a game of coinche.
 
-use super::pos;
 use super::cards;
 use super::points;
+use super::pos;
 
 /// The current cards on the table.
-#[derive(Clone,Serialize,Debug)]
+#[derive(Clone, Serialize, Debug)]
 pub struct Trick {
     /// Cards currently on the table (they are `None` until played).
     pub cards: [Option<cards::Card>; 4],
@@ -19,7 +19,7 @@ impl Trick {
     /// Creates a new, empty trick.
     pub fn new(first: pos::PlayerPos) -> Self {
         Trick {
-            first: first,
+            first,
             winner: first,
             cards: [None; 4],
         }
@@ -30,7 +30,7 @@ impl Trick {
         self.cards
             .iter()
             .map(|c| c.map_or(0, |c| points::score(c, trump)))
-            .fold(0, |a, b| a + b)
+            .sum()
     }
 
     /// Plays a card.
@@ -38,18 +38,20 @@ impl Trick {
     /// Updates the winner.
     ///
     /// Returns `true` if this completes the trick.
-    pub fn play_card(&mut self,
-                     player: pos::PlayerPos,
-                     card: cards::Card,
-                     trump: cards::Suit)
-                     -> bool {
+    pub fn play_card(
+        &mut self,
+        player: pos::PlayerPos,
+        card: cards::Card,
+        trump: cards::Suit,
+    ) -> bool {
         self.cards[player as usize] = Some(card);
         if player == self.first {
             return false;
         }
 
-        if points::strength(card, trump) >
-           points::strength(self.cards[self.winner as usize].unwrap(), trump) {
+        if points::strength(card, trump)
+            > points::strength(self.cards[self.winner as usize].unwrap(), trump)
+        {
             self.winner = player
         }
 

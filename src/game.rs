@@ -1,11 +1,11 @@
 //! Module for the card game, after auctions are complete.
 use std::fmt;
 
-use super::pos;
-use super::cards;
-use super::trick;
 use super::bid;
+use super::cards;
 use super::points;
+use super::pos;
+use super::trick;
 
 /// Describes the state of a coinche game, ready to play a card.
 #[derive(Clone)]
@@ -21,7 +21,7 @@ pub struct GameState {
 }
 
 /// Result of a game.
-#[derive(PartialEq,Debug)]
+#[derive(PartialEq, Debug)]
 pub enum GameResult {
     /// The game is still playing
     Nothing,
@@ -38,14 +38,14 @@ pub enum GameResult {
 }
 
 /// Result of a trick
-#[derive(PartialEq,Debug)]
+#[derive(PartialEq, Debug)]
 pub enum TrickResult {
     Nothing,
     TrickOver(pos::PlayerPos, GameResult),
 }
 
 /// Error that can occur during play
-#[derive(PartialEq,Debug)]
+#[derive(PartialEq, Debug)]
 pub enum PlayError {
     /// A player tried to act before his turn
     TurnError,
@@ -81,7 +81,7 @@ impl GameState {
         GameState {
             players: hands,
             current: first,
-            contract: contract,
+            contract,
             tricks: vec![trick::Trick::new(first)],
             points: [0; 2],
         }
@@ -93,20 +93,23 @@ impl GameState {
     }
 
     /// Try to play a card
-    pub fn play_card(&mut self,
-                     player: pos::PlayerPos,
-                     card: cards::Card)
-                     -> Result<TrickResult, PlayError> {
+    pub fn play_card(
+        &mut self,
+        player: pos::PlayerPos,
+        card: cards::Card,
+    ) -> Result<TrickResult, PlayError> {
         if self.current != player {
             return Err(PlayError::TurnError);
         }
 
         // Is that a valid move?
-        try!(can_play(player,
-                      card,
-                      self.players[player as usize],
-                      self.current_trick(),
-                      self.contract.trump));
+        try!(can_play(
+            player,
+            card,
+            self.players[player as usize],
+            self.current_trick(),
+            self.contract.trump
+        ));
 
         // Play the card
         let trump = self.contract.trump;
@@ -129,7 +132,6 @@ impl GameState {
             self.current = self.current.next();
             TrickResult::Nothing
         };
-
 
         Ok(result)
     }
@@ -167,8 +169,8 @@ impl GameState {
 
         GameResult::GameOver {
             points: self.points,
-            winners: winners,
-            scores: scores,
+            winners,
+            scores,
         }
     }
 
@@ -214,12 +216,13 @@ impl GameState {
 }
 
 /// Returns `true` if the move appear legal.
-pub fn can_play(p: pos::PlayerPos,
-                card: cards::Card,
-                hand: cards::Hand,
-                trick: &trick::Trick,
-                trump: cards::Suit)
-                -> Result<(), PlayError> {
+pub fn can_play(
+    p: pos::PlayerPos,
+    card: cards::Card,
+    hand: cards::Hand,
+    trick: &trick::Trick,
+    trump: cards::Suit,
+) -> Result<(), PlayError> {
     // First, we need the card to be able to play
     if !hand.has(card) {
         return Err(PlayError::CardMissing);;
@@ -283,9 +286,9 @@ fn highest_trump(trick: &trick::Trick, trump: cards::Suit, player: pos::PlayerPo
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use super::has_higher;
-    use {points, cards, bid, pos};
+    use super::*;
+    use {bid, cards, points, pos};
 
     #[test]
     fn test_play_card() {
@@ -336,46 +339,76 @@ mod tests {
         let mut game = GameState::new(pos::PlayerPos::P0, hands, contract);
 
         // Wrong turn
-        assert_eq!(game.play_card(pos::PlayerPos::P1,
-                                  cards::Card::new(cards::Suit::Club, cards::Rank::RankX))
-                       .err(),
-                   Some(PlayError::TurnError));
-        assert_eq!(game.play_card(pos::PlayerPos::P0,
-                                  cards::Card::new(cards::Suit::Club, cards::Rank::Rank7))
-                       .ok(),
-                   Some(TrickResult::Nothing));
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P1,
+                cards::Card::new(cards::Suit::Club, cards::Rank::RankX)
+            ).err(),
+            Some(PlayError::TurnError)
+        );
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P0,
+                cards::Card::new(cards::Suit::Club, cards::Rank::Rank7)
+            ).ok(),
+            Some(TrickResult::Nothing)
+        );
         // Card missing
-        assert_eq!(game.play_card(pos::PlayerPos::P1,
-                                  cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7))
-                       .err(),
-                   Some(PlayError::CardMissing));
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P1,
+                cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7)
+            ).err(),
+            Some(PlayError::CardMissing)
+        );
         // Wrong color
-        assert_eq!(game.play_card(pos::PlayerPos::P1,
-                                  cards::Card::new(cards::Suit::Spade, cards::Rank::Rank7))
-                       .err(),
-                   Some(PlayError::IncorrectSuit));
-        assert_eq!(game.play_card(pos::PlayerPos::P1,
-                                  cards::Card::new(cards::Suit::Club, cards::Rank::RankQ))
-                       .ok(),
-                   Some(TrickResult::Nothing));
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P1,
+                cards::Card::new(cards::Suit::Spade, cards::Rank::Rank7)
+            ).err(),
+            Some(PlayError::IncorrectSuit)
+        );
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P1,
+                cards::Card::new(cards::Suit::Club, cards::Rank::RankQ)
+            ).ok(),
+            Some(TrickResult::Nothing)
+        );
         // Invalid piss
-        assert_eq!(game.play_card(pos::PlayerPos::P2,
-                                  cards::Card::new(cards::Suit::Diamond, cards::Rank::Rank7))
-                       .err(),
-                   Some(PlayError::InvalidPiss));
-        assert_eq!(game.play_card(pos::PlayerPos::P2,
-                                  cards::Card::new(cards::Suit::Heart, cards::Rank::RankQ))
-                       .ok(),
-                   Some(TrickResult::Nothing));
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P2,
+                cards::Card::new(cards::Suit::Diamond, cards::Rank::Rank7)
+            ).err(),
+            Some(PlayError::InvalidPiss)
+        );
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P2,
+                cards::Card::new(cards::Suit::Heart, cards::Rank::RankQ)
+            ).ok(),
+            Some(TrickResult::Nothing)
+        );
         // UnderTrump
-        assert_eq!(game.play_card(pos::PlayerPos::P3,
-                                  cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7))
-                       .err(),
-                   Some(PlayError::NonRaisedTrump));
-        assert_eq!(game.play_card(pos::PlayerPos::P3,
-                                  cards::Card::new(cards::Suit::Heart, cards::Rank::RankJ))
-                       .ok(),
-                   Some(TrickResult::TrickOver(pos::PlayerPos::P3, game.get_game_result())));
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P3,
+                cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7)
+            ).err(),
+            Some(PlayError::NonRaisedTrump)
+        );
+        assert_eq!(
+            game.play_card(
+                pos::PlayerPos::P3,
+                cards::Card::new(cards::Suit::Heart, cards::Rank::RankJ)
+            ).ok(),
+            Some(TrickResult::TrickOver(
+                pos::PlayerPos::P3,
+                game.get_game_result()
+            ))
+        );
     }
 
     #[test]
@@ -385,9 +418,11 @@ mod tests {
 
         hand.add(cards::Card::new(cards::Suit::Heart, cards::Rank::Rank8));
         hand.add(cards::Card::new(cards::Suit::Spade, cards::Rank::RankX));
-        assert!(has_higher(hand,
-                           cards::Suit::Spade,
-                           points::trump_strength(cards::Rank::RankQ)));
+        assert!(has_higher(
+            hand,
+            cards::Suit::Spade,
+            points::trump_strength(cards::Rank::RankQ)
+        ));
     }
 
     #[test]
@@ -397,9 +432,11 @@ mod tests {
 
         hand.add(cards::Card::new(cards::Suit::Heart, cards::Rank::Rank8));
         hand.add(cards::Card::new(cards::Suit::Spade, cards::Rank::RankX));
-        assert!(!has_higher(hand,
-                            cards::Suit::Heart,
-                            points::trump_strength(cards::Rank::RankQ)));
+        assert!(!has_higher(
+            hand,
+            cards::Suit::Heart,
+            points::trump_strength(cards::Rank::RankQ)
+        ));
     }
 
     #[test]
@@ -409,9 +446,11 @@ mod tests {
 
         hand.add(cards::Card::new(cards::Suit::Heart, cards::Rank::RankJ));
         hand.add(cards::Card::new(cards::Suit::Spade, cards::Rank::RankX));
-        assert!(!has_higher(hand,
-                            cards::Suit::Spade,
-                            points::trump_strength(cards::Rank::Rank9)));
+        assert!(!has_higher(
+            hand,
+            cards::Suit::Spade,
+            points::trump_strength(cards::Rank::Rank9)
+        ));
     }
 
     #[test]
@@ -421,9 +460,11 @@ mod tests {
 
         hand.add(cards::Card::new(cards::Suit::Heart, cards::Rank::Rank8));
         hand.add(cards::Card::new(cards::Suit::Spade, cards::Rank::RankJ));
-        assert!(has_higher(hand,
-                           cards::Suit::Spade,
-                           points::trump_strength(cards::Rank::RankA)));
+        assert!(has_higher(
+            hand,
+            cards::Suit::Spade,
+            points::trump_strength(cards::Rank::RankA)
+        ));
     }
 
     #[test]
@@ -434,24 +475,24 @@ mod tests {
         hand.add(cards::Card::new(cards::Suit::Heart, cards::Rank::RankJ));
         hand.add(cards::Card::new(cards::Suit::Diamond, cards::Rank::RankJ));
         hand.add(cards::Card::new(cards::Suit::Spade, cards::Rank::RankJ));
-        assert!(!has_higher(hand,
-                            cards::Suit::Club,
-                            points::trump_strength(cards::Rank::Rank7)));
+        assert!(!has_higher(
+            hand,
+            cards::Suit::Club,
+            points::trump_strength(cards::Rank::Rank7)
+        ));
     }
 }
 
-
-#[cfg(feature="use_bench")]
+#[cfg(feature = "use_bench")]
 mod benchs {
-    use test::Bencher;
     use deal_seeded_hands;
+    use test::Bencher;
 
-    use {pos, cards, bid};
     use super::*;
+    use {bid, cards, pos};
 
     #[bench]
     fn bench_can_play(b: &mut Bencher) {
-
         fn try_deeper(game: &GameState, depth: usize) {
             let player = game.next_player();
             for c in game.hands()[player as usize].list() {
@@ -469,14 +510,16 @@ mod benchs {
 
         let seed = &[3, 32, 654, 1, 844];
         let hands = deal_seeded_hands(seed);
-        let game = GameState::new(pos::PlayerPos::P0,
-                                  hands,
-                                  bid::Contract {
-                                      author: pos::PlayerPos::P0,
-                                      trump: cards::Suit::Heart,
-                                      target: bid::Target::Contract80,
-                                      coinche_level: 0,
-                                  });
+        let game = GameState::new(
+            pos::PlayerPos::P0,
+            hands,
+            bid::Contract {
+                author: pos::PlayerPos::P0,
+                trump: cards::Suit::Heart,
+                target: bid::Target::Contract80,
+                coinche_level: 0,
+            },
+        );
         b.iter(|| try_deeper(&game, 4));
     }
 }

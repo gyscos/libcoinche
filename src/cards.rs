@@ -1,16 +1,16 @@
 //! This module represents a basic, rule-agnostic 32-cards system.
 
-use rand::{thread_rng, Rng, IsaacRng, SeedableRng};
-use std::str::FromStr;
+use rand::{thread_rng, IsaacRng, Rng, SeedableRng};
 use std::num::Wrapping;
+use std::str::FromStr;
 use std::string::ToString;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club.
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 #[repr(u32)]
 pub enum Suit {
     /// The suit of hearts.
-    Heart = 1 << 0,
+    Heart = 1,
     /// The suit of spades.
     Spade = 1 << 8,
     /// The suit of diamonds.
@@ -47,8 +47,7 @@ impl Suit {
             Suit::Spade => "♠",
             Suit::Diamond => "♦",
             Suit::Club => "♣",
-        }
-        .to_owned()
+        }.to_owned()
     }
 }
 
@@ -66,13 +65,12 @@ impl FromStr for Suit {
     }
 }
 
-
 /// Rank of a card in a suit.
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 #[repr(u32)]
 pub enum Rank {
     /// 7
-    Rank7 = 1 << 0,
+    Rank7 = 1,
     /// 8
     Rank8 = 1 << 1,
     /// 9
@@ -147,13 +145,12 @@ impl Rank {
             Rank::RankK => "K",
             Rank::RankX => "X",
             Rank::RankA => "A",
-        }
-        .to_owned()
+        }.to_owned()
     }
 }
 
 /// Represents a single card.
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Card(u32);
 
 // TODO: Add card constants? (8 of heart, Queen of spades, ...?)
@@ -166,7 +163,7 @@ impl Card {
         let Card(mut v) = self;
         while v != 0 {
             i += 1;
-            v = v >> 1;
+            v >>= 1;
         }
 
         i - 1
@@ -218,9 +215,8 @@ impl Card {
     }
 }
 
-
 /// Represents an unordered set of cards.
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize, Default)]
 pub struct Hand(u32);
 
 impl Hand {
@@ -311,8 +307,8 @@ impl ToString for Hand {
         let mut s = "[".to_owned();
 
         for c in &(*self).list() {
-            s = s + &c.to_string();
-            s = s + ",";
+            s += &c.to_string();
+            s += ",";
         }
 
         s + "]"
@@ -324,11 +320,18 @@ pub struct Deck {
     cards: Vec<Card>,
 }
 
+impl Default for Deck {
+    fn default() -> Self {
+        Deck::new()
+    }
+}
 
 impl Deck {
     /// Returns a full, sorted deck of 32 cards.
     pub fn new() -> Self {
-        let mut d = Deck { cards: Vec::with_capacity(32) };
+        let mut d = Deck {
+            cards: Vec::with_capacity(32),
+        };
 
         for i in 0..32 {
             d.cards.push(Card::from_id(i));
@@ -395,8 +398,8 @@ impl ToString for Deck {
         let mut s = "[".to_owned();
 
         for c in &self.cards {
-            s = s + &c.to_string();
-            s = s + ",";
+            s += &c.to_string();
+            s += ",";
         }
 
         s + "]"
@@ -476,10 +479,10 @@ mod tests {
     }
 }
 
-#[cfg(feature="use_bench")]
+#[cfg(feature = "use_bench")]
 mod benchs {
-    use test::Bencher;
     use deal_seeded_hands;
+    use test::Bencher;
 
     #[bench]
     fn bench_deal(b: &mut Bencher) {

@@ -3,14 +3,14 @@
 use std::fmt;
 use std::str::FromStr;
 
-use super::game;
 use super::cards;
+use super::game;
 use super::pos;
 
 /// Goal set by a contract.
 ///
 /// Determines the winning conditions and the score on success.
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum Target {
     /// Team must get 80 points
     Contract80,
@@ -34,11 +34,10 @@ pub enum Target {
     ContractCapot,
 }
 
-
 impl Target {
     /// Returns the score this target would give on success.
-    pub fn score(&self) -> i32 {
-        match *self {
+    pub fn score(self) -> i32 {
+        match self {
             Target::Contract80 => 80,
             Target::Contract90 => 90,
             Target::Contract100 => 100,
@@ -52,8 +51,8 @@ impl Target {
         }
     }
 
-    pub fn to_str(&self) -> &'static str {
-        match *self {
+    pub fn to_str(self) -> &'static str {
+        match self {
             Target::Contract80 => "80",
             Target::Contract90 => "90",
             Target::Contract100 => "100",
@@ -68,8 +67,8 @@ impl Target {
     }
 
     /// Determines whether this target was reached.
-    pub fn victory(&self, points: i32, capot: bool) -> bool {
-        match *self {
+    pub fn victory(self, points: i32, capot: bool) -> bool {
+        match self {
             Target::ContractCapot => capot,
             other => points >= other.score(),
         }
@@ -105,7 +104,7 @@ impl ToString for Target {
 /// Contract taken by a team.
 ///
 /// Composed of a trump suit and a target to reach.
-#[derive(Clone,Debug,Serialize,Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Contract {
     /// Initial author of the contract.
     pub author: pos::PlayerPos,
@@ -124,16 +123,16 @@ pub struct Contract {
 impl Contract {
     fn new(author: pos::PlayerPos, trump: cards::Suit, target: Target) -> Self {
         Contract {
-            author: author,
-            trump: trump,
-            target: target,
+            author,
+            trump,
+            target,
             coinche_level: 0,
         }
     }
 }
 
 /// Current state of an auction
-#[derive(PartialEq,Clone,Copy,Debug)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum AuctionState {
     /// Players are still bidding for the highest contract
     Bidding,
@@ -155,7 +154,7 @@ pub struct Auction {
 }
 
 /// Possible error occuring during an Auction.
-#[derive(PartialEq,Debug)]
+#[derive(PartialEq, Debug)]
 pub enum BidError {
     /// The auction was closed and does not accept more contracts.
     AuctionClosed,
@@ -191,7 +190,7 @@ impl Auction {
             history: Vec::new(),
             pass_count: 0,
             state: AuctionState::Bidding,
-            first: first,
+            first,
             players: super::deal_hands(),
         }
     }
@@ -206,8 +205,9 @@ impl Auction {
             return Err(BidError::AuctionClosed);
         }
 
-        if !self.history.is_empty() &&
-           target.score() <= self.history[self.history.len() - 1].target.score() {
+        if !self.history.is_empty()
+            && target.score() <= self.history[self.history.len() - 1].target.score()
+        {
             return Err(BidError::NonRaisedTarget);
         }
 
@@ -225,11 +225,12 @@ impl Auction {
     }
 
     /// Bid a new, higher contract.
-    pub fn bid(&mut self,
-               pos: pos::PlayerPos,
-               trump: cards::Suit,
-               target: Target)
-               -> Result<AuctionState, BidError> {
+    pub fn bid(
+        &mut self,
+        pos: pos::PlayerPos,
+        trump: cards::Suit,
+        target: Target,
+    ) -> Result<AuctionState, BidError> {
         if pos != self.next_player() {
             return Err(BidError::TurnError);
         }
@@ -326,9 +327,11 @@ impl Auction {
         } else if self.history.is_empty() {
             Err(BidError::NoContract)
         } else {
-            Ok(game::GameState::new(self.first,
-                                    self.players,
-                                    self.history.pop().expect("contract history empty")))
+            Ok(game::GameState::new(
+                self.first,
+                self.players,
+                self.history.pop().expect("contract history empty"),
+            ))
         }
     }
 }
@@ -350,22 +353,34 @@ mod tests {
         assert_eq!(auction.pass(pos::PlayerPos::P2), Ok(AuctionState::Bidding));
 
         assert_eq!(auction.pass(pos::PlayerPos::P1), Err(BidError::TurnError));
-        assert_eq!(auction.coinche(pos::PlayerPos::P2),
-                   Err(BidError::TurnError));
+        assert_eq!(
+            auction.coinche(pos::PlayerPos::P2),
+            Err(BidError::TurnError)
+        );
 
         // Someone bids.
-        assert_eq!(auction.bid(pos::PlayerPos::P3, cards::Suit::Heart, Target::Contract80),
-                   Ok(AuctionState::Bidding));
-        assert_eq!(auction.bid(pos::PlayerPos::P0, cards::Suit::Club, Target::Contract80)
-                          .err(),
-                   Some(BidError::NonRaisedTarget));
-        assert_eq!(auction.bid(pos::PlayerPos::P1, cards::Suit::Club, Target::Contract100)
-                          .err(),
-                   Some(BidError::TurnError));
+        assert_eq!(
+            auction.bid(pos::PlayerPos::P3, cards::Suit::Heart, Target::Contract80),
+            Ok(AuctionState::Bidding)
+        );
+        assert_eq!(
+            auction
+                .bid(pos::PlayerPos::P0, cards::Suit::Club, Target::Contract80)
+                .err(),
+            Some(BidError::NonRaisedTarget)
+        );
+        assert_eq!(
+            auction
+                .bid(pos::PlayerPos::P1, cards::Suit::Club, Target::Contract100)
+                .err(),
+            Some(BidError::TurnError)
+        );
         assert_eq!(auction.pass(pos::PlayerPos::P0), Ok(AuctionState::Bidding));
         // Partner surbids
-        assert_eq!(auction.bid(pos::PlayerPos::P1, cards::Suit::Heart, Target::Contract100),
-                   Ok(AuctionState::Bidding));
+        assert_eq!(
+            auction.bid(pos::PlayerPos::P1, cards::Suit::Heart, Target::Contract100),
+            Ok(AuctionState::Bidding)
+        );
         assert_eq!(auction.pass(pos::PlayerPos::P2), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::PlayerPos::P3), Ok(AuctionState::Bidding));
         assert_eq!(auction.pass(pos::PlayerPos::P0), Ok(AuctionState::Over));
