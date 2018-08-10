@@ -348,9 +348,8 @@ impl Deck {
     /// Shuffle this deck with the given random seed.
     ///
     /// Result is determined by the seed.
-    pub fn shuffle_seeded(&mut self, seed: &[u32]) {
-        let mut rng = IsaacRng::new_unseeded();
-        rng.reseed(seed);
+    pub fn shuffle_seeded(&mut self, seed: [u8; 32]) {
+        let rng = IsaacRng::from_seed(seed);
         self.shuffle_from(rng);
     }
 

@@ -78,7 +78,7 @@ pub fn deal_hands() -> [cards::Hand; 4] {
 }
 
 /// Deal cards for 4 players deterministically.
-pub fn deal_seeded_hands(seed: &[u32]) -> [cards::Hand; 4] {
+pub fn deal_seeded_hands(seed: [u8; 32]) -> [cards::Hand; 4] {
     let mut hands = [cards::Hand::new(); 4];
 
     let mut d = cards::Deck::new();
