@@ -1,3 +1,4 @@
+cargo-features = ["edition"]
 [package]
 authors = ["Alexandre Bury <alexandre.bury@gmail.com>"]
 description = "A library to model the Coinche card game."
@@ -8,6 +9,7 @@ name = "libcoinche"
 readme = "Readme.md"
 repository = "https://github.com/Gyscos/libcoinche"
 version = "0.3.0"
+edition="2018"
 
 [dependencies]
 rand = "0.5.5"

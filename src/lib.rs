@@ -1,3 +1,4 @@
+#![feature(rust_2018_preview,uniform_paths)]
 #![cfg_attr(feature = "use_bench", feature(test))]
 //! Models a game of [coinche](https://en.wikipedia.org/wiki/Coinche) (a french card game).
 //!
@@ -37,10 +38,8 @@
 //!     // ...
 //! }
 //! ```
-extern crate rand;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde;
 
 #[cfg(feature = "use_bench")]
 extern crate test;

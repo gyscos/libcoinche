@@ -171,7 +171,7 @@ pub enum BidError {
 }
 
 impl fmt::Display for BidError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             BidError::AuctionClosed => write!(f, "auctions are closed"),
             BidError::TurnError => write!(f, "invalid turn order"),
@@ -339,7 +339,7 @@ impl Auction {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use {cards, pos};
+    use crate::{cards, pos};
 
     #[test]
     fn test_auction() {

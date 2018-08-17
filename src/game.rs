@@ -63,7 +63,7 @@ pub enum PlayError {
 }
 
 impl fmt::Display for PlayError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             PlayError::TurnError => write!(f, "invalid turn order"),
             PlayError::CardMissing => write!(f, "you can only play cards you have"),
@@ -288,7 +288,7 @@ fn highest_trump(trick: &trick::Trick, trump: cards::Suit, player: pos::PlayerPo
 mod tests {
     use super::has_higher;
     use super::*;
-    use {bid, cards, points, pos};
+    use crate::{bid, cards, points, pos};
 
     #[test]
     fn test_play_card() {
