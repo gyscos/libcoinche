@@ -10,7 +10,7 @@ use super::pos;
 /// Goal set by a contract.
 ///
 /// Determines the winning conditions and the score on success.
-#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize)]
 pub enum Target {
     /// Team must get 80 points
     Contract80,
@@ -104,7 +104,7 @@ impl ToString for Target {
 /// Contract taken by a team.
 ///
 /// Composed of a trump suit and a target to reach.
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Contract {
     /// Initial author of the contract.
     pub author: pos::PlayerPos,
@@ -132,7 +132,7 @@ impl Contract {
 }
 
 /// Current state of an auction
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum AuctionState {
     /// Players are still bidding for the highest contract
     Bidding,
@@ -154,7 +154,7 @@ pub struct Auction {
 }
 
 /// Possible error occuring during an Auction.
-#[derive(PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug)]
 pub enum BidError {
     /// The auction was closed and does not accept more contracts.
     AuctionClosed,
@@ -235,7 +235,7 @@ impl Auction {
             return Err(BidError::TurnError);
         }
 
-        try!(self.can_bid(target));
+        self.can_bid(target)?;
 
         // If we're all the way to the top, there's nowhere else to go
         if target == Target::ContractCapot {

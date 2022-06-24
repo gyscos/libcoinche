@@ -1,12 +1,12 @@
 //! This module represents a basic, rule-agnostic 32-cards system.
 
-use rand::{thread_rng, IsaacRng, Rng, SeedableRng};
+use rand::{rngs::StdRng, seq::SliceRandom, thread_rng, Rng, SeedableRng};
 use std::num::Wrapping;
 use std::str::FromStr;
 use std::string::ToString;
 
 /// One of the four Suits: Heart, Spade, Diamond, Club.
-#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize)]
 #[repr(u32)]
 pub enum Suit {
     /// The suit of hearts.
@@ -39,15 +39,18 @@ impl Suit {
             other => panic!("bad suit number: {}", other),
         }
     }
+}
 
+impl ToString for Suit {
     /// Returns a UTF-8 character representing the suit (♥, ♠, ♦ or ♣).
-    pub fn to_string(self) -> String {
-        match self {
+    fn to_string(&self) -> String {
+        match &self {
             Suit::Heart => "♥",
             Suit::Spade => "♠",
             Suit::Diamond => "♦",
             Suit::Club => "♣",
-        }.to_owned()
+        }
+        .to_owned()
     }
 }
 
@@ -66,7 +69,7 @@ impl FromStr for Suit {
 }
 
 /// Rank of a card in a suit.
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[repr(u32)]
 pub enum Rank {
     /// 7
@@ -133,9 +136,11 @@ impl Rank {
             other => panic!("invalid rank discrimant: {}", other),
         }
     }
+}
 
+impl ToString for Rank {
     /// Returns a character representing the given rank.
-    pub fn to_string(self) -> String {
+    fn to_string(&self) -> String {
         match self {
             Rank::Rank7 => "7",
             Rank::Rank8 => "8",
@@ -145,12 +150,13 @@ impl Rank {
             Rank::RankK => "K",
             Rank::RankX => "X",
             Rank::RankA => "A",
-        }.to_owned()
+        }
+        .to_owned()
     }
 }
 
 /// Represents a single card.
-#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Card(u32);
 
 // TODO: Add card constants? (8 of heart, Queen of spades, ...?)
@@ -202,21 +208,23 @@ impl Card {
         }
     }
 
-    /// Returns a string representation of the card (ex: "7♦").
-    pub fn to_string(self) -> String {
-        let r = self.rank();
-        let s = self.suit();
-        r.to_string() + &s.to_string()
-    }
-
     /// Creates a card from the given suit and rank.
     pub fn new(suit: Suit, rank: Rank) -> Self {
         Card(suit as u32 * rank as u32)
     }
 }
 
+impl ToString for Card {
+    /// Returns a string representation of the card (ex: "7♦").
+    fn to_string(&self) -> String {
+        let r = self.rank();
+        let s = self.suit();
+        r.to_string() + &s.to_string()
+    }
+}
+
 /// Represents an unordered set of cards.
-#[derive(PartialEq, Clone, Copy, Debug, Serialize, Deserialize, Default)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct Hand(u32);
 
 impl Hand {
@@ -349,12 +357,12 @@ impl Deck {
     ///
     /// Result is determined by the seed.
     pub fn shuffle_seeded(&mut self, seed: [u8; 32]) {
-        let rng = IsaacRng::from_seed(seed);
+        let rng = StdRng::from_seed(seed);
         self.shuffle_from(rng);
     }
 
     fn shuffle_from<RNG: Rng>(&mut self, mut rng: RNG) {
-        rng.shuffle(&mut self.cards[..]);
+        self.cards.shuffle(&mut rng);
     }
 
     /// Draw the top card from the deck.

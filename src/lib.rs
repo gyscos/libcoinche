@@ -1,5 +1,3 @@
-#![feature(rust_2018_preview,uniform_paths)]
-#![cfg_attr(feature = "use_bench", feature(test))]
 //! Models a game of [coinche](https://en.wikipedia.org/wiki/Coinche) (a french card game).
 //!
 //! See [coinched](https://github.com/Gyscos/coinched) for an example of usage.
@@ -38,11 +36,6 @@
 //!     // ...
 //! }
 //! ```
-#[macro_use]
-extern crate serde_derive;
-
-#[cfg(feature = "use_bench")]
-extern crate test;
 
 pub mod bid;
 pub mod cards;

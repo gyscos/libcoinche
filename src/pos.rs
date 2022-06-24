@@ -1,7 +1,7 @@
 //! Player position in the table
 
 /// One of two teams
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize)]
 pub enum Team {
     /// Players P0 and P2
     T02,
@@ -30,7 +30,7 @@ impl Team {
 }
 
 /// A position in the table
-#[derive(PartialEq,Clone,Copy,Debug,Serialize,Deserialize)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug, serde::Serialize, serde::Deserialize)]
 pub enum PlayerPos {
     /// Player 0
     P0,

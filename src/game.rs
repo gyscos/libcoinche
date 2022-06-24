@@ -21,7 +21,7 @@ pub struct GameState {
 }
 
 /// Result of a game.
-#[derive(PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug)]
 pub enum GameResult {
     /// The game is still playing
     Nothing,
@@ -38,14 +38,14 @@ pub enum GameResult {
 }
 
 /// Result of a trick
-#[derive(PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug)]
 pub enum TrickResult {
     Nothing,
     TrickOver(pos::PlayerPos, GameResult),
 }
 
 /// Error that can occur during play
-#[derive(PartialEq, Debug)]
+#[derive(Eq, PartialEq, Debug)]
 pub enum PlayError {
     /// A player tried to act before his turn
     TurnError,
@@ -103,13 +103,13 @@ impl GameState {
         }
 
         // Is that a valid move?
-        try!(can_play(
+        can_play(
             player,
             card,
             self.players[player as usize],
             self.current_trick(),
-            self.contract.trump
-        ));
+            self.contract.trump,
+        )?;
 
         // Play the card
         let trump = self.contract.trump;
@@ -225,7 +225,7 @@ pub fn can_play(
 ) -> Result<(), PlayError> {
     // First, we need the card to be able to play
     if !hand.has(card) {
-        return Err(PlayError::CardMissing);;
+        return Err(PlayError::CardMissing);
     }
 
     if p == trick.first {
@@ -251,7 +251,7 @@ pub fn can_play(
     if card_suit == trump {
         let highest = highest_trump(trick, trump, p);
         if points::trump_strength(card.rank()) < highest && has_higher(hand, card_suit, highest) {
-            return Err(PlayError::NonRaisedTrump);;
+            return Err(PlayError::NonRaisedTrump);
         }
     }
 
@@ -343,14 +343,16 @@ mod tests {
             game.play_card(
                 pos::PlayerPos::P1,
                 cards::Card::new(cards::Suit::Club, cards::Rank::RankX)
-            ).err(),
+            )
+            .err(),
             Some(PlayError::TurnError)
         );
         assert_eq!(
             game.play_card(
                 pos::PlayerPos::P0,
                 cards::Card::new(cards::Suit::Club, cards::Rank::Rank7)
-            ).ok(),
+            )
+            .ok(),
             Some(TrickResult::Nothing)
         );
         // Card missing
@@ -358,7 +360,8 @@ mod tests {
             game.play_card(
                 pos::PlayerPos::P1,
                 cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7)
-            ).err(),
+            )
+            .err(),
             Some(PlayError::CardMissing)
         );
         // Wrong color
@@ -366,14 +369,16 @@ mod tests {
             game.play_card(
                 pos::PlayerPos::P1,
                 cards::Card::new(cards::Suit::Spade, cards::Rank::Rank7)
-            ).err(),
+            )
+            .err(),
             Some(PlayError::IncorrectSuit)
         );
         assert_eq!(
             game.play_card(
                 pos::PlayerPos::P1,
                 cards::Card::new(cards::Suit::Club, cards::Rank::RankQ)
-            ).ok(),
+            )
+            .ok(),
             Some(TrickResult::Nothing)
         );
         // Invalid piss
@@ -381,14 +386,16 @@ mod tests {
             game.play_card(
                 pos::PlayerPos::P2,
                 cards::Card::new(cards::Suit::Diamond, cards::Rank::Rank7)
-            ).err(),
+            )
+            .err(),
             Some(PlayError::InvalidPiss)
         );
         assert_eq!(
             game.play_card(
                 pos::PlayerPos::P2,
                 cards::Card::new(cards::Suit::Heart, cards::Rank::RankQ)
-            ).ok(),
+            )
+            .ok(),
             Some(TrickResult::Nothing)
         );
         // UnderTrump
@@ -396,14 +403,16 @@ mod tests {
             game.play_card(
                 pos::PlayerPos::P3,
                 cards::Card::new(cards::Suit::Heart, cards::Rank::Rank7)
-            ).err(),
+            )
+            .err(),
             Some(PlayError::NonRaisedTrump)
         );
         assert_eq!(
             game.play_card(
                 pos::PlayerPos::P3,
                 cards::Card::new(cards::Suit::Heart, cards::Rank::RankJ)
-            ).ok(),
+            )
+            .ok(),
             Some(TrickResult::TrickOver(
                 pos::PlayerPos::P3,
                 game.get_game_result()

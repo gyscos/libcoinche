@@ -5,7 +5,7 @@ use super::points;
 use super::pos;
 
 /// The current cards on the table.
-#[derive(Clone, Serialize, Debug)]
+#[derive(Clone, serde::Serialize, Debug)]
 pub struct Trick {
     /// Cards currently on the table (they are `None` until played).
     pub cards: [Option<cards::Card>; 4],
@@ -55,7 +55,7 @@ impl Trick {
             self.winner = player
         }
 
-        (player == self.first.prev())
+        player == self.first.prev()
     }
 
     /// Returns the starting suit for this trick.
